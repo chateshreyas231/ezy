@@ -1,0 +1,38 @@
+# MacOS
+.DS_Store
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Native builds
+ios/Pods/
+ios/build/
+android/app/build/
+android/.gradle/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Metro
+.metro-health-check
+
+# Large Media
+*.mp4
