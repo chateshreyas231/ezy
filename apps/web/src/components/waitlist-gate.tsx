@@ -71,6 +71,24 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
 
   const showForceModal = searchParams.get("waitlist") === "required";
 
+  // Failsafe: If user is stuck on "waitlist=required" for > 30s, force a re-check or redirect
+  useEffect(() => {
+    if (showForceModal) {
+      const timer = setTimeout(() => {
+        // If we still haven't redirected (component still mounted), check access again
+        const access = hasWaitlistAccess();
+        if (access) {
+          router.replace(searchParams.get("redirect") || "/explore");
+        } else {
+          // Ensure modal is visible (it should be)
+          // We could potentially trigger a toast or shake effect here if needed
+        }
+      }, 30000); // 30 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [showForceModal, router, searchParams]);
+
   const grantAccess = (validEmail: string) => {
     saveWaitlistAccess(validEmail);
     setHasAccess(true);
