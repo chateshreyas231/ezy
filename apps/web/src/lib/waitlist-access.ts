@@ -1,6 +1,6 @@
 export const WAITLIST_EMAIL_KEY = "ezriya_waitlist_email";
 export const WAITLIST_ACCESS_KEY = "ezriya_waitlist_access_granted";
-const WAITLIST_COOKIE_MAX_AGE = 60 * 60 * 24 * 90; // 90 days
+const WAITLIST_COOKIE_MAX_AGE = 60 * 60; // 1 hour
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();

@@ -14,19 +14,32 @@ import {
   hasWaitlistAccess,
   saveWaitlistAccess,
 } from "@/lib/waitlist-access";
-
-type GateMode = "choice" | "confirm" | "join";
+import { Loader2 } from "lucide-react";
 
 export function WaitlistGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const isClient = typeof window !== "undefined";
-  const knownEmail = isClient ? getWaitlistEmail() : "";
-  const [hasAccess, setHasAccess] = useState(isClient ? hasWaitlistAccess() : false);
-  const [mode, setMode] = useState<GateMode>(knownEmail ? "confirm" : "choice");
-  const [email, setEmail] = useState(knownEmail);
+
+  // Initialize state
+  const [hasAccess, setHasAccess] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Check access on mount
+  useEffect(() => {
+    if (isClient) {
+      const access = hasWaitlistAccess();
+      setHasAccess(access);
+      if (!access) {
+        // Pre-fill email if we have it but access is expired/revoked
+        const storedEmail = getWaitlistEmail();
+        if (storedEmail) setEmail(storedEmail);
+      }
+    }
+  }, [isClient]);
 
   const isProtectedRoute = useMemo(() => {
     const publicPaths = [
@@ -41,12 +54,12 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
       "/security",
       "/compliance",
     ];
+    // If it's the root path, we don't block it unless specific params require it
+    // But generally '/' is public.
     return !publicPaths.includes(pathname);
   }, [pathname]);
 
-  // If the user has access and there's a redirect param, send them there
-  // This handles the case where middleware redirects to /?redirect=... but
-  // the client already has access in localStorage
+  // Handle post-access redirect
   useEffect(() => {
     if (hasAccess) {
       const redirect = searchParams.get("redirect");
@@ -58,101 +71,124 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
 
   const showForceModal = searchParams.get("waitlist") === "required";
 
-  const grantAccess = () => {
-    saveWaitlistAccess(email);
+  const grantAccess = (validEmail: string) => {
+    saveWaitlistAccess(validEmail);
     setHasAccess(true);
+
+    // Redirect logic
     const redirect = searchParams.get("redirect");
     if (redirect && redirect.startsWith("/")) {
       router.replace(redirect);
       return;
     }
+    // If we are on the home page and just granted access via the modal, send to explore
     if (pathname === "/") {
-      router.replace("/explore");
+      router.push("/explore");
     }
   };
 
-  const onConfirm = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleAccess = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
     if (!isValidEmail(email)) {
-      setError("Enter a valid email address.");
-      return;
-    }
-    const exists = await isEmailOnWaitlist(email);
-    if (!exists) {
-      setError("This email is not on the waitlist. Please join first.");
+      setError("Please enter a valid email address.");
       return;
     }
 
-    grantAccess();
+    setIsLoading(true);
+
+    try {
+      // 1. Check if email exists
+      const exists = await isEmailOnWaitlist(email);
+
+      if (exists) {
+        // Already on waitlist -> Grant Access
+        grantAccess(email);
+      } else {
+        // Not on waitlist -> Add to waitlist -> Grant Access
+        const result = await addEmailToWaitlist(email);
+        if (result.ok) {
+          grantAccess(email);
+        } else {
+          setError(result.message || "Something went wrong. Please try again.");
+        }
+      }
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const onJoin = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!isValidEmail(email)) {
-      setError("Enter a valid email address.");
-      return;
-    }
+  // Render Logic
+  // We always render children to prevent hydration mismatch with the server (which always renders children).
+  // The gate is an overlay that blocks interaction if needed.
 
-    const result = await addEmailToWaitlist(email);
-    if (!result.ok) {
-      setError(result.message || "Unable to join waitlist right now.");
-      return;
-    }
+  const shouldShowGate = isClient && !hasAccess && (isProtectedRoute || showForceModal);
 
-    grantAccess();
-  };
+  // Use a mounted check to avoid hydration mismatch if we were to rely on isClient for conditional rendering of the overlay
+  // Although here, relying on isClient and hasAccess (state) is fine if init state matches server.
+  // Server: hasAccess=false, isClient=false. returns <>{children}</>
+  // Client Init: hasAccess=false, isClient=true. 
+  // If we just append the div, we might still have a mismatch if the structure differs (div vs no div).
+  // Safest is to render the modal only after mount or ensure the structure is stable.
+  // But purely appending a portal or absolute div usually works if "children" structure is preserved.
+
+  // Note: We used to return ONLY the gate if locked. Now we return Children + Gate.
 
   if (!isClient) return <>{children}</>;
-  // If user has access, let them through
-  if (hasAccess) return <>{children}</>;
-  // If not protected AND not forced, let them through
-  if (!isProtectedRoute && !showForceModal) return <>{children}</>;
 
   return (
     <>
-      <div className="fixed inset-0 z-[120] bg-black/55 backdrop-blur-sm p-4 grid place-items-center">
-        <div className="w-full max-w-md rounded-2xl border border-white/15 bg-background/95 p-6 shadow-2xl">
-          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Ezriya Access</p>
-          <h3 className="text-xl font-semibold mt-2">Waitlist Confirmation Required</h3>
-          <p className="text-sm text-muted-foreground mt-2">
-            Access to platform pages is unlocked after waitlist signup.
-          </p>
-
-          {mode === "choice" ? (
-            <div className="mt-6 grid gap-3">
-              <Button variant="outline" onClick={() => setMode("confirm")}>
-                I am already on the waitlist
-              </Button>
-              <Button onClick={() => setMode("join")}>I am new, join waitlist</Button>
+      {children}
+      {shouldShowGate && (
+        <div className="fixed inset-0 z-[120] bg-black/55 backdrop-blur-sm p-4 grid place-items-center">
+          <div className="w-full max-w-md rounded-2xl border border-white/15 bg-background/95 p-6 shadow-2xl">
+            <div className="text-center space-y-2 mb-6">
+              <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Ezriya Access</p>
+              <h3 className="text-xl font-semibold">Welcome to Ezriya</h3>
+              <p className="text-sm text-muted-foreground">
+                Enter your email to verify your waitlist status and access the platform.
+              </p>
             </div>
-          ) : (
-            <form onSubmit={mode === "confirm" ? onConfirm : onJoin} className="mt-6 space-y-3">
-              <label className="text-sm text-muted-foreground">
-                {mode === "confirm" ? "Confirm your waitlist email" : "Enter your email to join and continue"}
-              </label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(event) => {
-                  setEmail(event.target.value);
-                  setError("");
-                }}
-                placeholder="you@company.com"
-                required
-              />
-              {error ? <p className="text-xs text-red-400">{error}</p> : null}
-              <div className="flex gap-2 pt-1">
-                <Button type="button" variant="ghost" className="flex-1" onClick={() => setMode("choice")}>
-                  Back
-                </Button>
-                <Button type="submit" className="flex-1">
-                  Continue
-                </Button>
+
+            <form onSubmit={handleAccess} className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  type="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setError("");
+                  }}
+                  placeholder="name@company.com"
+                  className="bg-background/50"
+                  autoFocus
+                  required
+                />
+                {error ? <p className="text-xs text-red-400 pl-1">{error}</p> : null}
               </div>
+
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Verifying...
+                  </>
+                ) : (
+                  "Continue to Platform"
+                )}
+              </Button>
             </form>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </>
   );
 }
