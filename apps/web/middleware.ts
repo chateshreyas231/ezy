@@ -83,6 +83,19 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
+  // If the user has the access cookie set by the client (e.g. just signed up), allow access
+  if (hasAccessCookie && email) {
+    const response = NextResponse.next();
+    // Also set the verification cookie to avoid re-checking every navigation
+    response.cookies.set(WAITLIST_VERIFIED_AT_COOKIE, String(Math.floor(Date.now() / 1000)), {
+      path: "/",
+      maxAge: WAITLIST_VERIFY_TTL_SECONDS,
+      sameSite: "lax",
+      secure: true,
+    });
+    return response;
+  }
+
   const allowed = await isWaitlistEmail(email);
   if (!allowed) return redirectToHome(request, "waitlist");
 
