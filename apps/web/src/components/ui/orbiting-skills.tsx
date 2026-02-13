@@ -1,6 +1,6 @@
 "use client";
 
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useState } from "react";
 import {
   Building2,
   ClipboardList,
@@ -10,6 +10,7 @@ import {
   UserRound,
   Users,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type IconType = "agents" | "brokers" | "listings" | "buyers" | "sellers" | "vendors";
 type GlowColor = "cyan" | "purple";
@@ -20,24 +21,17 @@ interface SkillIconProps {
 
 interface SkillConfig {
   id: string;
-  orbitRadius: number;
-  size: number;
-  speed: number;
   iconType: IconType;
-  phaseShift: number;
-  glowColor: GlowColor;
   label: string;
+  angle: number; // Initial angle in degrees
 }
 
-interface OrbitingSkillProps {
-  config: SkillConfig;
-  angle: number;
-}
-
-interface GlowingOrbitPathProps {
+interface OrbitGroupConfig {
   radius: number;
-  glowColor?: GlowColor;
-  animationDelay?: number;
+  duration: number; // Seconds for full rotation
+  direction: "clockwise" | "counter-clockwise";
+  glowColor: GlowColor;
+  skills: SkillConfig[];
 }
 
 const iconComponents: Record<IconType, { component: () => React.JSX.Element; color: string }> = {
@@ -73,61 +67,131 @@ const SkillIcon = memo(({ type }: SkillIconProps) => {
 });
 SkillIcon.displayName = "SkillIcon";
 
-const skillsConfig: SkillConfig[] = [
-  { id: "agents", orbitRadius: 105, size: 42, speed: 1, iconType: "agents", phaseShift: 0, glowColor: "cyan", label: "Agents" },
-  { id: "brokers", orbitRadius: 105, size: 45, speed: 1, iconType: "brokers", phaseShift: (2 * Math.PI) / 3, glowColor: "cyan", label: "Brokers" },
-  { id: "listings", orbitRadius: 105, size: 42, speed: 1, iconType: "listings", phaseShift: (4 * Math.PI) / 3, glowColor: "cyan", label: "Listings" },
-  { id: "buyers", orbitRadius: 185, size: 48, speed: -0.6, iconType: "buyers", phaseShift: 0, glowColor: "purple", label: "Buyers" },
-  { id: "sellers", orbitRadius: 185, size: 45, speed: -0.6, iconType: "sellers", phaseShift: (2 * Math.PI) / 3, glowColor: "purple", label: "Sellers" },
-  { id: "vendors", orbitRadius: 185, size: 42, speed: -0.6, iconType: "vendors", phaseShift: (4 * Math.PI) / 3, glowColor: "purple", label: "Vendors" },
+// Configuration for the two orbits
+const orbitGroups: OrbitGroupConfig[] = [
+  {
+    radius: 105,
+    duration: 20,
+    direction: "clockwise",
+    glowColor: "cyan",
+    skills: [
+      { id: "agents", iconType: "agents", label: "Agents", angle: 0 },
+      { id: "brokers", iconType: "brokers", label: "Brokers", angle: 120 },
+      { id: "listings", iconType: "listings", label: "Listings", angle: 240 },
+    ],
+  },
+  {
+    radius: 185,
+    duration: 35, // Slower outer orbit
+    direction: "counter-clockwise",
+    glowColor: "purple",
+    skills: [
+      { id: "buyers", iconType: "buyers", label: "Buyers", angle: 0 },
+      { id: "sellers", iconType: "sellers", label: "Sellers", angle: 120 },
+      { id: "vendors", iconType: "vendors", label: "Vendors", angle: 240 },
+    ],
+  },
 ];
 
-function roundOrbitCoord(value: number) {
-  return Math.round(value * 1000) / 1000;
-}
-
-const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
+const OrbitingItem = memo(({ skill, radius, duration, direction, reverse }: {
+  skill: SkillConfig;
+  radius: number;
+  duration: number;
+  direction: "normal" | "reverse";
+  reverse?: boolean
+}) => {
   const [isHovered, setIsHovered] = useState(false);
-  const { orbitRadius, size, iconType, label } = config;
+  const { iconType, label, angle } = skill;
 
-  const x = roundOrbitCoord(Math.cos(angle) * orbitRadius);
-  const y = roundOrbitCoord(Math.sin(angle) * orbitRadius);
+  // Calculate position on the circle
+  // We use a fixed position here because the parent container rotates
+  // But wait, if we put them in a rotating container, they are fixed relative to container.
+  // The container rotates. The items need to counter-rotate to stay upright.
+
+  // Actually, standard CSS orbit pattern:
+  // Container: relative, animate-spin.
+  // Item: absolute, transform: rotate(angle) translate(radius) rotate(-angle). (Static placement on ring)
+  // If Container rotates, the whole ring spins.
+  // To keep Item upright: Item needs a counter-rotation animation matching the container's speed.
 
   return (
     <div
-      className="absolute left-1/2 top-1/2 transition-all duration-300 ease-out"
+      className="absolute top-1/2 left-1/2 -ml-[22px] -mt-[22px]"
       style={{
-        width: `${size}px`,
-        height: `${size}px`,
-        transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
-        zIndex: isHovered ? 20 : 10,
+        transform: `rotate(${angle}deg) translate(${radius}px) rotate(-${angle}deg)`,
       }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`relative flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-gray-900/90 p-2 backdrop-blur-sm transition-all duration-300 ${
-          isHovered ? "scale-125 shadow-2xl" : "shadow-lg hover:shadow-xl"
-        }`}
+        className="w-[44px] h-[44px]"
         style={{
-          boxShadow: isHovered
-            ? `0 0 30px ${iconComponents[iconType]?.color}40, 0 0 60px ${iconComponents[iconType]?.color}20`
-            : undefined,
+          animation: `spin-${direction === "normal" ? "reverse" : "normal"} ${duration}s linear infinite`,
         }}
       >
-        <SkillIcon type={iconType} />
-        {isHovered && (
-          <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-950/95 px-2 py-1 text-xs text-white">
-            {label}
-          </div>
-        )}
+        <div
+          className={cn(
+            "relative flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-gray-900/90 p-2 backdrop-blur-sm transition-all duration-300",
+            isHovered ? "scale-125 shadow-2xl" : "shadow-lg hover:shadow-xl"
+          )}
+          style={{
+            boxShadow: isHovered
+              ? `0 0 30px ${iconComponents[iconType]?.color}40, 0 0 60px ${iconComponents[iconType]?.color}20`
+              : undefined,
+          }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <SkillIcon type={iconType} />
+          {isHovered && (
+            <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-950/95 px-2 py-1 text-xs text-white z-50">
+              {label}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 });
-OrbitingSkill.displayName = "OrbitingSkill";
+OrbitingItem.displayName = "OrbitingItem";
 
-const GlowingOrbitPath = memo(({ radius, glowColor = "cyan", animationDelay = 0 }: GlowingOrbitPathProps) => {
+const OrbitRing = memo(({ config }: { config: OrbitGroupConfig }) => {
+  const { radius, duration, direction, skills, glowColor } = config;
+  const isClockwise = direction === "clockwise";
+
+  return (
+    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* The rotating ring container */}
+      <div
+        className="absolute flex items-center justify-center pointer-events-auto"
+        style={{
+          width: radius * 2,
+          height: radius * 2,
+          animation: `spin-${isClockwise ? "normal" : "reverse"} ${duration}s linear infinite`,
+        }}
+      >
+        {skills.map((skill) => (
+          <OrbitingItem
+            key={skill.id}
+            skill={skill}
+            radius={radius}
+            duration={duration}
+            direction={isClockwise ? "normal" : "reverse"}
+          />
+        ))}
+      </div>
+
+      {/* Static Glow Path */}
+      <GlowingOrbitPath radius={radius} glowColor={glowColor} />
+    </div>
+  );
+});
+OrbitRing.displayName = "OrbitRing";
+
+interface GlowingOrbitPathProps {
+  radius: number;
+  glowColor?: GlowColor;
+}
+
+const GlowingOrbitPath = memo(({ radius, glowColor = "cyan" }: GlowingOrbitPathProps) => {
   const glowColors = {
     cyan: {
       primary: "rgba(6, 182, 212, 0.4)",
@@ -144,8 +208,8 @@ const GlowingOrbitPath = memo(({ radius, glowColor = "cyan", animationDelay = 0 
 
   return (
     <div
-      className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-      style={{ width: `${radius * 2}px`, height: `${radius * 2}px`, animationDelay: `${animationDelay}s` }}
+      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full pointer-events-none"
+      style={{ width: `${radius * 2}px`, height: `${radius * 2}px` }}
     >
       <div
         className="absolute inset-0 animate-pulse rounded-full"
@@ -153,7 +217,6 @@ const GlowingOrbitPath = memo(({ radius, glowColor = "cyan", animationDelay = 0 
           background: `radial-gradient(circle, transparent 30%, ${colors.secondary} 70%, ${colors.primary} 100%)`,
           boxShadow: `0 0 60px ${colors.primary}, inset 0 0 60px ${colors.secondary}`,
           animation: "pulse 4s ease-in-out infinite",
-          animationDelay: `${animationDelay}s`,
         }}
       />
       <div
@@ -166,32 +229,20 @@ const GlowingOrbitPath = memo(({ radius, glowColor = "cyan", animationDelay = 0 
 GlowingOrbitPath.displayName = "GlowingOrbitPath";
 
 export default function OrbitingSkills() {
-  const [time, setTime] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    if (isPaused) return;
-    let animationFrameId: number;
-    let lastTime = performance.now();
-
-    const animate = (currentTime: number) => {
-      const deltaTime = (currentTime - lastTime) / 1000;
-      lastTime = currentTime;
-      setTime((prevTime) => prevTime + deltaTime);
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isPaused]);
-
-  const orbitConfigs: Array<{ radius: number; glowColor: GlowColor; delay: number }> = [
-    { radius: 105, glowColor: "cyan", delay: 0 },
-    { radius: 185, glowColor: "purple", delay: 1.5 },
-  ];
-
   return (
     <main className="relative w-full overflow-hidden flex items-center justify-center">
+      {/* Define Keyframes for Spin if not in global CSS */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+            @keyframes spin-normal {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+            @keyframes spin-reverse {
+                from { transform: rotate(360deg); }
+                to { transform: rotate(0deg); }
+            }
+        `}} />
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
@@ -202,11 +253,8 @@ export default function OrbitingSkills() {
         />
       </div>
 
-      <div
-        className="relative flex h-[calc(100vw-40px)] w-[calc(100vw-40px)] items-center justify-center md:h-[460px] md:w-[460px]"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
+      <div className="relative flex h-[calc(100vw-40px)] w-[calc(100vw-40px)] items-center justify-center md:h-[460px] md:w-[460px]">
+        {/* Center Logo */}
         <div className="relative z-10 flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-gray-700 to-gray-900 shadow-2xl">
           <div className="absolute inset-0 rounded-full bg-cyan-500/30 blur-xl animate-pulse"></div>
           <div className="absolute inset-0 rounded-full bg-purple-500/20 blur-2xl animate-pulse" style={{ animationDelay: "1s" }}></div>
@@ -216,19 +264,10 @@ export default function OrbitingSkills() {
           </div>
         </div>
 
-        {orbitConfigs.map((config) => (
-          <GlowingOrbitPath
-            key={`path-${config.radius}`}
-            radius={config.radius}
-            glowColor={config.glowColor}
-            animationDelay={config.delay}
-          />
+        {/* Orbit Rings */}
+        {orbitGroups.map((group) => (
+          <OrbitRing key={group.radius} config={group} />
         ))}
-
-        {skillsConfig.map((config) => {
-          const angle = time * config.speed + (config.phaseShift || 0);
-          return <OrbitingSkill key={config.id} config={config} angle={angle} />;
-        })}
       </div>
     </main>
   );

@@ -70,7 +70,7 @@ function hasAuthSessionCookie(request: NextRequest) {
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
-  const isAuthProtectedPath = path.startsWith("/dashboard") || path.startsWith("/app");
+  const isAuthProtectedPath = path.startsWith("/app");
   if (isAuthProtectedPath && !hasAuthSessionCookie(request)) {
     return redirectToHome(request, "auth");
   }
