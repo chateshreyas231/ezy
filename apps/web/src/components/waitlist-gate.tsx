@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -42,9 +42,12 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
     return !publicPaths.includes(pathname);
   }, [pathname]);
 
+  const searchParams = useSearchParams();
+  const showForceModal = searchParams.get("waitlist") === "required";
+
   const grantAccess = () => {
     saveWaitlistAccess(email);
-    setError("");
+    window.location.href = "/dashboard";
   };
 
   const onConfirm = async (event: React.FormEvent) => {
@@ -82,7 +85,10 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
   };
 
   if (!isClient) return <>{children}</>;
-  if (!isProtectedRoute || hasAccess) return <>{children}</>;
+  // If user has access, let them through
+  if (hasAccess) return <>{children}</>;
+  // If not protected AND not forced, let them through
+  if (!isProtectedRoute && !showForceModal) return <>{children}</>;
 
   return (
     <>

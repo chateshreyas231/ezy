@@ -12,6 +12,7 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
+import { Suspense } from "react";
 import { ThemeProvider } from "@/components/theme-provider"
 import { Navbar } from "@/components/navbar"
 import { WaitlistGate } from "@/components/waitlist-gate";
@@ -38,7 +39,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <WaitlistGate>{children}</WaitlistGate>
+          <Suspense fallback={null}>
+            <WaitlistGate>{children}</WaitlistGate>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>
