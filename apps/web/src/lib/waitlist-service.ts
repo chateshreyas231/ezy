@@ -23,10 +23,21 @@ function parseWaitlistCount(value: unknown) {
 
 export async function getWaitlistCount() {
   const supabase = getSupabaseBrowserClient();
-  if (!supabase) return 0;
+  if (!supabase) {
+    console.error("Supabase client not initialized");
+    return 0;
+  }
 
   const { data, error } = await supabase.rpc("get_waitlist_count");
-  if (error) return 0;
+
+  if (error) {
+    console.error("Error fetching waitlist count:", error);
+    return 0;
+  }
+
+  // Temporary logging for debugging
+  console.log("Waitlist count raw data:", data);
+
   return parseWaitlistCount(data);
 }
 
