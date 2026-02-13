@@ -1,4 +1,5 @@
 const { getDefaultConfig } = require('expo/metro-config');
+const { withNativeWind } = require('nativewind/metro');
 const path = require('path');
 const fs = require('fs');
 
@@ -31,5 +32,6 @@ if (fs.existsSync(reactNativePackages)) {
 
 // Ensure react-native itself resolves correctly
 config.resolver.extraNodeModules['react-native'] = path.resolve(projectRoot, 'node_modules', 'react-native');
+config.resolver.extraNodeModules['react'] = path.resolve(workspaceRoot, 'node_modules', 'react');
 
-module.exports = config;
+module.exports = withNativeWind(config, { input: './global.css' });

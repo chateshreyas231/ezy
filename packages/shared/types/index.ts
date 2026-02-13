@@ -2,7 +2,7 @@
  * Shared TypeScript types for Ezriya platform
  */
 
-export type UserRole = 'buyer' | 'seller' | 'buyer_agent' | 'seller_agent' | 'support';
+export type UserRole = 'buyer' | 'seller' | 'buyer_agent' | 'seller_agent' | 'support' | 'client' | 'agent' | 'vendor';
 
 export type ListingStatus = 'draft' | 'active' | 'pending' | 'sold' | 'inactive';
 

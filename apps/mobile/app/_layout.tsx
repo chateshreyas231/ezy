@@ -7,7 +7,8 @@ import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StatusBar } from 'expo-status-bar';
 import { AuthProvider } from '../lib/hooks/useAuth';
-import { ThemeProvider } from '../lib/ThemeContext';
+
+import '../global.css';
 import { AnimatedSplashScreen } from '../components/AnimatedSplashScreen';
 import '../lib/supabaseClient';
 
@@ -26,7 +27,7 @@ export default function RootLayout() {
       // Ignore errors
     });
     console.log('Splash screen: Native splash hidden, showing custom splash');
-    
+
     // Start minimum time timer immediately
     const minTimer = setTimeout(() => {
       console.log('Splash screen: Minimum time elapsed');
@@ -61,27 +62,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <StatusBar style="dark" />
-        <AuthProvider>
-          <Stack screenOptions={{ 
-            headerShown: false, 
-            contentStyle: { 
-              backgroundColor: '#FFFFFF',
-            },
-            animation: 'fade',
-          }}>
-            <Stack.Screen name="(auth)" />
-            <Stack.Screen name="(buyer)" />
-            <Stack.Screen name="(seller)" />
-            <Stack.Screen name="(pro)" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="explore" />
-            <Stack.Screen name="deal/[dealId]" />
-            <Stack.Screen name="profile" />
-          </Stack>
-        </AuthProvider>
-      </ThemeProvider>
+      <AuthProvider>
+        <Stack screenOptions={{
+          headerShown: false,
+          animation: 'fade',
+        }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(client)" />
+          <Stack.Screen name="(agent)" />
+          <Stack.Screen name="(vendor)" />
+        </Stack>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }

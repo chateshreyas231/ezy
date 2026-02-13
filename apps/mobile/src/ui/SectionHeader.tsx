@@ -5,6 +5,7 @@ import { glassTokens } from './tokens';
 
 export interface SectionHeaderProps {
   title: string;
+  subtitle?: string;
   onViewAllPress?: () => void;
   showViewAll?: boolean;
   style?: any;
@@ -12,13 +13,17 @@ export interface SectionHeaderProps {
 
 export const SectionHeader: React.FC<SectionHeaderProps> = ({
   title,
+  subtitle,
   onViewAllPress,
   showViewAll = true,
   style,
 }) => {
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.title}>{title}</Text>
+      <View>
+        <Text style={styles.title}>{title}</Text>
+        {subtitle && <Text style={styles.viewAll}>{subtitle}</Text>}
+      </View>
       {showViewAll && (
         <TouchableOpacity onPress={onViewAllPress} activeOpacity={0.7}>
           <Text style={styles.viewAll}>View all</Text>

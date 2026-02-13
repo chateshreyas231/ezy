@@ -1,102 +1,96 @@
 // Clean Light Theme - Minimalist Card-Based Design
+// Dark Mode First Theme - "Pointgroup" Aesthetic
 export const theme = {
   colors: {
-    // Background colors - Light theme (white, light grey)
-    background: '#FFFFFF', // Pure white base
-    backgroundSecondary: '#F5F5F5', // Very light grey
-    backgroundTertiary: '#FAFAFA', // Off-white for elevated surfaces
-    
-    // Primary colors - Accent brown and greys
-    primary: '#8B5E50', // Deep reddish-brown accent
-    primaryDark: '#6B4A3D', // Darker brown
-    primaryLight: '#A67C6B', // Lighter brown
-    primaryGlow: 'rgba(139, 94, 80, 0.2)', // Brown glow effect
-    
+    // Background colors - Deep Black & Dark Zinc
+    background: '#050505', // Deepest Black
+    backgroundSecondary: '#121212', // Slightly lighter for cards/sections
+    backgroundTertiary: '#1E1E1E', // For elevated surfaces
+
+    // Primary colors - Purple/Blue Gradients
+    primary: '#8B5CF6', // Vivid Purple
+    primaryDark: '#7C3AED',
+    primaryLight: '#A78BFA',
+    primaryGlow: 'rgba(139, 92, 246, 0.5)',
+
     // Secondary accent colors
-    secondary: '#595959', // Dark grey accent
-    secondaryLight: '#757575', // Medium grey
-    secondaryDark: '#424242', // Darker grey
-    
-    // Tertiary accent - Light grey for secondary elements
-    tertiary: '#C8C8C8', // Light grey for secondary buttons/elements
-    
-    // Text colors - Dark on light background
-    text: '#000000', // Black primary text
-    textSecondary: 'rgba(0, 0, 0, 0.7)', // Dark grey secondary text
-    textTertiary: 'rgba(0, 0, 0, 0.5)', // Medium grey tertiary text
-    textLight: '#FFFFFF', // White text for dark backgrounds
-    
-    // Accent colors - Status colors
-    success: '#10B981', // Emerald green
+    secondary: '#27272A', // Zinc-800
+    secondaryLight: '#3F3F46',
+    secondaryDark: '#18181B',
+
+    // Tertiary accent
+    tertiary: '#52525B',
+
+    // Text colors - High Contrast
+    text: '#FFFFFF',
+    textSecondary: 'rgba(255, 255, 255, 0.7)',
+    textTertiary: 'rgba(255, 255, 255, 0.5)',
+    textLight: '#FFFFFF',
+    textDark: '#000000', // For text on light accents
+
+    // Status colors
+    success: '#10B981', // Emerald
     error: '#EF4444', // Red
     warning: '#F59E0B', // Amber
-    info: '#3B82F6', // Blue
-    
-    // Card colors - White cards with subtle borders
-    card: '#FFFFFF', // White card background
-    cardBorder: 'rgba(0, 0, 0, 0.08)', // Subtle dark border
-    cardGlow: 'rgba(139, 94, 80, 0.05)', // Subtle brown glow
-    
-    // Glass overlay colors (for modals/overlays)
-    glassLight: 'rgba(255, 255, 255, 0.9)',
-    glassMedium: 'rgba(255, 255, 255, 0.95)',
-    glassHeavy: '#FFFFFF',
-    
-    // Divider and separator - Subtle grey lines
-    divider: 'rgba(0, 0, 0, 0.1)',
-    separator: 'rgba(0, 0, 0, 0.05)',
-    
+    info: '#06B6D4', // Cyan
+
+    // Card colors
+    card: '#121212',
+    cardBorder: 'rgba(255, 255, 255, 0.1)',
+    cardGlow: 'rgba(139, 92, 246, 0.15)',
+
+    // Glass overlay colors
+    glassLight: 'rgba(255, 255, 255, 0.1)',
+    glassMedium: 'rgba(20, 20, 20, 0.6)', // Dark glass
+    glassHeavy: 'rgba(10, 10, 10, 0.8)',
+
+    // Divider
+    divider: 'rgba(255, 255, 255, 0.1)',
+    separator: 'rgba(255, 255, 255, 0.05)',
+
     // Overlay
-    overlay: 'rgba(0, 0, 0, 0.5)',
-    
-    // Swipe actions - Brown for yes, grey for no
-    swipeYes: '#8B5E50', // Brown for match
-    swipeYesGlow: 'rgba(139, 94, 80, 0.3)',
-    swipeNo: '#C8C8C8', // Light grey for pass
-    swipeNoGlow: 'rgba(200, 200, 200, 0.3)',
-    
+    overlay: 'rgba(0, 0, 0, 0.7)',
+
+    // Swipe actions
+    swipeYes: '#8B5CF6',
+    swipeYesGlow: 'rgba(139, 92, 246, 0.4)',
+    swipeNo: '#3F3F46',
+    swipeNoGlow: 'rgba(63, 63, 70, 0.4)',
+
     // Input field colors
-    inputBackground: '#F5F5F5', // Light grey input background
-    inputBorder: 'rgba(0, 0, 0, 0.1)',
-    inputPlaceholder: 'rgba(0, 0, 0, 0.5)',
+    inputBackground: '#18181B',
+    inputBorder: 'rgba(255, 255, 255, 0.1)',
+    inputPlaceholder: 'rgba(255, 255, 255, 0.4)',
   },
-  
+
   // Glassmorphism effects
   glassmorphism: {
-    // Blur intensity (for expo-blur)
-    blurIntensity: 20,
-    // Background opacity
-    backgroundOpacity: 0.5,
-    // Border opacity
-    borderOpacity: 0.1,
-    // Shadow for depth
+    blurIntensity: 30, // Increased blur
+    backgroundOpacity: 0.6,
+    borderOpacity: 0.15,
     shadow: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.3,
-      shadowRadius: 20,
-      elevation: 10,
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.5,
+      shadowRadius: 24,
+      elevation: 12,
     },
-    // Light shadow for subtle elevation
     shadowLight: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      elevation: 5,
+      shadowOpacity: 0.3,
+      shadowRadius: 12,
+      elevation: 6,
     },
   },
-  
+
   typography: {
-    // Font families
     fontFamily: {
       regular: 'System',
       medium: 'System',
       bold: 'System',
       semibold: 'System',
     },
-    
-    // Font sizes
     fontSize: {
       xs: 12,
       sm: 14,
@@ -108,23 +102,19 @@ export const theme = {
       '4xl': 32,
       '5xl': 36,
     },
-    
-    // Font weights
     fontWeight: {
       regular: '400' as const,
       medium: '500' as const,
       semibold: '600' as const,
       bold: '700' as const,
     },
-    
-    // Line heights
     lineHeight: {
       tight: 1.2,
       normal: 1.5,
       relaxed: 1.75,
     },
   },
-  
+
   spacing: {
     xs: 4,
     sm: 8,
@@ -134,97 +124,95 @@ export const theme = {
     '2xl': 48,
     '3xl': 64,
   },
-  
+
   borderRadius: {
     sm: 12,
     md: 16,
-    lg: 20,
-    xl: 24,
-    '2xl': 28,
-    '3xl': 32,
+    lg: 24, // Increased for softer look
+    xl: 32,
+    '2xl': 40,
+    '3xl': 48,
     full: 9999,
   },
-  
+
   shadows: {
     sm: {
       shadowColor: '#000',
       shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.08,
-      shadowRadius: 8,
-      elevation: 2,
+      shadowOpacity: 0.3,
+      shadowRadius: 4,
+      elevation: 3,
     },
     md: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.12,
+      shadowOffset: { width: 0, height: 6 },
+      shadowOpacity: 0.4,
       shadowRadius: 12,
-      elevation: 4,
+      elevation: 8,
     },
     lg: {
       shadowColor: '#000',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.15,
-      shadowRadius: 20,
-      elevation: 8,
+      shadowOffset: { width: 0, height: 12 },
+      shadowOpacity: 0.5,
+      shadowRadius: 24,
+      elevation: 16,
     },
-    // Glow effects - Brown accent
     glow: {
-      shadowColor: '#8B5E50',
+      shadowColor: '#8B5CF6',
       shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.2,
-      shadowRadius: 12,
+      shadowOpacity: 0.5,
+      shadowRadius: 16,
       elevation: 0,
     },
     glowPrimary: {
-      shadowColor: '#8B5E50',
+      shadowColor: '#8B5CF6',
       shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.3,
-      shadowRadius: 20,
+      shadowOpacity: 0.6,
+      shadowRadius: 30,
       elevation: 0,
     },
   },
-  
-  // Component-specific styles - Clean light theme
+
   components: {
     card: {
-      backgroundColor: '#FFFFFF',
+      backgroundColor: '#121212',
       borderRadius: 24,
-      padding: 20,
+      padding: 24,
       borderWidth: 1,
-      borderColor: 'rgba(0, 0, 0, 0.08)',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
       overflow: 'hidden',
     },
     button: {
       primary: {
-        backgroundColor: '#8B5E50',
-        borderRadius: 16,
+        backgroundColor: '#8B5CF6',
+        borderRadius: 24,
         paddingVertical: 16,
         paddingHorizontal: 32,
       },
       secondary: {
-        backgroundColor: '#C8C8C8',
-        borderRadius: 16,
+        backgroundColor: '#27272A',
+        borderRadius: 24,
         paddingVertical: 16,
         paddingHorizontal: 32,
         borderWidth: 0,
       },
       tertiary: {
-        backgroundColor: '#F5F5F5',
-        borderRadius: 16,
+        backgroundColor: 'transparent',
+        borderRadius: 24,
         paddingVertical: 16,
         paddingHorizontal: 32,
         borderWidth: 1,
-        borderColor: 'rgba(0, 0, 0, 0.1)',
+        borderColor: 'rgba(255, 255, 255, 0.2)',
       },
     },
     input: {
-      backgroundColor: '#F5F5F5',
-      borderRadius: 16,
+      backgroundColor: '#18181B',
+      borderRadius: 20,
       paddingVertical: 16,
-      paddingHorizontal: 16,
+      paddingHorizontal: 20,
       borderWidth: 1,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      color: '#000000',
+      borderColor: 'rgba(255, 255, 255, 0.1)',
+      color: '#FFFFFF',
     },
   },
 };

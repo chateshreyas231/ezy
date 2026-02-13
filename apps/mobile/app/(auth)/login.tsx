@@ -5,17 +5,17 @@ import { Alert, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, Tou
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../lib/hooks/useAuth';
 import { supabase } from '../../lib/supabaseClient';
-import { LiquidGlassButton, LiquidGlassCard, ScreenBackground, glassTokens } from '../../src/ui';
+import { GradientBackground } from '../../components/glass/GradientBackground';
+import { GlassCard } from '../../components/glass/GlassCard';
+import { GlassButton } from '../../components/glass/GlassButton';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn, signUp, user, profile } = useAuth();
+  const { signIn, signUp } = useAuth();
   const router = useRouter();
-  const params = useLocalSearchParams();
   const insets = useSafeAreaInsets();
-  const preSelectedRole = params.role as string | undefined;
 
   const handleSignIn = async () => {
     if (!email || !password) {
@@ -28,7 +28,7 @@ export default function LoginScreen() {
       await signIn(email, password);
       // Wait for profile to load
       await new Promise(resolve => setTimeout(resolve, 500));
-      
+
       // Get fresh profile data
       const { data: { user: authUser } } = await supabase.auth.getUser();
       if (!authUser) {
@@ -43,26 +43,24 @@ export default function LoginScreen() {
 
       // Navigate based on profile status
       if (!userProfile?.role) {
-        // No role selected - go to role select
         router.replace('/(auth)/role-select');
       } else if (userProfile.role === 'buyer') {
-        // Check if buyer has an intent
         const { data: intent } = await supabase
           .from('buyer_intents')
           .select('id')
           .eq('buyer_id', authUser.id)
           .eq('active', true)
           .single();
-        
+
         if (!intent) {
           router.replace('/(buyer)/intent-setup');
         } else {
-          router.replace('/(buyer)/(tabs)/feed');
+          router.replace('/(client)/(tabs)/index'); // Fixed route to match new structure
         }
       } else if (userProfile.role === 'seller') {
         router.replace('/(seller)/(tabs)/leads');
       } else if (userProfile.role === 'buyer_agent' || userProfile.role === 'seller_agent') {
-        router.replace('/(pro)/(tabs)/dashboard');
+        router.replace('/(agent)/(tabs)/index'); // Fixed route to match new structure
       } else if (userProfile.role === 'support') {
         router.replace('/(support)/(tabs)/work-orders');
       } else {
@@ -89,10 +87,7 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await signUp(email, password);
-      // Wait a bit for profile to be created
       await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // New users always go to role select
       router.replace('/(auth)/role-select');
     } catch (error: any) {
       Alert.alert('Error', error.message || 'Failed to sign up');
@@ -102,29 +97,24 @@ export default function LoginScreen() {
   };
 
   return (
-    <ScreenBackground gradient>
+    <GradientBackground>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <View style={[styles.content, { paddingTop: insets.top + 60, paddingBottom: insets.bottom + 60 }]}>
-          <LiquidGlassCard
-            title="Welcome to Ezriya"
-            subtitle="Sign in or create an account to continue"
-            cornerRadius={28}
-            padding={24}
-            elasticity={0.25}
-            blurAmount={0.12}
-            style={styles.card}
-          >
+        <ScrollView contentContainerStyle={[styles.content, { paddingTop: insets.top + 60, paddingBottom: insets.bottom + 60 }]}>
+          <GlassCard className="p-6 w-full">
+            <Text style={styles.title}>Welcome to Ezriya</Text>
+            <Text style={styles.subtitle}>Sign in or create an account to continue</Text>
+
             <View style={styles.form}>
               <View style={styles.inputContainer}>
                 <Text style={styles.label}>Email</Text>
                 <TextInput
                   style={styles.input}
                   placeholder="your@email.com"
-                  placeholderTextColor={glassTokens.colors.text.tertiary}
+                  placeholderTextColor="rgba(255,255,255,0.3)"
                   value={email}
                   onChangeText={setEmail}
                   autoCapitalize="none"
@@ -138,7 +128,7 @@ export default function LoginScreen() {
                 <TextInput
                   style={styles.input}
                   placeholder="••••••••"
-                  placeholderTextColor={glassTokens.colors.text.tertiary}
+                  placeholderTextColor="rgba(255,255,255,0.3)"
                   value={password}
                   onChangeText={setPassword}
                   secureTextEntry
@@ -148,20 +138,15 @@ export default function LoginScreen() {
 
               <TouchableOpacity
                 style={styles.forgotPassword}
-                onPress={() => {
-                  // TODO: Implement forgot password
-                  Alert.alert('Forgot Password', 'Password reset coming soon');
-                }}
+                onPress={() => Alert.alert('Forgot Password', 'Password reset coming soon')}
               >
                 <Text style={styles.forgotPasswordText}>Forgot password?</Text>
               </TouchableOpacity>
 
-              <LiquidGlassButton
-                label="Sign In"
+              <GlassButton
+                title="Sign In"
                 onPress={handleSignIn}
                 variant="primary"
-                size="lg"
-                fullWidth
                 loading={loading}
                 style={styles.signInButton}
               />
@@ -172,20 +157,17 @@ export default function LoginScreen() {
                 <View style={styles.dividerLine} />
               </View>
 
-              <LiquidGlassButton
-                label="Sign Up"
+              <GlassButton
+                title="Sign Up"
                 onPress={handleSignUp}
-                variant="secondary"
-                size="lg"
-                fullWidth
+                variant="glass"
                 loading={loading}
-                style={styles.signUpButton}
               />
             </View>
-          </LiquidGlassCard>
-        </View>
+          </GlassCard>
+        </ScrollView>
       </KeyboardAvoidingView>
-    </ScreenBackground>
+    </GradientBackground>
   );
 }
 
@@ -194,68 +176,68 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flex: 1,
+    flexGrow: 1,
     justifyContent: 'center',
-    paddingHorizontal: glassTokens.componentSpacing.screenPadding,
+    paddingHorizontal: 20,
   },
-  card: {
-    width: '100%',
-    maxWidth: 400,
-    alignSelf: 'center',
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    textAlign: 'center',
+    marginBottom: 32,
   },
   form: {
-    gap: glassTokens.componentSpacing.sectionSpacing,
+    width: '100%',
   },
   inputContainer: {
-    gap: glassTokens.spacing.sm,
+    marginBottom: 20,
   },
   label: {
-    fontSize: glassTokens.typography.fontSize.sm,
-    fontWeight: glassTokens.typography.fontWeight.semibold,
-    color: glassTokens.colors.text.secondary,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    color: 'white',
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: '500',
   },
   input: {
-    backgroundColor: glassTokens.colors.background.darkGrey,
-    borderRadius: glassTokens.radius.lg,
-    paddingVertical: glassTokens.componentSpacing.inputPaddingVertical,
-    paddingHorizontal: glassTokens.componentSpacing.inputPaddingHorizontal,
-    fontSize: glassTokens.typography.fontSize.base,
-    color: glassTokens.colors.text.primary,
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
-    minHeight: 52,
+    borderColor: 'rgba(255,255,255,0.1)',
+    borderRadius: 12,
+    padding: 16,
+    color: 'white',
+    fontSize: 16,
   },
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginTop: -glassTokens.spacing.sm,
+    marginBottom: 24,
   },
   forgotPasswordText: {
-    fontSize: glassTokens.typography.fontSize.sm,
-    color: glassTokens.colors.accent.primary,
-    fontWeight: glassTokens.typography.fontWeight.medium,
+    color: '#6689FF', // ezriya-blue-light
+    fontSize: 14,
   },
   signInButton: {
-    marginTop: glassTokens.spacing.md,
+    marginBottom: 24,
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: glassTokens.spacing.md,
-    marginVertical: glassTokens.spacing.md,
+    marginBottom: 24,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255,255,255,0.1)',
   },
   dividerText: {
-    fontSize: glassTokens.typography.fontSize.sm,
-    color: glassTokens.colors.text.tertiary,
-    fontWeight: glassTokens.typography.fontWeight.medium,
-  },
-  signUpButton: {
-    marginTop: 0,
+    color: 'rgba(255,255,255,0.4)',
+    marginHorizontal: 16,
+    fontSize: 12,
   },
 });

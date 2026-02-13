@@ -1,7 +1,6 @@
-// Clean Icon Button - Circular with solid background
+// Clean Icon Button - Neutralized
 import React from 'react';
-import { TouchableOpacity, StyleSheet, ViewStyle } from 'react-native';
-import { glassTokens } from './tokens';
+import { TouchableOpacity, View, ViewStyle, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 export interface GlassIconButtonProps {
@@ -19,70 +18,17 @@ export const GlassIconButton: React.FC<GlassIconButtonProps> = ({
   icon,
   onPress,
   size = 24,
-  color,
-  backgroundColor,
-  style,
   disabled = false,
-  variant = 'default',
+  style,
 }) => {
-  const buttonSize = size + 20; // Add padding
-
-  const getBackgroundColor = () => {
-    if (backgroundColor) return backgroundColor;
-    switch (variant) {
-      case 'primary':
-        return glassTokens.colors.accent.primary;
-      case 'secondary':
-        return glassTokens.colors.background.darkGrey;
-      default:
-        return glassTokens.colors.background.darkGrey;
-    }
-  };
-
-  const getIconColor = () => {
-    if (color) return color;
-    switch (variant) {
-      case 'primary':
-        return '#FFFFFF';
-      default:
-        return glassTokens.colors.text.primary;
-    }
-  };
-
   return (
     <TouchableOpacity
       onPress={onPress}
       disabled={disabled}
-      activeOpacity={0.7}
-      style={style}
+      style={[{ padding: 10, borderWidth: 1, borderColor: '#ccc', borderRadius: 4, alignItems: 'center', justifyContent: 'center' }, style]}
     >
-      <View
-        style={[
-          styles.button,
-          {
-            width: buttonSize,
-            height: buttonSize,
-            borderRadius: buttonSize / 2,
-            backgroundColor: getBackgroundColor(),
-            opacity: disabled ? 0.5 : 1,
-          },
-        ]}
-      >
-        <Ionicons name={icon} size={size} color={getIconColor()} />
-      </View>
+      <Ionicons name={icon} size={size} color="black" />
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-});
 

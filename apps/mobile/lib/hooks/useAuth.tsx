@@ -9,7 +9,7 @@ interface AuthContextType {
   profile: Profile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, options?: { role?: string }) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<void>;
 }
@@ -36,7 +36,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Profile doesn't exist, create it
         // Get user email for display name
         const { data: { user: authUser } } = await supabase.auth.getUser();
-        
+
         // If no user is authenticated, don't try to create profile
         if (!authUser || authUser.id !== userId) {
           console.warn('No authenticated user or user ID mismatch, skipping profile creation');
@@ -102,7 +102,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // This is the source of truth for the initial session state
     supabase.auth.getSession().then(({ data: { session }, error }) => {
       if (!mounted) return;
-      
+
       if (error) {
         console.error('Error getting session:', error);
         setSession(null);
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Set the session from storage
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         // User is authenticated, load their profile
         loadProfile(session.user.id);
@@ -149,10 +149,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       // For other events (SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED, etc.)
       console.log('[Auth] State changed:', event, session?.user?.email || 'none');
-      
+
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         loadProfile(session.user.id);
       } else {
@@ -175,8 +175,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   };
 
-  const signUp = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
+  const signUp = async (email: string, password: string, options?: { role?: string }) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: options
+      }
+    });
     if (error) throw error;
   };
 
@@ -187,7 +193,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const updateProfile = async (updates: Partial<Profile>) => {
     if (!user) throw new Error('Not authenticated');
-    
+
     const { error } = await supabase
       .from('profiles')
       .update(updates)

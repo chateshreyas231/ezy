@@ -1,23 +1,11 @@
-// LiquidGlass - Wrapper for liquid-glass-react with React Native support
-import React, { useRef } from 'react';
-import { View, ViewStyle, StyleSheet, Platform } from 'react-native';
-import { BlurView } from 'expo-blur';
-import { glassTokens } from './tokens';
-
-// For web, use liquid-glass-react; for native, use BlurView fallback
-let LiquidGlassWeb: any = null;
-if (Platform.OS === 'web') {
-  try {
-    LiquidGlassWeb = require('liquid-glass-react');
-  } catch (e) {
-    console.warn('liquid-glass-react not available, using fallback');
-  }
-}
+// LiquidGlass - Neutralized
+import React from 'react';
+import { View, ViewStyle, Platform } from 'react-native';
 
 export interface LiquidGlassProps {
   children?: React.ReactNode;
   style?: ViewStyle;
-  className?: string;
+  className?: string; // Keep props to avoid breaking interface
   displacementScale?: number;
   blurAmount?: number;
   saturation?: number;
@@ -34,90 +22,17 @@ export interface LiquidGlassProps {
 export const LiquidGlass: React.FC<LiquidGlassProps> = ({
   children,
   style,
-  className = '',
-  displacementScale = 64,
-  blurAmount = 0.1,
-  saturation = 130,
-  aberrationIntensity = 2,
-  elasticity = 0.35,
-  cornerRadius = 16,
-  padding,
-  overLight = false,
   onClick,
-  mode = 'standard',
   testID,
 }) => {
-  // On web, use liquid-glass-react if available
-  if (Platform.OS === 'web' && LiquidGlassWeb) {
-    const LiquidGlassComponent = LiquidGlassWeb.default || LiquidGlassWeb;
-    const paddingValue = typeof padding === 'number' ? `${padding}px` : padding || '0px';
-    
-    return (
-      <LiquidGlassComponent
-        displacementScale={displacementScale}
-        blurAmount={blurAmount}
-        saturation={saturation}
-        aberrationIntensity={aberrationIntensity}
-        elasticity={elasticity}
-        cornerRadius={cornerRadius}
-        padding={paddingValue}
-        overLight={overLight}
-        onClick={onClick}
-        mode={mode}
-        className={className}
-        style={style}
-      >
-        {children}
-      </LiquidGlassComponent>
-    );
-  }
-
-  // Native fallback: Enhanced BlurView with better styling
-  const borderRadius = typeof cornerRadius === 'number' ? cornerRadius : 16;
-  const paddingValue = typeof padding === 'number' ? padding : 
-                      typeof padding === 'string' ? parseFloat(padding) || 0 : 0;
-
   return (
     <View
-      style={[
-        styles.container,
-        {
-          borderRadius,
-          padding: paddingValue,
-          borderWidth: 1,
-          borderColor: 'rgba(0, 0, 0, 0.08)',
-        },
-        glassTokens.shadow.soft,
-        style,
-      ]}
+      style={[{ padding: 10, borderColor: 'black', borderWidth: 1 }, style]}
       onTouchEnd={onClick}
       testID={testID}
     >
-      <BlurView
-        intensity={Platform.OS === 'ios' ? 70 : 40}
-        tint="light"
-        style={[
-          StyleSheet.absoluteFill,
-          {
-            borderRadius,
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-          },
-        ]}
-        experimentalBlurMethod={Platform.OS === 'android' ? 'dimez' : undefined}
-      />
-      <View style={styles.content}>
-        {children}
-      </View>
+      {children}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    overflow: 'hidden',
-  },
-  content: {
-    overflow: 'hidden',
-  },
-});
 

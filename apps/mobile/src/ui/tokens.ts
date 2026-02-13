@@ -1,88 +1,96 @@
-// Glass Design System - Design Tokens
-// Matches the frosted glass / glassmorphism aesthetic
-
 export const glassTokens = {
-  // Border radius - Ultra rounded for liquid feel
+  // Border radius - Neutralized
   radius: {
-    sm: 16,
-    md: 20,
-    lg: 24,
-    xl: 28,
-    '2xl': 32,
-    '3xl': 40,
-    full: 9999,
+    xs: 0,
+    sm: 0,
+    md: 0,
+    lg: 0,
+    xl: 0,
+    xxl: 0,
+    '2xl': 0,
+    '3xl': 0,
+    full: 0,
   },
 
-  // Border styles - Softer, more fluid
+  // Border styles
   border: {
-    width: 0.5, // Thinner for liquid feel
+    width: 0,
     opacity: {
-      light: 0.12,
-      medium: 0.18,
-      heavy: 0.25,
+      light: 0,
+      medium: 0,
+      heavy: 0,
     },
-    color: 'rgba(106, 27, 154, 0.15)', // Softer purple border
+    color: 'transparent',
   },
 
-  // Glass opacity levels - More transparent for liquid effect
+  // Glass opacity levels
   glass: {
     opacity: {
-      light: 0.08,
-      medium: 0.15,
-      heavy: 0.25,
+      light: 0,
+      medium: 0,
+      heavy: 0,
     },
-    // Background tint colors - Ultra-transparent liquid glass
     background: {
-      light: 'rgba(255, 255, 255, 0.4)', // Very light liquid glass
-      medium: 'rgba(255, 255, 255, 0.65)', // Medium liquid glass
-      heavy: 'rgba(255, 255, 255, 0.85)', // Heavy liquid glass
+      light: 'transparent',
+      medium: 'transparent',
+      heavy: 'transparent',
     },
   },
 
-  // Blur intensity - Stronger for liquid glass effect
+  // Blur intensity
   blur: {
     ios: {
-      light: 60,
-      medium: 80,
-      heavy: 100,
+      light: 0,
+      medium: 0,
+      heavy: 0,
     },
     android: {
-      light: 35,
-      medium: 50,
-      heavy: 65,
+      light: 0,
+      medium: 0,
+      heavy: 0,
     },
   },
 
-  // Shadows - Softer, more diffused for liquid glass
-  shadow: {
-    soft: {
-      shadowColor: '#6A1B9A', // Purple shadow
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.08,
-      shadowRadius: 16,
-      elevation: 3,
+  // Colors - Neutralized
+  colors: {
+    background: {
+      primary: '#ffffff',
+      secondary: '#ffffff',
+      tertiary: '#ffffff',
+      darkGrey: '#ffffff',
+      overlay: 'transparent',
+      white: '#ffffff',
+      dark: '#ffffff',
     },
-    medium: {
-      shadowColor: '#6A1B9A',
-      shadowOffset: { width: 0, height: 8 },
-      shadowOpacity: 0.12,
-      shadowRadius: 24,
-      elevation: 6,
+
+    accent: {
+      primary: '#000000', // Basic black for visibility
+      secondary: '#000000',
+      tertiary: '#000000',
+      glow: 'transparent',
+      success: '#000000',
+      error: '#000000',
+      warning: '#000000',
     },
-    large: {
-      shadowColor: '#6A1B9A',
-      shadowOffset: { width: 0, height: 12 },
-      shadowOpacity: 0.15,
-      shadowRadius: 32,
-      elevation: 10,
+
+    text: {
+      primary: '#000000',
+      secondary: '#000000',
+      tertiary: '#000000',
+      inverse: '#000000',
+      light: '#000000',
+      dark: '#000000',
     },
-    glow: {
-      shadowColor: '#BA68C8', // Light purple glow
-      shadowOffset: { width: 0, height: 0 },
-      shadowOpacity: 0.3,
-      shadowRadius: 20,
-      elevation: 8,
-    },
+
+    // Status
+    status: {
+      success: '#000000',
+      warning: '#000000',
+      error: '#000000',
+      info: '#000000',
+      successGlow: 'transparent',
+      errorGlow: 'transparent',
+    }
   },
 
   // Typography
@@ -99,105 +107,68 @@ export const glassTokens = {
       base: 16,
       lg: 18,
       xl: 20,
+      xxl: 24,
       '2xl': 24,
       '3xl': 28,
       '4xl': 32,
       '5xl': 36,
+      display: 32,
     },
     fontWeight: {
       regular: '400' as const,
-      medium: '500' as const,
-      semibold: '600' as const,
-      bold: '700' as const,
+      medium: '400' as const,
+      semibold: '400' as const,
+      bold: '400' as const,
     },
     lineHeight: {
-      tight: 1.2,
-      normal: 1.5,
-      relaxed: 1.75,
+      tight: 1,
+      normal: 1,
+      relaxed: 1,
     },
   },
 
-  // Spacing scale - Perfect 8px grid system
+  // Spacing - Minimal or 0
   spacing: {
-    xs: 4,
-    sm: 8,
-    md: 12,
-    lg: 16,
+    xs: 0,
+    sm: 5,
+    md: 10,
+    lg: 15,
     xl: 20,
-    '2xl': 24,
-    '3xl': 32,
-    '4xl': 48,
-    '5xl': 64,
-    '6xl': 80,
-  },
-  
-  // Component-specific spacing
-  componentSpacing: {
-    cardPadding: 20,
-    cardPaddingLarge: 24,
-    buttonPaddingVertical: 16,
-    buttonPaddingHorizontal: 32,
-    inputPaddingVertical: 16,
-    inputPaddingHorizontal: 16,
-    screenPadding: 20,
-    screenPaddingLarge: 24,
-    sectionSpacing: 32,
-    itemSpacing: 16,
+    xxl: 25,
+    '2xl': 25,
+    '3xl': 30,
+    '4xl': 35,
+    '5xl': 40,
   },
 
-  // Colors - Bone White & Dark Purple Theme
-  colors: {
-    // Text - Dark on light background
-    text: {
-      primary: '#2C1810', // Dark brown/charcoal for readability on bone white
-      secondary: 'rgba(44, 24, 16, 0.7)', // Muted dark
-      tertiary: 'rgba(44, 24, 16, 0.5)', // More muted
-      disabled: 'rgba(44, 24, 16, 0.3)', // Disabled state
-      dark: '#2C1810',
-      darkSecondary: 'rgba(44, 24, 16, 0.7)',
-      light: '#FFFFFF', // For text on dark purple
-    },
-    // Background - Liquid white theme with subtle gradients
-    background: {
-      dark: '#FAFAFA', // Subtle off-white base
-      darkGrey: '#F8F8F8', // Very light grey
-      mediumGrey: '#F5F5F5', // Light grey
-      lightGrey: '#F0F0F0', // Lighter grey
-      white: '#FFFFFF', // Pure white
-      overlay: 'rgba(255, 255, 255, 0.92)', // Soft white overlay
-      overlayLight: 'rgba(255, 255, 255, 0.75)',
-      overlayWhite: 'rgba(255, 255, 255, 0.95)', // White overlay
-      overlayDark: 'rgba(74, 20, 140, 0.85)', // Dark purple overlay
-      // Liquid glass backgrounds - ultra-transparent
-      glassDark: 'rgba(255, 255, 255, 0.5)', // Light liquid glass
-      glassMedium: 'rgba(255, 255, 255, 0.7)', // Medium liquid glass
-      glassHeavy: 'rgba(255, 255, 255, 0.85)', // Heavy liquid glass
-    },
-    // Accent - Dark Purple theme
-    accent: {
-      primary: '#6A1B9A', // Dark purple primary
-      primaryDark: '#4A148C', // Deeper dark purple
-      secondary: '#9C27B0', // Medium purple
-      tertiary: '#BA68C8', // Light purple
-      success: '#4CAF50', // Green
-      error: '#F44336', // Red
-      warning: '#FF9800', // Orange
-    },
-    // Grey scale
-    grey: {
-      '50': '#FAFAFA',
-      '100': '#F5F5F5',
-      '200': '#EEEEEE',
-      '300': '#E0E0E0',
-      '400': '#BDBDBD',
-      '500': '#9E9E9E',
-      '600': '#757575',
-      '700': '#616161',
-      '800': '#424242',
-      '900': '#212121',
-    },
+  // Component spacing
+  componentSpacing: {
+    screenPadding: 0,
+    cardPadding: 0,
+    inputPaddingHorizontal: 0,
+    inputPaddingVertical: 0,
+    buttonPaddingHorizontal: 0,
+    buttonPaddingVertical: 0,
+    sectionSpacing: 0,
+    itemSpacing: 0,
   },
+
+  // Shadows - None
+  shadows: {
+    sm: { shadowOpacity: 0, elevation: 0 },
+    md: { shadowOpacity: 0, elevation: 0 },
+    lg: { shadowOpacity: 0, elevation: 0 },
+    glow: { shadowOpacity: 0, elevation: 0 },
+    soft: { shadowOpacity: 0, elevation: 0 },
+  },
+
+  // Compatibility
+  shadow: {
+    soft: { shadowOpacity: 0, elevation: 0 },
+    medium: { shadowOpacity: 0, elevation: 0 },
+    large: { shadowOpacity: 0, elevation: 0 },
+    glow: { shadowOpacity: 0, elevation: 0 },
+  }
 } as const;
 
 export type GlassTokens = typeof glassTokens;
-

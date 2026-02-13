@@ -1,8 +1,6 @@
-// GlassPill - Pill-shaped chip component
+// GlassPill - Neutralized
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { GlassSurface } from './GlassSurface';
-import { glassTokens } from './tokens';
+import { View, Text, TouchableOpacity, ViewStyle, TextStyle } from 'react-native';
 
 export interface GlassPillProps {
   label: string;
@@ -18,60 +16,22 @@ export const GlassPill: React.FC<GlassPillProps> = ({
   onPress,
   selected = false,
   style,
-  textStyle,
-  size = 'md',
 }) => {
-  const padding = size === 'sm' ? 6 : size === 'md' ? 10 : 14;
-  const fontSize = size === 'sm' ? glassTokens.typography.fontSize.xs : 
-                   size === 'md' ? glassTokens.typography.fontSize.sm : 
-                   glassTokens.typography.fontSize.base;
-
   const Component = onPress ? TouchableOpacity : View;
 
   return (
-    <Component onPress={onPress} activeOpacity={0.7}>
-      <GlassSurface
-        intensity={selected ? 'heavy' : 'light'}
-        borderRadius={glassTokens.radius.full}
-        borderOpacity={selected ? glassTokens.border.opacity.heavy : glassTokens.border.opacity.light}
+    <Component onPress={onPress}>
+      <View
         style={[
-          styles.pill,
-          { paddingHorizontal: padding, paddingVertical: padding / 2 },
-          selected && styles.selected,
+          { padding: 5, borderRadius: 10, borderWidth: 1, borderColor: '#ccc', marginRight: 5, backgroundColor: selected ? '#ddd' : 'transparent' },
           style,
         ]}
       >
-        <Text
-          style={[
-            styles.text,
-            {
-              fontSize,
-              color: selected ? glassTokens.colors.text.primary : glassTokens.colors.text.secondary,
-              fontWeight: selected ? glassTokens.typography.fontWeight.semibold : glassTokens.typography.fontWeight.regular,
-            },
-            textStyle,
-          ]}
-        >
+        <Text style={{ fontSize: 12 }}>
           {label}
         </Text>
-      </GlassSurface>
+      </View>
     </Component>
   );
 };
-
-const styles = StyleSheet.create({
-  pill: {
-    alignSelf: 'flex-start',
-    ...glassTokens.shadow.soft,
-  },
-  selected: {
-    borderColor: glassTokens.colors.accent.tertiary,
-    backgroundColor: `${glassTokens.colors.accent.primary}12`,
-    ...glassTokens.shadow.glow,
-  },
-  text: {
-    textAlign: 'center',
-    letterSpacing: 0.3,
-  },
-});
 

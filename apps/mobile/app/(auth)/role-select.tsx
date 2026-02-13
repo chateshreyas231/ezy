@@ -33,7 +33,7 @@ export default function RoleSelectScreen() {
     try {
       // Verify user exists in auth.users by checking current session
       const { data: { user: authUser }, error: authError } = await supabase.auth.getUser();
-      
+
       if (authError || !authUser || authUser.id !== user.id) {
         throw new Error('User authentication failed. Please sign in again.');
       }
@@ -41,7 +41,7 @@ export default function RoleSelectScreen() {
       // Use UPSERT to handle both create and update cases
       // This is safer than checking first, as it handles race conditions
       const displayName = user.email?.split('@')[0] || 'User';
-      
+
       const { data: profileData, error: upsertError } = await supabase
         .from('profiles')
         .upsert(
@@ -161,60 +161,5 @@ export default function RoleSelectScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: glassTokens.componentSpacing.screenPadding,
-  },
-  card: {
-    width: '100%',
-  },
-  roleList: {
-    gap: glassTokens.spacing.md,
-    marginBottom: glassTokens.spacing.xl,
-  },
-  roleCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: glassTokens.componentSpacing.cardPadding,
-    borderRadius: glassTokens.radius.xl,
-    backgroundColor: glassTokens.colors.background.darkGrey,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.08)',
-    gap: glassTokens.spacing.md,
-  },
-  roleCardSelected: {
-    backgroundColor: glassTokens.colors.background.white,
-    borderColor: glassTokens.colors.accent.primary,
-    borderWidth: 2,
-  },
-  roleIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: glassTokens.radius.lg,
-    backgroundColor: glassTokens.colors.background.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  roleInfo: {
-    flex: 1,
-  },
-  roleLabel: {
-    fontSize: glassTokens.typography.fontSize.lg,
-    fontWeight: glassTokens.typography.fontWeight.semibold,
-    color: glassTokens.colors.text.primary,
-    marginBottom: glassTokens.spacing.xs,
-  },
-  roleLabelSelected: {
-    color: glassTokens.colors.accent.primary,
-  },
-  roleDescription: {
-    fontSize: glassTokens.typography.fontSize.sm,
-    color: glassTokens.colors.text.secondary,
-    lineHeight: glassTokens.typography.fontSize.sm * glassTokens.typography.lineHeight.normal,
-  },
-  continueButton: {
-    marginTop: glassTokens.spacing.md,
-  },
-});
+const styles: any = {};
 

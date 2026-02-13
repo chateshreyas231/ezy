@@ -70,7 +70,7 @@ export default function VerifyScreen() {
             .eq('buyer_id', user?.id)
             .eq('active', true)
             .single();
-          
+
           if (!intent) {
             router.replace('/(buyer)/intent-setup');
           } else {
@@ -183,99 +183,5 @@ export default function VerifyScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  scrollContent: {
-    paddingHorizontal: glassTokens.componentSpacing.screenPadding,
-  },
-  card: {
-    width: '100%',
-  },
-  stepIndicator: {
-    marginBottom: glassTokens.componentSpacing.sectionSpacing,
-  },
-  stepRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: glassTokens.spacing.md,
-  },
-  stepCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: glassTokens.spacing.md,
-  },
-  stepCircleActive: {
-    borderColor: glassTokens.colors.accent.primary,
-    backgroundColor: `${glassTokens.colors.accent.primary}20`,
-  },
-  stepCircleComplete: {
-    backgroundColor: glassTokens.colors.accent.success,
-    borderColor: glassTokens.colors.accent.success,
-  },
-  stepNumber: {
-    fontSize: glassTokens.typography.fontSize.base,
-    fontWeight: glassTokens.typography.fontWeight.semibold,
-    color: glassTokens.colors.text.primary,
-  },
-  stepContent: {
-    flex: 1,
-  },
-  stepTitle: {
-    fontSize: glassTokens.typography.fontSize.base,
-    fontWeight: glassTokens.typography.fontWeight.medium,
-    color: glassTokens.colors.text.secondary,
-  },
-  stepTitleActive: {
-    color: glassTokens.colors.text.primary,
-    fontWeight: glassTokens.typography.fontWeight.semibold,
-  },
-  stepLine: {
-    position: 'absolute',
-    left: 20,
-    top: 40,
-    width: 2,
-    height: glassTokens.spacing.lg,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  stepLineComplete: {
-    backgroundColor: glassTokens.colors.accent.success,
-  },
-  stepContentArea: {
-    marginTop: glassTokens.spacing.xl,
-    marginBottom: glassTokens.spacing.xl,
-  },
-  stepDescription: {
-    fontSize: glassTokens.typography.fontSize.base,
-    color: glassTokens.colors.text.secondary,
-    lineHeight: glassTokens.typography.fontSize.base * glassTokens.typography.lineHeight.relaxed,
-    marginBottom: glassTokens.spacing.lg,
-  },
-  placeholderBox: {
-    padding: glassTokens.componentSpacing.cardPadding,
-    borderRadius: glassTokens.radius.lg,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-    alignItems: 'center',
-    gap: glassTokens.spacing.md,
-  },
-  placeholderText: {
-    fontSize: glassTokens.typography.fontSize.lg,
-    fontWeight: glassTokens.typography.fontWeight.semibold,
-    color: glassTokens.colors.text.primary,
-  },
-  placeholderSubtext: {
-    fontSize: glassTokens.typography.fontSize.sm,
-    color: glassTokens.colors.text.tertiary,
-    textAlign: 'center',
-  },
-  continueButton: {
-    marginTop: glassTokens.spacing.md,
-  },
-});
+const styles: any = {};
 
