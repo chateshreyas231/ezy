@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,6 +43,18 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
     ];
     return !publicPaths.includes(pathname);
   }, [pathname]);
+
+  // If the user has access and there's a redirect param, send them there
+  // This handles the case where middleware redirects to /?redirect=... but
+  // the client already has access in localStorage
+  useEffect(() => {
+    if (hasAccess) {
+      const redirect = searchParams.get("redirect");
+      if (redirect && redirect.startsWith("/")) {
+        router.replace(redirect);
+      }
+    }
+  }, [hasAccess, searchParams, router]);
 
   const showForceModal = searchParams.get("waitlist") === "required";
 
