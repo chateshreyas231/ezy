@@ -7,12 +7,12 @@ let browserClient: SupabaseClient | null = null;
 export function getSupabaseBrowserClient() {
   if (browserClient) return browserClient;
 
-  const url = process.env.EXPO_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.EXPO_PUBLIC_SUPABASE_KEY;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !anonKey) {
-    if (!url) console.error("Missing Supabase URL. Please set EXPO_PUBLIC_SUPABASE_URL.");
-    if (!anonKey) console.error("Missing Supabase Anon Key. Please set EXPO_PUBLIC_SUPABASE_KEY.");
+    if (!url) console.error("Missing Supabase URL. Please set NEXT_PUBLIC_SUPABASE_URL.");
+    if (!anonKey) console.error("Missing Supabase Anon Key. Please set NEXT_PUBLIC_SUPABASE_ANON_KEY.");
     return null;
   }
 
