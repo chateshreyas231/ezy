@@ -8,7 +8,11 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function redirectToHome(request: NextRequest, reason: "waitlist" | "auth" = "waitlist") {
   const url = request.nextUrl.clone();
+  const redirectTarget = `${request.nextUrl.pathname}${request.nextUrl.search}`;
   url.pathname = "/";
+  if (request.nextUrl.pathname !== "/") {
+    url.searchParams.set("redirect", redirectTarget);
+  }
   if (reason === "auth") {
     url.searchParams.set("auth", "required");
   } else {

@@ -9,7 +9,6 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { saveWaitlistAccess } from "@/lib/waitlist-access";
 import {

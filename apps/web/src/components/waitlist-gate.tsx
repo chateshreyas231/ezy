@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,9 +19,11 @@ type GateMode = "choice" | "confirm" | "join";
 
 export function WaitlistGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const isClient = typeof window !== "undefined";
   const knownEmail = isClient ? getWaitlistEmail() : "";
-  const hasAccess = isClient ? hasWaitlistAccess() : false;
+  const [hasAccess, setHasAccess] = useState(isClient ? hasWaitlistAccess() : false);
   const [mode, setMode] = useState<GateMode>(knownEmail ? "confirm" : "choice");
   const [email, setEmail] = useState(knownEmail);
   const [error, setError] = useState("");
@@ -42,12 +44,19 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
     return !publicPaths.includes(pathname);
   }, [pathname]);
 
-  const searchParams = useSearchParams();
   const showForceModal = searchParams.get("waitlist") === "required";
 
   const grantAccess = () => {
     saveWaitlistAccess(email);
-    window.location.href = "/dashboard";
+    setHasAccess(true);
+    const redirect = searchParams.get("redirect");
+    if (redirect && redirect.startsWith("/")) {
+      router.replace(redirect);
+      return;
+    }
+    if (pathname === "/") {
+      router.replace("/explore");
+    }
   };
 
   const onConfirm = async (event: React.FormEvent) => {
