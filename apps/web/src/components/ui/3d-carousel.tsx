@@ -60,8 +60,8 @@ const propertyPhotos = [
 ];
 
 const duration = 0.15;
-const transition = { duration, ease: [0.32, 0.72, 0, 1] };
-const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] };
+const transition = { duration, ease: [0.32, 0.72, 0, 1] as any };
+const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] as any };
 
 const Carousel = memo(function Carousel({
   handleClick,
@@ -139,7 +139,7 @@ const Carousel = memo(function Carousel({
               initial={{ filter: "blur(4px)" }}
               layout="position"
               animate={{ filter: "blur(0px)" }}
-              transition={transition}
+              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] as any }}
             />
           </motion.div>
         ))}

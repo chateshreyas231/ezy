@@ -15,8 +15,8 @@ interface AIOverviewProps {
 const INFO_BORDER_ACCENT = "--info-border-accent";
 
 const panelStyle = (accent: string): CSSProperties => ({
-    [INFO_BORDER_ACCENT]: accent,
-});
+    [INFO_BORDER_ACCENT as any]: accent,
+}) as CSSProperties;
 
 const handlePanelMouseMove = (event: MouseEvent<HTMLElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();

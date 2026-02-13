@@ -8,13 +8,13 @@ import {
   useRef,
   useState,
 } from "react";
-import { type DynamicAnimationOptions, motion } from "framer-motion";
+import { type ValueAnimationTransition, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface TextProps {
   children: React.ReactNode;
   reverse?: boolean;
-  transition?: DynamicAnimationOptions;
+  transition?: ValueAnimationTransition;
   splitBy?: "words" | "characters" | "lines" | string;
   staggerDuration?: number;
   staggerFrom?: "first" | "last" | "center" | "random" | number;
@@ -135,9 +135,9 @@ const VerticalCutReveal = forwardRef<VerticalCutRevealRef, TextProps>(
       splitBy === "characters"
         ? (elements as WordObject[])
         : (elements as string[]).map((el, i) => ({
-            characters: [el],
-            needsSpace: i !== elements.length - 1,
-          }));
+          characters: [el],
+          needsSpace: i !== elements.length - 1,
+        }));
 
     return (
       <span

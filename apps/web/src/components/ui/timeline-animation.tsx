@@ -32,8 +32,8 @@ export function TimelineContent({
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       variants={{
-        visible: typeof visible === "function" ? visible : () => visible,
-        hidden,
+        visible: (typeof visible === "function" ? visible : () => visible) as any,
+        hidden: hidden as any,
       }}
       {...(props as object)}
     >

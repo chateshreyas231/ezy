@@ -48,8 +48,8 @@ export function InfoPageLayout({
 
         <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-4">
           <span>Questions?</span>
-          <a href="mailto:hello@ezriya.com" className="text-foreground hover:underline">
-            hello@ezriya.com
+          <a href="mailto:connect@ezriya.com" className="text-foreground hover:underline">
+            connect@ezriya.com
           </a>
           <Link href="/" className="text-foreground hover:underline">
             Back to Home

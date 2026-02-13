@@ -262,14 +262,11 @@ export default function LandingPage() {
                 <Link href="/contact" className="block hover:text-foreground transition-colors">
                   Contact Page
                 </Link>
-                <a href="mailto:hello@ezriya.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
-                  <Mail className="h-4 w-4" /> hello@ezriya.com
-                </a>
-                <a href="tel:+14155550147" className="flex items-center gap-2 hover:text-foreground transition-colors">
-                  <Phone className="h-4 w-4" /> +1 (415) 555-0147
+                <a href="mailto:connect@ezriya.com" className="flex items-center gap-2 hover:text-foreground transition-colors">
+                  <Mail className="h-4 w-4" /> connect@ezriya.com
                 </a>
                 <p className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4" /> San Francisco, CA
+                  <MapPin className="h-4 w-4" /> Chicago, IL
                 </p>
               </div>
             </div>

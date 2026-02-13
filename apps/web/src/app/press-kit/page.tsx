@@ -18,7 +18,7 @@ export default function PressKitPage() {
         {
           title: "Media Contact",
           body: [
-            "For press inquiries, interviews, and speaking requests, contact press@ezriya.com.",
+            "For press inquiries, interviews, and speaking requests, contact connect@ezriya.com.",
             "Please include publication name, timeline, and request type so we can route quickly.",
           ],
         },

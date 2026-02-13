@@ -26,7 +26,7 @@ export default function SecurityPage() {
           title: "Incident Response",
           body: [
             "We maintain internal incident response procedures for detection, containment, communication, and remediation.",
-            "Security reports can be sent to security@ezriya.com.",
+            "Security reports can be sent to connect@ezriya.com.",
           ],
         },
       ]}

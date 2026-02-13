@@ -25,7 +25,7 @@ export default function PartnerProgramPage() {
         {
           title: "How to Apply",
           body: [
-            "Email partners@ezriya.com with your company profile, target use case, and expected deployment footprint.",
+            "Email connect@ezriya.com with your company profile, target use case, and expected deployment footprint.",
             "Our partnerships team reviews submissions and responds with next steps.",
           ],
         },

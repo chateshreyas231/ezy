@@ -36,3 +36,6 @@ android/.gradle/
 
 # Large Media
 *.mp4
+
+# Turbo
+.turbo/

@@ -25,7 +25,7 @@ export default function PrivacyPolicyPage() {
         {
           title: "Data Rights",
           body: [
-            "You may request access, correction, or deletion of your personal data by contacting privacy@ezriya.com.",
+            "You may request access, correction, or deletion of your personal data by contacting connect@ezriya.com.",
             "We retain data for legal, contractual, and operational reasons based on jurisdictional requirements.",
           ],
         },

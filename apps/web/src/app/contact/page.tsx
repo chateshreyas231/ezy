@@ -11,18 +11,18 @@ export default function ContactPage() {
         {
           title: "Primary Contacts",
           body: [
-            "General: hello@ezriya.com",
-            "Sales: sales@ezriya.com",
-            "Support: support@ezriya.com",
+            "General: connect@ezriya.com",
+            "Sales: connect@ezriya.com",
+            "Support: connect@ezriya.com",
           ],
         },
         {
           title: "Specialized Requests",
           body: [
-            "Partnerships: partners@ezriya.com",
-            "Press: press@ezriya.com",
-            "Security: security@ezriya.com",
-            "Compliance: compliance@ezriya.com",
+            "Partnerships: connect@ezriya.com",
+            "Press: connect@ezriya.com",
+            "Security: connect@ezriya.com",
+            "Compliance: connect@ezriya.com",
           ],
         },
         {
@@ -30,7 +30,7 @@ export default function ContactPage() {
           body: [
             "Ezriya, Inc.",
             "San Francisco, California, United States",
-            "Phone: +1 (415) 555-0147",
+
           ],
         },
       ]}

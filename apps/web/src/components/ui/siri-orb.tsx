@@ -88,6 +88,7 @@ export const SiriOrb: FC<SiriOrbProps> = ({
         } as CSSProperties
       }
     >
+      {/* @ts-expect-error - styled-jsx support */}
       <style jsx>{`
         @property --angle {
           syntax: "<angle>";
@@ -246,9 +247,8 @@ const SiriOrbDemo: FC = () => {
                   key={option.value}
                   type="button"
                   onClick={() => setSelectedSize(option.value)}
-                  className={`h-auto w-auto px-2 py-1 ${
-                    selectedSize === option.value ? "" : "opacity-50"
-                  }`}
+                  className={`h-auto w-auto px-2 py-1 ${selectedSize === option.value ? "" : "opacity-50"
+                    }`}
                 >
                   {option.label}
                 </Button>
@@ -276,6 +276,7 @@ const SiriOrbDemo: FC = () => {
         </div>
       )}
 
+      {/* @ts-expect-error - styled-jsx support */}
       <style jsx>{`
         .slider::-webkit-slider-thumb {
           appearance: none;
