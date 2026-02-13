@@ -79,11 +79,8 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
     }
     const exists = await isEmailOnWaitlist(email);
     if (!exists) {
-      const created = await addEmailToWaitlist(email);
-      if (!created.ok) {
-        setError(created.message || "Unable to join waitlist right now.");
-        return;
-      }
+      setError("This email is not on the waitlist. Please join first.");
+      return;
     }
 
     grantAccess();
