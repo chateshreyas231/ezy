@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Phone, Mail, ExternalLink, CheckCircle2 } from "lucide-react";
+import { Star, MapPin, Mail, CheckCircle2 } from "lucide-react";
 
 interface VendorCardProps {
     name: string;

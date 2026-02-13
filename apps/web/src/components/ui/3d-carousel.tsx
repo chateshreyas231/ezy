@@ -59,9 +59,8 @@ const propertyPhotos = [
   "https://images.unsplash.com/photo-1600607687126-8a3414349a51?q=80&w=1200&auto=format&fit=crop",
 ];
 
-const duration = 0.15;
-const transition = { duration, ease: [0.32, 0.72, 0, 1] as any };
-const transitionOverlay = { duration: 0.5, ease: [0.32, 0.72, 0, 1] as any };
+const easeCurve: [number, number, number, number] = [0.32, 0.72, 0, 1];
+const transitionOverlay = { duration: 0.5, ease: easeCurve };
 
 const Carousel = memo(function Carousel({
   handleClick,
@@ -139,7 +138,7 @@ const Carousel = memo(function Carousel({
               initial={{ filter: "blur(4px)" }}
               layout="position"
               animate={{ filter: "blur(0px)" }}
-              transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1] as any }}
+              transition={{ duration: 0.5, ease: easeCurve }}
             />
           </motion.div>
         ))}

@@ -86,7 +86,6 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      {children}
       <div className="fixed inset-0 z-[120] bg-black/55 backdrop-blur-sm p-4 grid place-items-center">
         <div className="w-full max-w-md rounded-2xl border border-white/15 bg-background/95 p-6 shadow-2xl">
           <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Ezriya Access</p>

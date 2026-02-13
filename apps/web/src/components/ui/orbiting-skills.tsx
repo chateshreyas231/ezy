@@ -82,12 +82,16 @@ const skillsConfig: SkillConfig[] = [
   { id: "vendors", orbitRadius: 185, size: 42, speed: -0.6, iconType: "vendors", phaseShift: (4 * Math.PI) / 3, glowColor: "purple", label: "Vendors" },
 ];
 
+function roundOrbitCoord(value: number) {
+  return Math.round(value * 1000) / 1000;
+}
+
 const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const { orbitRadius, size, iconType, label } = config;
 
-  const x = Math.cos(angle) * orbitRadius;
-  const y = Math.sin(angle) * orbitRadius;
+  const x = roundOrbitCoord(Math.cos(angle) * orbitRadius);
+  const y = roundOrbitCoord(Math.sin(angle) * orbitRadius);
 
   return (
     <div
@@ -95,7 +99,7 @@ const OrbitingSkill = memo(({ config, angle }: OrbitingSkillProps) => {
       style={{
         width: `${size}px`,
         height: `${size}px`,
-        transform: `translate(calc(${x}px - 50%), calc(${y}px - 50%))`,
+        transform: `translate(-50%, -50%) translate(${x}px, ${y}px)`,
         zIndex: isHovered ? 20 : 10,
       }}
       onMouseEnter={() => setIsHovered(true)}

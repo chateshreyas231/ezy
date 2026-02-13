@@ -31,6 +31,21 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
     // Initial Greeting
     useEffect(() => {
         if (isOpen && messages.length === 0) {
+            const onIntentSelect = (selectedIntent: "buy" | "sell") => {
+                setIntent(selectedIntent);
+                addMessage("user", selectedIntent === "sell" ? "I want to sell my property." : "I'm looking to buy a property.");
+
+                setIsLoading(true);
+                setTimeout(() => {
+                    setCurrentStep("DETAILS");
+                    const prompt = selectedIntent === "sell"
+                        ? "Great. Let's prepare your listing. What is the address or general location of the property?"
+                        : "Great. To narrow options, where are you planning to buy?";
+                    addMessage("ai", prompt);
+                    setIsLoading(false);
+                }, 1000);
+            };
+
             setTimeout(() => {
                 setIsLoading(true);
                 setMessages([
@@ -44,7 +59,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                                     <Button
                                         variant="outline"
                                         className="justify-start gap-2 bg-white/5 hover:bg-white/10"
-                                        onClick={() => handleIntentSelect("sell")}
+                                        onClick={() => onIntentSelect("sell")}
                                     >
                                         <Home className="h-4 w-4 text-white" />
                                         I want to prepare a listing (Sell)
@@ -52,7 +67,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                                     <Button
                                         variant="outline"
                                         className="justify-start gap-2 bg-white/5 hover:bg-white/10"
-                                        onClick={() => handleIntentSelect("buy")}
+                                        onClick={() => onIntentSelect("buy")}
                                     >
                                         <Search className="h-4 w-4 text-blue-400" />
                                         I&apos;m looking for properties (Buy)
@@ -66,7 +81,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                 setIsLoading(false);
             }, 800);
         }
-    }, [isOpen]);
+    }, [isOpen, messages.length]);
 
     // Auto-scroll
     useEffect(() => {
@@ -74,21 +89,6 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
     }, [messages, isLoading]);
-
-    const handleIntentSelect = (selectedIntent: "buy" | "sell") => {
-        setIntent(selectedIntent);
-        addMessage("user", selectedIntent === "sell" ? "I want to sell my property." : "I'm looking to buy a property.");
-
-        setIsLoading(true);
-        setTimeout(() => {
-            setCurrentStep("DETAILS");
-            const prompt = selectedIntent === "sell"
-                ? "Great. Let's prepare your listing. What is the address or general location of the property?"
-                : "Great. To narrow options, where are you planning to buy?";
-            addMessage("ai", prompt);
-            setIsLoading(false);
-        }, 1000);
-    };
 
     const handleSendMessage = () => {
         if (!inputValue.trim()) return;

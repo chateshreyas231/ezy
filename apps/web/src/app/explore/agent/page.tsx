@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo } from "react";
 import { DottedSurface } from "@/components/ui/dotted-surface";
 import ChatbotFab from "@/components/ui/chatbot-fab";
@@ -139,7 +140,13 @@ export default function AgentPage() {
                 className="rounded-xl border border-border/60 p-4 hover:border-primary/40 hover:bg-background/70 transition-colors"
               >
                 <div className="flex items-center gap-3 mb-3">
-                  <img src={agent.avatar} alt={agent.name} className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/20" />
+                  <Image
+                    src={agent.avatar}
+                    alt={agent.name}
+                    width={48}
+                    height={48}
+                    className="h-12 w-12 rounded-full object-cover ring-2 ring-primary/20"
+                  />
                   <div>
                     <p className="font-semibold">{agent.name}</p>
                     <p className="text-xs text-muted-foreground">{agent.brokerage}</p>
@@ -205,10 +212,12 @@ export default function AgentPage() {
                 <Link key={agent.id} href={`/explore/agent/${agent.id}`}>
                   <Card className="h-full overflow-hidden border-primary/20 hover:border-primary/50 hover:shadow-[0_14px_34px_rgba(59,130,246,0.18)] transition-all">
                     <div className="relative h-36">
-                      <img
+                      <Image
                         src={getAgentListingImage(agent.id)}
                         alt={`${agent.name} featured listing`}
-                        className="h-full w-full object-cover"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                       <div className="absolute left-4 bottom-3 flex items-center gap-2 text-white">
@@ -220,9 +229,11 @@ export default function AgentPage() {
                     <CardHeader className="space-y-4 pt-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <img
+                          <Image
                             src={agent.avatar}
                             alt={agent.name}
+                            width={64}
+                            height={64}
                             className="h-16 w-16 rounded-full object-cover -mt-10 ring-4 ring-background shadow-md"
                           />
                           <div>

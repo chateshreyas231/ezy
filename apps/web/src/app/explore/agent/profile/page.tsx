@@ -4,11 +4,17 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { DottedSurface } from "@/components/ui/dotted-surface";
 import { MOCK_USERS, MOCK_LISTINGS } from "@/lib/mock-data";
-import { Instagram, Linkedin, Twitter, MapPin, Phone, Mail, Grid, List, Play, Award, Home, TrendingUp, Users, User, Star } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Phone, Grid, User, Star, Globe, Heart, MessageCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+
+type AgentPost = {
+    id: string;
+    title: string;
+    image: string;
+    type: "listing" | "lifestyle";
+};
 
 export default function AgentProfilePage() {
     const agent = MOCK_USERS.agent;
@@ -22,39 +28,26 @@ export default function AgentProfilePage() {
         { id: 4, title: "Luxe Life", image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?q=80&w=200&h=200&fit=crop" },
     ];
 
-    const posts = MOCK_LISTINGS.filter(l => l.agentId === agent.id).map(l => ({
-        ...l,
-        type: "listing",
-        image: l.images[0] // Using first image as cover
-    }));
-
-    // Add some dummy "lifestyle" posts to fill the grid
-    posts.push({
-        id: "post-1",
-        title: "Team Lunch at The Ivy",
-        price: 0,
-        location: "Beverly Hills",
-        specs: { beds: 0, baths: 0, sqft: 0 },
-        images: ["https://images.unsplash.com/photo-1515169067750-d51a73e56fea?q=80&w=800&fit=crop"],
-        agentId: agent.id,
-        status: "Lifestyle",
-        offers: 0,
-        type: "lifestyle",
-        image: "https://images.unsplash.com/photo-1515169067750-d51a73e56fea?q=80&w=800&fit=crop"
-    } as any);
-    posts.push({
-        id: "post-2",
-        title: "Sunset Views",
-        price: 0,
-        location: "Malibu",
-        specs: { beds: 0, baths: 0, sqft: 0 },
-        images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&fit=crop"],
-        agentId: agent.id,
-        status: "Lifestyle",
-        offers: 0,
-        type: "lifestyle",
-        image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&fit=crop"
-    } as any);
+    const posts: AgentPost[] = [
+        ...MOCK_LISTINGS.filter((listing) => listing.agentId === agent.id).map((listing) => ({
+            id: listing.id,
+            title: listing.title,
+            image: listing.images[0],
+            type: "listing" as const,
+        })),
+        {
+            id: "post-1",
+            title: "Team Lunch at The Ivy",
+            type: "lifestyle",
+            image: "https://images.unsplash.com/photo-1515169067750-d51a73e56fea?q=80&w=800&fit=crop",
+        },
+        {
+            id: "post-2",
+            title: "Sunset Views",
+            type: "lifestyle",
+            image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=800&fit=crop",
+        },
+    ];
 
 
     return (
@@ -116,7 +109,7 @@ export default function AgentProfilePage() {
                         </p>
                         <div className="flex gap-4 justify-center md:justify-start">
                             <a href="#" className="flex items-center gap-1 text-sm text-blue-500 hover:underline">
-                                <GlobeIcon className="w-3 h-3" /> www.eliterealty.com/{agent.id}
+                                <Globe className="w-3 h-3" /> www.eliterealty.com/{agent.id}
                             </a>
                         </div>
                     </div>
@@ -194,8 +187,8 @@ export default function AgentProfilePage() {
                                         </div>
                                     )}
                                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-4 text-white font-bold">
-                                        <span className="flex items-center gap-1"><HeartIcon className="w-5 h-5 fill-white" /> 124</span>
-                                        <span className="flex items-center gap-1"><MessageCircleIcon className="w-5 h-5 fill-white" /> 12</span>
+                                        <span className="flex items-center gap-1"><Heart className="w-5 h-5 fill-white" /> 124</span>
+                                        <span className="flex items-center gap-1"><MessageCircle className="w-5 h-5 fill-white" /> 12</span>
                                     </div>
                                 </motion.div>
                             ))}
@@ -207,9 +200,9 @@ export default function AgentProfilePage() {
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold">About Me</h3>
                             <p className="text-muted-foreground leading-relaxed">
-                                "I don't just sell homes; I curate lifestyles."
+                                I do not just sell homes; I curate lifestyles.
                                 <br /><br />
-                                With over 15 years of experience in the luxury real estate market of Los Angeles, James has built a reputation for his discretion, taste, and unparalleled negotiation skills. Specializing in off-market properties and celebrity estates, he brings a unique "concierge" approach to every transaction.
+                                With over 15 years of experience in the luxury real estate market of Los Angeles, James has built a reputation for his discretion, taste, and unparalleled negotiation skills. Specializing in off-market properties and celebrity estates, he brings a unique concierge approach to every transaction.
                             </p>
                         </div>
 
@@ -274,7 +267,7 @@ export default function AgentProfilePage() {
                                         <span className="ml-auto text-xs text-muted-foreground">2 weeks ago</span>
                                     </div>
                                     <p className="text-sm italic text-muted-foreground leading-relaxed">
-                                        "James is simply the best. He found us a property that wasn't even on the market yet. His connections are real! He understood exactly what we were looking for and didn't waste our time."
+                                        James is simply the best. He found us a property that was not even on the market yet. His connections are real. He understood exactly what we were looking for and did not waste our time.
                                     </p>
                                 </div>
                             ))}
@@ -287,10 +280,3 @@ export default function AgentProfilePage() {
         </DottedSurface>
     );
 }
-
-// Simple Icon Components for cleaner code above
-function GlobeIcon(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" /><path d="M2 12h20" /></svg>; }
-function HeartIcon(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>; }
-function MessageCircleIcon(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>; }
-function SendIcon(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" x2="11" y1="2" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" /></svg>; }
-function MoreHorizontalIcon(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>; }

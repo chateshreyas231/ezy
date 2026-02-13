@@ -1,14 +1,12 @@
 "use client";
 
 import { DottedSurface } from "@/components/ui/dotted-surface";
-import Testimonial1 from "@/components/ui/testimonial-1";
 import { BlurFade } from "@/components/ui/blur-fade";
-import { ThreeDPhotoCarousel } from "@/components/ui/3d-carousel";
-import OrbitingSkills from "@/components/ui/orbiting-skills";
 import { CountAnimation } from "@/components/ui/count-animation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -25,8 +23,16 @@ import {
   Check,
   Mail,
   MapPin,
-  Phone
 } from "lucide-react";
+
+const Testimonial1 = dynamic(() => import("@/components/ui/testimonial-1"));
+const OrbitingSkills = dynamic(() => import("@/components/ui/orbiting-skills"));
+const ThreeDPhotoCarousel = dynamic(
+  () =>
+    import("@/components/ui/3d-carousel").then((module) => ({
+      default: module.ThreeDPhotoCarousel,
+    })),
+);
 
 export default function LandingPage() {
   const [email, setEmail] = useState("");

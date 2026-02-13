@@ -1,5 +1,6 @@
 export const WAITLIST_EMAIL_KEY = "ezriya_waitlist_email";
 export const WAITLIST_ACCESS_KEY = "ezriya_waitlist_access_granted";
+const WAITLIST_COOKIE_MAX_AGE = 60 * 60 * 24 * 90; // 90 days
 
 function normalizeEmail(email: string) {
   return email.trim().toLowerCase();
@@ -10,6 +11,9 @@ export function saveWaitlistAccess(email: string) {
   const normalized = normalizeEmail(email);
   localStorage.setItem(WAITLIST_EMAIL_KEY, normalized);
   localStorage.setItem(WAITLIST_ACCESS_KEY, "true");
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${WAITLIST_EMAIL_KEY}=${encodeURIComponent(normalized)}; Path=/; Max-Age=${WAITLIST_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
+  document.cookie = `${WAITLIST_ACCESS_KEY}=true; Path=/; Max-Age=${WAITLIST_COOKIE_MAX_AGE}; SameSite=Lax${secure}`;
 }
 
 export function getWaitlistEmail() {
