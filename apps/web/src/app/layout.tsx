@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Loader2 } from "lucide-react";
 import "./globals.css";
 
 const inter = Inter({
@@ -39,7 +40,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <Suspense fallback={null}>
+          <Suspense fallback={<div className="grid place-items-center min-h-screen"><Loader2 className="w-8 h-8 animate-spin text-muted-foreground" /></div>}>
             <WaitlistGate>{children}</WaitlistGate>
           </Suspense>
         </ThemeProvider>
