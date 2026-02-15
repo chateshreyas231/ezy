@@ -20,26 +20,28 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isClient = typeof window !== "undefined";
-
   // Initialize state
   const [hasAccess, setHasAccess] = useState(false);
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Check access on mount
   useEffect(() => {
-    if (isClient) {
-      const access = hasWaitlistAccess();
-      setHasAccess(access);
-      if (!access) {
-        // Pre-fill email if we have it but access is expired/revoked
-        const storedEmail = getWaitlistEmail();
-        if (storedEmail) setEmail(storedEmail);
-      }
+    // useEffect only runs on client, so we don't need isClient check here
+    const access = hasWaitlistAccess();
+    setHasAccess(access);
+    if (!access) {
+      // Pre-fill email if we have it but access is expired/revoked
+      const storedEmail = getWaitlistEmail();
+      if (storedEmail) setEmail(storedEmail);
     }
-  }, [isClient]);
+  }, []);
 
   const isProtectedRoute = useMemo(() => {
     const publicPaths = [
@@ -144,19 +146,7 @@ export function WaitlistGate({ children }: { children: React.ReactNode }) {
   // We always render children to prevent hydration mismatch with the server (which always renders children).
   // The gate is an overlay that blocks interaction if needed.
 
-  const shouldShowGate = isClient && !hasAccess && (isProtectedRoute || showForceModal);
-
-  // Use a mounted check to avoid hydration mismatch if we were to rely on isClient for conditional rendering of the overlay
-  // Although here, relying on isClient and hasAccess (state) is fine if init state matches server.
-  // Server: hasAccess=false, isClient=false. returns <>{children}</>
-  // Client Init: hasAccess=false, isClient=true. 
-  // If we just append the div, we might still have a mismatch if the structure differs (div vs no div).
-  // Safest is to render the modal only after mount or ensure the structure is stable.
-  // But purely appending a portal or absolute div usually works if "children" structure is preserved.
-
-  // Note: We used to return ONLY the gate if locked. Now we return Children + Gate.
-
-  if (!isClient) return <>{children}</>;
+  const shouldShowGate = mounted && !hasAccess && (isProtectedRoute || showForceModal);
 
   return (
     <>
