@@ -189,115 +189,115 @@ export default function AgentExploreView() {
             {!(isMobile && viewMode === "split") && (
                 <motion.div
                     className={cn(
-                        "relative flex min-h-[66vh] flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] md:min-h-0",
+                        "relative flex min-h-[70vh] flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] md:min-h-0",
                         viewMode === "split" ? "w-full md:w-1/2 lg:w-5/12 md:scale-90 md:opacity-90" : "w-full h-full"
                     )}
                     initial={false}
                     animate={{ opacity: 1 }}
                 >
-                <div className="relative w-full h-full flex flex-col items-center justify-center">
-                    {viewMode === "globe" && (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="absolute inset-x-0 top-6 z-10 mx-auto max-w-3xl space-y-2 px-4 text-center md:top-10"
-                        >
-                            <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary mb-2">
-                                Agent Directory
-                            </Badge>
-                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                                Explore Agent Profiles
-                            </h1>
-                            <p className="text-muted-foreground text-sm md:text-lg max-w-lg mx-auto">
-                                Browse participant-submitted profiles, filters, and listing activity for review.
-                            </p>
-                        </motion.div>
-                    )}
-
-                    {/* Explore Mode Toggle */}
-                    {viewMode === "globe" && (
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            className="absolute right-3 top-3 z-20 md:right-4 md:top-4"
-                        >
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={toggleExploreGrid}
-                                className="bg-white text-foreground border-neutral-200 hover:bg-white/90 backdrop-blur-md shadow-sm text-xs md:text-sm"
+                    <div className="relative w-full h-full flex flex-col items-center justify-center">
+                        {viewMode === "globe" && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="absolute inset-x-0 top-6 z-10 mx-auto max-w-3xl space-y-2 px-4 text-center md:top-10"
                             >
-                                {showExploreGrid ? (
-                                    <>
-                                        <Globe className="w-4 h-4 mr-2" />
-                                        Globe View
-                                    </>
-                                ) : (
-                                    <>
-                                        <LayoutGrid className="w-4 h-4 mr-2" />
-                                        Explore All Agents
-                                    </>
-                                )}
-                            </Button>
-                        </motion.div>
-                    )}
-
-                    <div className={cn(
-                        "transition-all duration-700 delay-100",
-                        viewMode === "split" ? "scale-90 md:scale-75 md:-ml-8" : "scale-100 mt-20 md:mt-36"
-                    )}>
-                        {!showExploreGrid ? (
-                            <SphereImageGrid
-                                images={sphereImages}
-                                containerSize={sphereConfig.containerSize}
-                                sphereRadius={sphereConfig.sphereRadius}
-                                baseImageScale={sphereConfig.baseImageScale}
-                                autoRotate={true}
-                                onImageClick={handleAgentClick}
-                                selectedId={selectedAgentId}
-                            />
-                        ) : (
-                            <div className="h-[52vh] w-[92vw] max-w-[960px] overflow-y-auto p-3 md:h-[600px] md:p-4 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                                {MOCK_AGENTS.map(agent => (
-                                    <Card
-                                        key={agent.id}
-                                        className="cursor-pointer hover:border-primary transition-all hover:shadow-lg group"
-                                        onClick={() => {
-                                            setSelectedAgentId(agent.id);
-                                            setViewMode("split");
-                                            setShowExploreGrid(false);
-                                        }}
-                                    >
-                                        <CardContent className="p-4 flex flex-col items-center text-center space-y-2">
-                                            <div className="relative w-20 h-20 rounded-full overflow-hidden mb-2 border-2 border-muted group-hover:border-primary transition-colors">
-                                                <Image src={agent.avatar} alt={agent.name} fill className="object-cover" />
-                                            </div>
-                                            <div>
-                                                <div className="font-bold">{agent.name}</div>
-                                                <div className="text-xs text-muted-foreground">{agent.brokerage}</div>
-                                            </div>
-                                            <Badge variant="secondary" className="text-xs">
-                                                {agent.rating} User-submitted rating
-                                            </Badge>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
+                                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary mb-2">
+                                    Agent Directory
+                                </Badge>
+                                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                                    Explore Agent Profiles
+                                </h1>
+                                <p className="text-muted-foreground text-sm md:text-lg max-w-lg mx-auto">
+                                    Browse participant-submitted profiles, filters, and listing activity for review.
+                                </p>
+                            </motion.div>
                         )}
-                    </div>
 
-                    <div className={cn(
-                        "absolute transition-all duration-500 w-full px-4 max-w-2xl",
-                        viewMode === "split" ? "bottom-6 md:bottom-8" : "bottom-8 md:bottom-32"
-                    )}>
-                        <AgentChatInterface
-                            onSearch={handleSearch}
-                            isExpanded={viewMode === "globe"}
-                            className={viewMode === "split" ? "max-w-md mx-auto" : ""}
-                        />
+                        {/* Explore Mode Toggle */}
+                        {viewMode === "globe" && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="absolute right-3 top-3 z-20 md:right-4 md:top-4"
+                            >
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={toggleExploreGrid}
+                                    className="bg-white text-foreground border-neutral-200 hover:bg-white/90 backdrop-blur-md shadow-sm text-xs md:text-sm"
+                                >
+                                    {showExploreGrid ? (
+                                        <>
+                                            <Globe className="w-4 h-4 mr-2" />
+                                            Globe View
+                                        </>
+                                    ) : (
+                                        <>
+                                            <LayoutGrid className="w-4 h-4 mr-2" />
+                                            Explore All Agents
+                                        </>
+                                    )}
+                                </Button>
+                            </motion.div>
+                        )}
+
+                        <div className={cn(
+                            "transition-all duration-700 delay-100 flex-1 flex items-center justify-center",
+                            viewMode === "split" ? "scale-90 md:scale-75 md:-ml-8" : "scale-100"
+                        )}>
+                            {!showExploreGrid ? (
+                                <SphereImageGrid
+                                    images={sphereImages}
+                                    containerSize={sphereConfig.containerSize}
+                                    sphereRadius={sphereConfig.sphereRadius}
+                                    baseImageScale={sphereConfig.baseImageScale}
+                                    autoRotate={true}
+                                    onImageClick={handleAgentClick}
+                                    selectedId={selectedAgentId}
+                                />
+                            ) : (
+                                <div className="h-[52vh] w-[92vw] max-w-[960px] overflow-y-auto p-3 md:h-[600px] md:p-4 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4 mt-20 md:mt-36">
+                                    {MOCK_AGENTS.map(agent => (
+                                        <Card
+                                            key={agent.id}
+                                            className="cursor-pointer hover:border-primary transition-all hover:shadow-lg group"
+                                            onClick={() => {
+                                                setSelectedAgentId(agent.id);
+                                                setViewMode("split");
+                                                setShowExploreGrid(false);
+                                            }}
+                                        >
+                                            <CardContent className="p-4 flex flex-col items-center text-center space-y-2">
+                                                <div className="relative w-20 h-20 rounded-full overflow-hidden mb-2 border-2 border-muted group-hover:border-primary transition-colors">
+                                                    <Image src={agent.avatar} alt={agent.name} fill className="object-cover" />
+                                                </div>
+                                                <div>
+                                                    <div className="font-bold">{agent.name}</div>
+                                                    <div className="text-xs text-muted-foreground">{agent.brokerage}</div>
+                                                </div>
+                                                <Badge variant="secondary" className="text-xs">
+                                                    {agent.rating} User-submitted rating
+                                                </Badge>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className={cn(
+                            "absolute transition-all duration-500 w-full px-4 max-w-2xl",
+                            viewMode === "split" ? "bottom-6 md:bottom-8" : "bottom-6 md:bottom-12"
+                        )}>
+                            <AgentChatInterface
+                                onSearch={handleSearch}
+                                isExpanded={viewMode === "globe"}
+                                className={viewMode === "split" ? "max-w-md mx-auto" : ""}
+                            />
+                        </div>
                     </div>
-                </div>
                 </motion.div>
             )}
 

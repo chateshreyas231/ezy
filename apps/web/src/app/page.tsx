@@ -135,7 +135,7 @@ export default function LandingPage() {
                 transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
               >
                 <CountAnimation number={liveCount || waitlistCount} className="text-lg font-semibold tabular-nums text-primary" />
-                <span className="text-muted-foreground">number already joined</span>
+                <span className="text-muted-foreground">people already joined</span>
               </motion.div>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
