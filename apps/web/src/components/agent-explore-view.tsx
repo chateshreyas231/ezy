@@ -41,7 +41,7 @@ export default function AgentExploreView() {
             agentId: agent.id
         }));
 
-        const duplicateCount = isMobile ? 0 : 1;
+        const duplicateCount = isMobile ? 3 : 1; // Increased from 0 to 3 for much denser mobile globe
         let allImages = [...baseImages];
         for (let i = 0; i < duplicateCount; i++) {
             const dups = baseImages.map(img => ({
@@ -57,11 +57,11 @@ export default function AgentExploreView() {
     const sphereConfig = useMemo(() => {
         if (viewMode === "split") {
             return isMobile
-                ? { containerSize: 260, sphereRadius: 95, baseImageScale: 0.14 }
+                ? { containerSize: 220, sphereRadius: 85, baseImageScale: 0.12 }
                 : { containerSize: 420, sphereRadius: 165, baseImageScale: 0.11 };
         }
         return isMobile
-            ? { containerSize: 320, sphereRadius: 125, baseImageScale: 0.13 }
+            ? { containerSize: 280, sphereRadius: 110, baseImageScale: 0.1 }
             : { containerSize: 560, sphereRadius: 220, baseImageScale: 0.11 };
     }, [isMobile, viewMode]);
 
@@ -289,7 +289,7 @@ export default function AgentExploreView() {
 
                         <div className={cn(
                             "absolute transition-all duration-500 w-full px-4 max-w-2xl",
-                            viewMode === "split" ? "bottom-6 md:bottom-8" : "bottom-6 md:bottom-12"
+                            viewMode === "split" ? "bottom-4 md:bottom-8" : "bottom-6 md:bottom-12"
                         )}>
                             <AgentChatInterface
                                 onSearch={handleSearch}
