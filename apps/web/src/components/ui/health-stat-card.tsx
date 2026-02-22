@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { motion } from "framer-motion"
+import { motion, type Variants } from "framer-motion"
 import { cn } from "@/lib/utils"
 import {
   Tooltip,
@@ -52,7 +52,7 @@ export const HealthStatCard = React.forwardRef<HTMLDivElement, HealthStatCardPro
     },
     ref
   ) => {
-    const containerVariants = {
+    const containerVariants: Variants = {
       hidden: { opacity: 0 },
       visible: {
         opacity: 1,
@@ -60,7 +60,7 @@ export const HealthStatCard = React.forwardRef<HTMLDivElement, HealthStatCardPro
       },
     }
 
-    const barVariants = {
+    const barVariants: Variants = {
       hidden: { scaleY: 0 },
       visible: {
         scaleY: 1,

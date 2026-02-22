@@ -1,5 +1,5 @@
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { CircleHelp } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -48,7 +48,7 @@ export const FreelancerStatsCard = React.forwardRef<
     currency: "USD",
   });
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -58,7 +58,7 @@ export const FreelancerStatsCard = React.forwardRef<
     },
   };
 
-  const barVariants = {
+  const barVariants: Variants = {
     hidden: { height: "0%", opacity: 0 },
     visible: {
       height: "100%",
