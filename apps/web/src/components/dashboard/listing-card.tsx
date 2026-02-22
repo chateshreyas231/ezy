@@ -32,7 +32,7 @@ export function ListingCard({
     href,
 }: ListingCardProps) {
     const card = (
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative">
+        <Card className="bg-card border-border backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative">
             <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <CardHeader className="pb-3">
@@ -64,7 +64,7 @@ export function ListingCard({
                             <TrendingUp className="h-2 w-2" /> +8%
                         </Badge>
                     </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full mt-2 overflow-hidden">
+                    <div className="h-1 w-full bg-muted/20 rounded-full mt-2 overflow-hidden">
                         <motion.div
                             initial={{ width: 0 }}
                             animate={{ width: "75%" }}
@@ -89,7 +89,7 @@ export function ListingCard({
                     </ul>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 text-sm pt-2 border-t border-white/5">
+                <div className="grid grid-cols-2 gap-4 text-sm pt-2 border-t border-border/50">
                     <div className="flex flex-col">
                         <span className="text-muted-foreground text-xs">Total Views</span>
                         <span className="font-medium flex items-center gap-1">
@@ -104,19 +104,19 @@ export function ListingCard({
                     )}
                 </div>
             </CardContent>
-            <CardFooter className="pt-3 border-t border-white/5 flex justify-between items-center bg-white/2">
+            <CardFooter className="pt-3 border-t border-border/50 flex justify-between items-center bg-muted/20">
                 <AgentBadge name={agentName} image={agentImage} role="Listing Agent" />
                 {variant === "owner" ? (
                     <div className="flex gap-2">
-                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10">
+                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-accent/50">
                             <Edit className="h-4 w-4" />
                         </Button>
-                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-white/10">
+                        <Button size="icon" variant="ghost" className="h-8 w-8 hover:bg-accent/50">
                             <MoreHorizontal className="h-4 w-4" />
                         </Button>
                     </div>
                 ) : (
-                    <Button size="sm" variant="outline" className="h-8 text-xs bg-white/5 border-white/10 hover:bg-white/10">
+                    <Button size="sm" variant="outline" className="h-8 text-xs bg-background border-border hover:bg-accent">
                         Contact Agent
                     </Button>
                 )}

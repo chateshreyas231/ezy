@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DottedSurface } from "@/components/ui/dotted-surface";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AIChatOverlay } from "@/components/dashboard/ai-chat-overlay";
 import { cn } from "@/lib/utils";
+import { useWorkspaceAiStore } from "@/lib/workspace-ai-store";
 import {
     Compass,
     Handshake,
@@ -15,8 +15,6 @@ import {
     Menu,
     PanelLeft,
     PanelLeftClose,
-    Search,
-    Sparkles,
     Target,
     Users,
     X
@@ -38,13 +36,7 @@ export default function DashboardLayout({
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const [isChatOpen, setIsChatOpen] = useState(false);
-
-    useEffect(() => {
-        const openHandler = () => setIsChatOpen(true);
-        window.addEventListener("ezriya:open-ai-chat", openHandler);
-        return () => window.removeEventListener("ezriya:open-ai-chat", openHandler);
-    }, []);
+    const { conversationLogs } = useWorkspaceAiStore();
 
     const pageTitle = useMemo(() => {
         const active = sidebarItems.find((item) => pathname === item.href || pathname.startsWith(`${item.href}/`));
@@ -53,11 +45,9 @@ export default function DashboardLayout({
 
     return (
         <DottedSurface className="min-h-screen pt-20 pb-12 px-4 md:px-6">
-            <AIChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
-
             <div className="max-w-7xl mx-auto grid gap-6 lg:grid-cols-[auto_1fr]">
                 <aside className={cn("hidden lg:block sticky top-24 h-[calc(100vh-7rem)]", isCollapsed ? "w-[76px]" : "w-[250px]")}>
-                    <Card className="bg-white/5 border-white/10 h-full flex flex-col">
+                    <Card className="bg-sidebar border-sidebar-border h-full flex flex-col">
                         <CardHeader className="pb-3">
                             <div className="flex items-center justify-between gap-2">
                                 {!isCollapsed && (
@@ -96,27 +86,27 @@ export default function DashboardLayout({
                                 );
                             })}
 
-                            <div className="pt-2 border-t border-white/10 space-y-2">
-                                <Button asChild variant="outline" className={cn("w-full", isCollapsed ? "justify-center" : "justify-start gap-2")}>
-                                    <Link href="/explore/agent">
-                                        <Users className="h-4 w-4" />
-                                        {!isCollapsed && "Explore Agents"}
-                                    </Link>
-                                </Button>
-                                <Button asChild variant="outline" className={cn("w-full", isCollapsed ? "justify-center" : "justify-start gap-2")}>
-                                    <Link href="/explore/vendor">
-                                        <Search className="h-4 w-4" />
-                                        {!isCollapsed && "Explore Vendors"}
-                                    </Link>
-                                </Button>
-                                <Button
-                                    onClick={() => setIsChatOpen(true)}
-                                    className={cn("w-full", isCollapsed ? "justify-center" : "justify-start gap-2")}
-                                >
-                                    <Sparkles className="h-4 w-4" />
-                                    {!isCollapsed && "Open Assistant"}
-                                </Button>
-                            </div>
+                            {!isCollapsed ? (
+                                <div className="pt-3 mt-3 border-t border-sidebar-border">
+                                    <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Conversation History</p>
+                                    <div className="space-y-1.5">
+                                        {conversationLogs.length === 0 ? (
+                                            <p className="text-xs text-muted-foreground">No logs yet. Start in AI Workspace Live.</p>
+                                        ) : (
+                                            conversationLogs.slice(0, 8).map((log) => (
+                                                <Link
+                                                    key={log.id}
+                                                    href="/dashboard/overview"
+                                                    className="block rounded-md border border-sidebar-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
+                                                >
+                                                    <p className="text-[10px] uppercase text-muted-foreground">{log.role === "ai" ? "AI" : "You"}</p>
+                                                    <p className="text-xs leading-4 line-clamp-2">{log.content}</p>
+                                                </Link>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            ) : null}
                         </CardContent>
                     </Card>
                 </aside>
@@ -127,17 +117,12 @@ export default function DashboardLayout({
                             <Menu className="h-4 w-4" />
                         </Button>
                         <p className="font-medium">{pageTitle}</p>
-                        <Button variant="outline" size="icon" onClick={() => setIsChatOpen(true)}>
-                            <Sparkles className="h-4 w-4" />
-                        </Button>
+                        <div />
                     </div>
 
                     <div>
-                        <p className="text-sm text-muted-foreground">Client Workspace</p>
-                        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Manage every step of your transaction in one place.</h1>
-                        <p className="text-muted-foreground mt-2 max-w-3xl">
-                            Navigate instantly between deal progress, listings, action items, agents, vendors, and market discovery.
-                        </p>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">Client Workspace</p>
+                        <h1 className="text-2xl font-semibold tracking-tight">{pageTitle}</h1>
                     </div>
 
                     {children}
@@ -151,7 +136,7 @@ export default function DashboardLayout({
                         aria-label="Close menu"
                         onClick={() => setIsMobileOpen(false)}
                     />
-                    <div className="absolute left-0 top-0 h-full w-[290px] bg-background border-r border-white/10 p-4">
+                    <div className="absolute left-0 top-0 h-full w-[290px] bg-background border-r border-border p-4">
                         <div className="flex items-center justify-between mb-4">
                             <div>
                                 <p className="text-sm text-muted-foreground">Client Dashboard</p>
@@ -184,27 +169,27 @@ export default function DashboardLayout({
                             })}
                         </div>
 
-                        <div className="pt-4 mt-4 border-t border-white/10 space-y-2">
-                            <Button asChild variant="outline" className="w-full justify-start gap-2" onClick={() => setIsMobileOpen(false)}>
-                                <Link href="/explore/agent">
-                                    <Users className="h-4 w-4" /> Explore Agents
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline" className="w-full justify-start gap-2" onClick={() => setIsMobileOpen(false)}>
-                                <Link href="/explore/vendor">
-                                    <Search className="h-4 w-4" /> Explore Vendors
-                                </Link>
-                            </Button>
-                            <Button
-                                className="w-full justify-start gap-2"
-                                onClick={() => {
-                                    setIsMobileOpen(false);
-                                    setIsChatOpen(true);
-                                }}
-                            >
-                                <Sparkles className="h-4 w-4" /> Open Assistant
-                            </Button>
+                        <div className="pt-3 mt-3 border-t border-border">
+                            <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Conversation History</p>
+                            <div className="space-y-1.5">
+                                {conversationLogs.length === 0 ? (
+                                    <p className="text-xs text-muted-foreground">No logs yet.</p>
+                                ) : (
+                                    conversationLogs.slice(0, 5).map((log) => (
+                                        <Link
+                                            key={log.id}
+                                            href="/dashboard/overview"
+                                            onClick={() => setIsMobileOpen(false)}
+                                            className="block rounded-md border border-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
+                                        >
+                                            <p className="text-[10px] uppercase text-muted-foreground">{log.role === "ai" ? "AI" : "You"}</p>
+                                            <p className="text-xs leading-4 line-clamp-2">{log.content}</p>
+                                        </Link>
+                                    ))
+                                )}
+                            </div>
                         </div>
+
                     </div>
                 </div>
             )}

@@ -19,6 +19,9 @@ import {
     Sparkles,
 } from "lucide-react";
 import { MOCK_LISTINGS } from "@/lib/mock-data";
+import {
+    useWorkspaceAiStore,
+} from "@/lib/workspace-ai-store";
 
 export type ClientDetailKey =
     | "journey_tracker"
@@ -28,55 +31,150 @@ export type ClientDetailKey =
     | "search_criteria"
     | "what_if_simulator";
 
+export type IntentType = "buy" | "sell" | "rent_out" | "renting";
+
+export type JourneyStage =
+    | "searching"
+    | "touring"
+    | "listed"
+    | "offers"
+    | "under_contract"
+    | "leased"
+    | "active_tenancy"
+    | "closed";
+
+export interface ClientJourney {
+    id: string;
+    clientId: string;
+    propertyId: string;
+    intentType: IntentType;
+    stage: JourneyStage;
+    monetaryImpactEstimate: number;
+    urgencyScore: number;
+    label: string;
+    primaryMetrics: Array<{
+        label: string;
+        value: string;
+    }>;
+    nextDueDate?: string;
+}
+
+export interface ClientDashboardSnapshot {
+    clientId: string;
+    journeys: ClientJourney[];
+    intentsSummary: {
+        buyCount: number;
+        sellCount: number;
+        rentOutCount: number;
+        rentingCount: number;
+    };
+    prioritizedJourneys: ClientJourney[];
+    totals: {
+        potentialPurchaseVolume: number;
+        potentialSaleProceeds: number;
+        monthlyRentIn: number;
+        monthlyRentOut: number;
+    };
+}
+
 export type ClientDetailSelection = {
     key: ClientDetailKey;
     title: string;
     summary: string;
+    intentType?: IntentType;
+    listingId?: string;
 };
 
-const journeySteps = [
-    { label: "Pre-Approval", status: "done", detail: "Letter verified" },
-    { label: "Search", status: "active", detail: "14 matches this week" },
-    { label: "Tour", status: "upcoming", detail: "2 pending requests" },
-    { label: "Offer", status: "upcoming", detail: "Offer strategy prepared" },
-    { label: "Closing", status: "upcoming", detail: "Timeline estimate: 31 days" }
-] as const;
+export const INTENT_LABEL: Record<IntentType, string> = {
+    buy: "Buying",
+    sell: "Selling",
+    rent_out: "Renting Out",
+    renting: "Renting",
+};
 
-const actionQueue = [
-    {
-        title: "Upload latest pre-approval letter",
-        reason: "3 shortlisted homes require proof of funds before scheduling tours.",
-        confidence: "High",
-        due: "Today"
-    },
-    {
-        title: "Review counter-offer summary",
-        reason: "Seller moved 2.1% on price and requested a 14-day inspection window.",
-        confidence: "Medium",
-        due: "In 20 hours"
-    },
-    {
-        title: "Book inspection vendor",
-        reason: "The accepted offer in Austin needs inspection booked before Monday.",
-        confidence: "High",
-        due: "By Monday"
+export const STAGE_TONE: Record<JourneyStage, string> = {
+    searching: "border-blue-500/30 text-blue-300",
+    touring: "border-sky-500/30 text-sky-300",
+    listed: "border-amber-500/30 text-amber-300",
+    offers: "border-purple-500/30 text-purple-300",
+    under_contract: "border-indigo-500/30 text-indigo-300",
+    leased: "border-green-500/30 text-green-300",
+    active_tenancy: "border-emerald-500/30 text-emerald-300",
+    closed: "border-zinc-500/30 text-zinc-300",
+};
+
+export const formatCompactCurrency = (value: number) => {
+    if (value >= 1000000000) {
+        return "$" + (value / 1000000000).toFixed(1) + "B";
     }
-] as const;
-
-const quickStats = [
-    { label: "Open Deals", value: "2", helper: "1 buy-side, 1 sell-side", icon: Handshake, detailKey: "deal_room" as const },
-    { label: "New Matches", value: "14", helper: "Past 7 days", icon: Compass, detailKey: "new_matches" as const },
-    { label: "Deadline Alerts", value: "3", helper: "Needs attention", icon: CalendarClock, detailKey: "journey_tracker" as const },
-    { label: "Budget Health", value: "On Track", helper: "Within target range", icon: CircleDollarSign, detailKey: "what_if_simulator" as const }
-] as const;
+    if (value >= 1000000) {
+        return "$" + (value / 1000000).toFixed(1) + "M";
+    }
+    if (value >= 1000) {
+        return "$" + (value / 1000).toFixed(1) + "K";
+    }
+    return "$" + value.toFixed(0);
+};
 
 export function OverviewSection({
+    snapshot,
     onOpenAI,
     onExploreDetail,
 }: {
-    onOpenAI: () => void;
+    snapshot: ClientDashboardSnapshot;
+    onOpenAI: (context?: { intentType?: IntentType; listingId?: string }) => void;
     onExploreDetail: (detail: ClientDetailSelection) => void;
 }) {
+    const { prioritizedJourneys, intentsSummary, totals } = snapshot;
+    const primaryJourney = prioritizedJourneys[0];
+    const activeJourneyCount = prioritizedJourneys.length;
+    const activeIntentCount = [
+        intentsSummary.buyCount,
+        intentsSummary.sellCount,
+        intentsSummary.rentOutCount,
+        intentsSummary.rentingCount,
+    ].filter((count) => count > 0).length;
+    const intentBreakdown = `${intentsSummary.buyCount} buy • ${intentsSummary.sellCount} sell • ${intentsSummary.rentOutCount} rent_out • ${intentsSummary.rentingCount} renting`;
+
+    const quickStats = [
+        {
+            label: "Open Journeys",
+            value: String(activeJourneyCount),
+            helper: `${activeIntentCount} active intent lanes`,
+            icon: Handshake,
+            detailKey: "journey_tracker" as const,
+        },
+        {
+            label: "Intent Mix",
+            value: intentBreakdown,
+            helper: "Portfolio-level intent coverage",
+            icon: Compass,
+            detailKey: "search_criteria" as const,
+        },
+        {
+            label: "High Priority",
+            value: String(prioritizedJourneys.filter((j) => j.urgencyScore >= 70).length),
+            helper: "Urgency score >= 70",
+            icon: CalendarClock,
+            detailKey: "weekly_plan" as const,
+        },
+        {
+            label: "Financial Surface",
+            value: formatCompactCurrency(totals.potentialPurchaseVolume + totals.potentialSaleProceeds),
+            helper: "Buy + sell capital exposure",
+            icon: CircleDollarSign,
+            detailKey: "what_if_simulator" as const,
+        },
+    ] as const;
+
+    const actionQueue = prioritizedJourneys.slice(0, 3).map((journey) => ({
+        title: `${INTENT_LABEL[journey.intentType]}: ${journey.label}`,
+        reason: `Stage "${journey.stage}" has urgency ${journey.urgencyScore}. Focus this lane next.`,
+        confidence: journey.urgencyScore >= 80 ? "High" : journey.urgencyScore >= 60 ? "Medium" : "Low",
+        due: journey.nextDueDate ? new Date(journey.nextDueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Review now",
+        journey,
+    }));
+
     return (
         <div className="space-y-8">
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -97,6 +195,8 @@ export function OverviewSection({
                                     key: stat.detailKey,
                                     title: stat.label,
                                     summary: stat.helper,
+                                    intentType: primaryJourney?.intentType,
+                                    listingId: primaryJourney?.propertyId,
                                 })
                             }
                             aria-label={`Open ${stat.label}`}
@@ -114,69 +214,68 @@ export function OverviewSection({
                 onReviewMatches={() =>
                     onExploreDetail({
                         key: "new_matches",
-                        title: "Review 3 New Matches",
+                        title: `Review Priority Matches${primaryJourney ? ` (${INTENT_LABEL[primaryJourney.intentType]})` : ""}`,
                         summary: "Inspect top matched homes and decide next actions.",
+                        intentType: primaryJourney?.intentType,
+                        listingId: primaryJourney?.propertyId,
                     })
                 }
                 onUpdateSearchCriteria={() =>
                     onExploreDetail({
                         key: "search_criteria",
                         title: "Update Search Criteria",
-                        summary: "Refine budget, location, and must-have filters.",
+                        summary: "Refine filters by active intent lanes and urgency.",
+                        intentType: primaryJourney?.intentType,
+                        listingId: primaryJourney?.propertyId,
                     })
                 }
             />
 
             <div className="grid gap-6 lg:grid-cols-5">
                 <GradientSkewCard
-                    title="Journey Tracker"
-                    description="Track where you are in the transaction process and what is blocked."
+                    title="Multi-Intent Journey Tracker"
+                    description="One card per active journey, ranked by urgency and monetary impact."
                     gradientFrom="#03a9f4"
                     gradientTo="#ff0058"
                     showGradient={false}
                     className="lg:col-span-3 min-h-[420px]"
                 >
                     <div className="relative z-30 mt-4 space-y-3">
-                        {journeySteps.map((step, index) => (
+                        {prioritizedJourneys.slice(0, 5).map((journey, index) => (
                             <div
-                                key={step.label}
+                                key={journey.id}
                                 className="rounded-lg border border-white/15 bg-black/25 p-3 cursor-pointer hover:border-primary/30 transition-colors"
                                 onClick={() =>
                                     onExploreDetail({
                                         key: "journey_tracker",
-                                        title: `Journey Step: ${step.label}`,
-                                        summary: step.detail,
+                                        title: journey.label,
+                                        summary: `${INTENT_LABEL[journey.intentType]} lane in "${journey.stage}" stage.`,
+                                        intentType: journey.intentType,
+                                        listingId: journey.propertyId,
                                     })
                                 }
                             >
                                 <div className="flex items-center justify-between gap-3">
                                     <div className="flex items-center gap-3">
                                         <div
-                                            className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold ${step.status === "done"
-                                                    ? "bg-green-500/20 text-green-300"
-                                                    : step.status === "active"
-                                                        ? "bg-blue-500/20 text-blue-300"
-                                                        : "bg-white/10 text-muted-foreground"
-                                                }`}
+                                            className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-semibold bg-white/10 text-muted-foreground"
                                         >
                                             {index + 1}
                                         </div>
                                         <div>
-                                            <p className="font-medium">{step.label}</p>
-                                            <p className="text-sm text-muted-foreground">{step.detail}</p>
+                                            <p className="font-medium">{journey.label}</p>
+                                            <p className="text-sm text-muted-foreground">{INTENT_LABEL[journey.intentType]} • {journey.stage}</p>
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                                {journey.primaryMetrics.slice(0, 3).map((metric) => (
+                                                    <Badge key={`${journey.id}-${metric.label}`} variant="outline" className="border-white/20 text-xs">
+                                                        {metric.label}: {metric.value}
+                                                    </Badge>
+                                                ))}
+                                            </div>
                                         </div>
                                     </div>
-                                    <Badge
-                                        variant="outline"
-                                        className={
-                                            step.status === "done"
-                                                ? "border-green-500/30 text-green-300"
-                                                : step.status === "active"
-                                                    ? "border-blue-500/30 text-blue-300"
-                                                    : "border-white/20 text-muted-foreground"
-                                        }
-                                    >
-                                        {step.status === "done" ? "Complete" : step.status === "active" ? "In Progress" : "Upcoming"}
+                                    <Badge variant="outline" className={STAGE_TONE[journey.stage]}>
+                                        {journey.stage}
                                     </Badge>
                                 </div>
                             </div>
@@ -186,7 +285,7 @@ export function OverviewSection({
 
                 <GradientSkewCard
                     title="Priority Action Center"
-                    description="Recommendations ranked by urgency and confidence."
+                    description="Recommendations generated from the highest-priority journeys."
                     gradientFrom="#4dff03"
                     gradientTo="#00d0ff"
                     showGradient={false}
@@ -213,6 +312,8 @@ export function OverviewSection({
                                                 key: "weekly_plan",
                                                 title: task.title,
                                                 summary: task.reason,
+                                                intentType: task.journey.intentType,
+                                                listingId: task.journey.propertyId,
                                             })
                                         }
                                     >
@@ -223,11 +324,16 @@ export function OverviewSection({
                         ))}
                         <Button
                             onClick={() => {
-                                onOpenAI();
+                                onOpenAI({
+                                    intentType: primaryJourney?.intentType,
+                                    listingId: primaryJourney?.propertyId,
+                                });
                                 onExploreDetail({
                                     key: "weekly_plan",
                                     title: "Build Weekly Plan",
-                                    summary: "Generate and review this week’s transaction checklist.",
+                                    summary: "Generate and review this week’s workflow checklist by intent.",
+                                    intentType: primaryJourney?.intentType,
+                                    listingId: primaryJourney?.propertyId,
                                 });
                             }}
                             className="w-full gap-2"
@@ -241,66 +347,45 @@ export function OverviewSection({
             <div className="grid gap-6 lg:grid-cols-2">
                 <GradientSkewCard
                     title="Deal Room Snapshot"
-                    description="Deadlines, paperwork, and negotiation updates from your active deals."
+                    description="Cross-intent deadlines, documents, and negotiation updates."
                     gradientFrom="#ffbc00"
                     gradientTo="#ff0058"
                     showGradient={false}
                     className="min-h-[420px]"
                 >
                     <div className="relative z-30 mt-4 space-y-3">
-                        <div className="flex items-start justify-between gap-3 rounded-lg border border-amber-500/20 bg-amber-500/10 p-3">
-                            <div>
-                                <p className="font-medium">Earnest money confirmation pending</p>
-                                <p className="text-sm text-muted-foreground">Austin offer accepted on 82 Pine Street.</p>
+                        {prioritizedJourneys.slice(0, 3).map((journey, index) => (
+                            <div key={journey.id} className={`flex items-start justify-between gap-3 rounded-lg border p-3 ${index === 0 ? "border-amber-500/20 bg-amber-500/10" : "border-white/10"}`}>
+                                <div>
+                                    <p className="font-medium">{journey.label}</p>
+                                    <p className="text-sm text-muted-foreground">
+                                        {INTENT_LABEL[journey.intentType]} lane • {journey.stage} • Urgency {journey.urgencyScore}
+                                    </p>
+                                </div>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7"
+                                    onClick={() =>
+                                        onExploreDetail({
+                                            key: "deal_room",
+                                            title: journey.label,
+                                            summary: "Review documents, deadlines, and collaboration history for this journey.",
+                                            intentType: journey.intentType,
+                                            listingId: journey.propertyId,
+                                        })
+                                    }
+                                >
+                                    Open
+                                </Button>
                             </div>
-                            <Badge className="bg-amber-500/20 text-amber-200 hover:bg-amber-500/20">Urgent</Badge>
-                        </div>
-                        <div className="flex items-start justify-between gap-3 rounded-lg border border-white/10 p-3">
-                            <div>
-                                <p className="font-medium">Seller disclosure reviewed</p>
-                                <p className="text-sm text-muted-foreground">2 clauses flagged to verify with attorney.</p>
-                            </div>
-                            <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-7"
-                                onClick={() =>
-                                    onExploreDetail({
-                                        key: "deal_room",
-                                        title: "Seller Disclosure Review",
-                                        summary: "Two contract clauses require legal confirmation.",
-                                    })
-                                }
-                            >
-                                Open
-                            </Button>
-                        </div>
-                        <div className="flex items-start justify-between gap-3 rounded-lg border border-white/10 p-3">
-                            <div>
-                                <p className="font-medium">Tour confirmed for Sunday 11:30 AM</p>
-                                <p className="text-sm text-muted-foreground">Listed by Sarah Jenkins in Beverly Hills.</p>
-                            </div>
-                            <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-7"
-                                onClick={() =>
-                                    onExploreDetail({
-                                        key: "deal_room",
-                                        title: "Tour Appointment Details",
-                                        summary: "Review attendee list, notes, and confirmation timeline.",
-                                    })
-                                }
-                            >
-                                Details
-                            </Button>
-                        </div>
+                        ))}
                     </div>
                 </GradientSkewCard>
 
                 <GradientSkewCard
                     title="Financial Clarity"
-                    description="Understand payment impact, closing costs, and market movement."
+                    description="Intent-aware budget, sale, and rental exposure in one view."
                     gradientFrom="#4dff03"
                     gradientTo="#00d0ff"
                     showGradient={false}
@@ -308,18 +393,18 @@ export function OverviewSection({
                 >
                     <div className="relative z-30 mt-4 space-y-4">
                         <div className="rounded-lg border border-white/10 bg-black/25 p-3">
-                            <p className="text-sm text-muted-foreground">Estimated monthly payment</p>
-                            <p className="mt-1 text-3xl font-bold">$4,860</p>
-                            <p className="mt-1 text-xs text-green-400">If rates drop 0.5%, payment could be around $4,590.</p>
+                            <p className="text-sm text-muted-foreground">Potential Purchase Volume</p>
+                            <p className="mt-1 text-3xl font-bold">{formatCompactCurrency(totals.potentialPurchaseVolume)}</p>
+                            <p className="mt-1 text-xs text-green-400">Primary lane: {primaryJourney ? INTENT_LABEL[primaryJourney.intentType] : "N/A"}.</p>
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                             <div className="rounded-lg border border-white/10 p-3">
-                                <p className="text-xs text-muted-foreground">Closing Cost Range</p>
-                                <p className="mt-1 font-semibold">$21k - $29k</p>
+                                <p className="text-xs text-muted-foreground">Potential Sale Proceeds</p>
+                                <p className="mt-1 font-semibold">{formatCompactCurrency(totals.potentialSaleProceeds)}</p>
                             </div>
                             <div className="rounded-lg border border-white/10 p-3">
-                                <p className="text-xs text-muted-foreground">Offer Confidence</p>
-                                <p className="mt-1 font-semibold">74%</p>
+                                <p className="text-xs text-muted-foreground">Net Monthly Rent</p>
+                                <p className="mt-1 font-semibold">{formatCompactCurrency(totals.monthlyRentIn - totals.monthlyRentOut)}</p>
                             </div>
                         </div>
                         <Button
@@ -329,7 +414,9 @@ export function OverviewSection({
                                 onExploreDetail({
                                     key: "what_if_simulator",
                                     title: "What-If Simulator",
-                                    summary: "Model how rate, down payment, and offer price affect monthly cost.",
+                                    summary: "Model scenarios for buy, sell, rent_out, and renting lanes.",
+                                    intentType: primaryJourney?.intentType,
+                                    listingId: primaryJourney?.propertyId,
                                 })
                             }
                         >
@@ -343,52 +430,100 @@ export function OverviewSection({
 }
 
 export function ListingsSection() {
+    const { listings: aiListings } = useWorkspaceAiStore();
+
     const listingA = MOCK_LISTINGS[0];
     const listingB = MOCK_LISTINGS[1] ?? MOCK_LISTINGS[0];
     const listingC = MOCK_LISTINGS[2] ?? MOCK_LISTINGS[0];
 
+    const mergedListings = [
+        ...aiListings.map((listing) => ({
+            id: listing.id,
+            title: listing.title,
+            location: listing.location,
+            price: listing.price,
+            status: listing.status,
+            views: 0,
+            offers: 0,
+            agentName: "AI Workspace",
+            agentImage: "",
+            href: "/explore/agent/listing/prop-1",
+        })),
+        {
+            id: listingA.id,
+            title: listingA.title,
+            location: listingA.location,
+            price: `$${listingA.price.toLocaleString()}`,
+            status: listingA.status as "Active" | "Pending" | "Sold",
+            views: 1240,
+            offers: listingA.offers,
+            agentName: "Sarah Connor",
+            agentImage: "",
+            href: `/explore/agent/listing/${listingA.id}`,
+        },
+        {
+            id: listingB.id,
+            title: listingB.title,
+            location: listingB.location,
+            price: `$${listingB.price.toLocaleString()}`,
+            status: listingB.status as "Active" | "Pending" | "Sold",
+            views: 3500,
+            offers: listingB.offers,
+            agentName: "John Smith",
+            agentImage: "",
+            href: `/explore/agent/listing/${listingB.id}`,
+        },
+        {
+            id: listingC.id,
+            title: listingC.title,
+            location: listingC.location,
+            price: `$${listingC.price.toLocaleString()}`,
+            status: listingC.status as "Active" | "Pending" | "Sold",
+            views: 1680,
+            offers: listingC.offers,
+            agentName: "Elena Rodriguez",
+            agentImage: "",
+            href: `/explore/agent/listing/${listingC.id}`,
+        },
+    ];
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            <ListingCard
-                title={listingA.title}
-                location={listingA.location}
-                price={`$${listingA.price.toLocaleString()}`}
-                status={listingA.status as "Active" | "Pending" | "Sold"}
-                views={1240}
-                offers={listingA.offers}
-                agentName="Sarah Connor"
-                agentImage=""
-                href={`/explore/agent/listing/${listingA.id}`}
-            />
-            <ListingCard
-                title={listingB.title}
-                location={listingB.location}
-                price={`$${listingB.price.toLocaleString()}`}
-                status={listingB.status as "Active" | "Pending" | "Sold"}
-                views={3500}
-                offers={listingB.offers}
-                agentName="John Smith"
-                agentImage=""
-                href={`/explore/agent/listing/${listingB.id}`}
-            />
-            <ListingCard
-                title={listingC.title}
-                location={listingC.location}
-                price={`$${listingC.price.toLocaleString()}`}
-                status={listingC.status as "Active" | "Pending" | "Sold"}
-                views={1680}
-                offers={listingC.offers}
-                agentName="Elena Rodriguez"
-                agentImage=""
-                href={`/explore/agent/listing/${listingC.id}`}
-            />
+            {mergedListings.map((listing) => (
+                <ListingCard
+                    key={listing.id}
+                    title={listing.title}
+                    location={listing.location}
+                    price={listing.price}
+                    status={listing.status}
+                    views={listing.views}
+                    offers={listing.offers}
+                    agentName={listing.agentName}
+                    agentImage={listing.agentImage}
+                    href={listing.href}
+                />
+            ))}
         </div>
     );
 }
 
 export function PlansSection() {
+    const { buyingPlans: aiPlans } = useWorkspaceAiStore();
+
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {aiPlans.map((plan) => (
+                <IntentCard
+                    key={plan.id}
+                    title={plan.title}
+                    location={plan.location}
+                    budget={plan.budget}
+                    matchScore={plan.matchScore}
+                    status={plan.status}
+                    agentName="AI Workspace"
+                    listingHref="/explore/agent/listing/prop-1"
+                />
+            ))}
             <IntentCard
                 title="Waterfront Condo"
                 location="Miami, FL"
@@ -396,6 +531,8 @@ export function PlansSection() {
                 matchScore={94}
                 status="Searching"
                 agentName="Mike Ross"
+                matchesHref="/dashboard/plans/waterfront-condo"
+                listingHref="/explore/agent/listing/prop-5"
             />
             <IntentCard
                 title="Suburban Family Home"
@@ -404,6 +541,8 @@ export function PlansSection() {
                 matchScore={88}
                 status="Negotiating"
                 agentName="Jessica Pearson"
+                matchesHref="/dashboard/plans/suburban-family-home"
+                listingHref="/explore/agent/listing/prop-4"
             />
             <IntentCard
                 title="Move-In Ready Townhome"
@@ -412,6 +551,8 @@ export function PlansSection() {
                 matchScore={81}
                 status="Searching"
                 agentName="Sarah Jenkins"
+                matchesHref="/dashboard/plans/move-in-ready-townhome"
+                listingHref="/explore/agent/listing/prop-6"
             />
         </div>
     );

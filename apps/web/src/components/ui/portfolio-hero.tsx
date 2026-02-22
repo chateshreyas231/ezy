@@ -156,14 +156,13 @@ export default function PortfolioHero({
           <button
             type="button"
             onClick={() => setIsDark((v) => !v)}
-            className="relative w-16 h-8 rounded-full hover:opacity-80 transition-opacity"
-            style={{ backgroundColor: isDark ? "hsl(0 0% 15%)" : "hsl(0 0% 90%)" }}
+            className="relative w-16 h-8 rounded-full border border-neutral-300 bg-white hover:opacity-90 transition-opacity shadow-sm"
             aria-label="Toggle hero theme"
           >
             <div
               className="absolute top-1 left-1 w-6 h-6 rounded-full transition-transform duration-300"
               style={{
-                backgroundColor: isDark ? "hsl(0 0% 100%)" : "hsl(0 0% 10%)",
+                backgroundColor: "hsl(0 0% 10%)",
                 transform: isDark ? "translateX(2rem)" : "translateX(0)",
               }}
             />

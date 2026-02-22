@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { AgentBadge } from "./agent-badge";
 import { Sparkles, Target, Radar, ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 interface IntentCardProps {
     title: string;
@@ -12,6 +13,8 @@ interface IntentCardProps {
     status: "Searching" | "Negotiating" | "Closed";
     agentName: string;
     agentImage?: string;
+    matchesHref?: string;
+    listingHref?: string;
 }
 
 export function IntentCard({
@@ -22,9 +25,18 @@ export function IntentCard({
     status,
     agentName,
     agentImage,
+    matchesHref,
+    listingHref,
 }: IntentCardProps) {
     return (
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative">
+        <Card className="bg-card border-border backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative">
+            {listingHref ? (
+                <Link
+                    href={listingHref}
+                    aria-label={`Open ${title} listing details`}
+                    className="absolute inset-0 z-10"
+                />
+            ) : null}
             <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-blue-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <CardHeader className="pb-3">
@@ -58,14 +70,14 @@ export function IntentCard({
                         </span>
                         <span className="text-lg font-bold text-foreground">{matchScore}%</span>
                     </div>
-                    <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden relative z-10">
+                    <div className="h-2 w-full bg-muted/50 rounded-full overflow-hidden relative z-10">
                         <div
                             className="h-full bg-gradient-to-r from-purple-500 via-blue-500 to-cyan-400 animate-pulse"
                             style={{ width: `${matchScore}%` }}
                         />
                     </div>
 
-                    <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between text-xs relative z-10">
+                    <div className="mt-3 pt-3 border-t border-border/50 flex items-center justify-between text-xs relative z-10">
                         <span className="text-muted-foreground flex items-center gap-1.5">
                             <Radar className="h-3 w-3 animate-spin-slow text-blue-400" />
                             Monitoring 1,240 listings...
@@ -74,11 +86,19 @@ export function IntentCard({
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="pt-3 border-t border-white/5 flex justify-between items-center bg-white/2">
-                <AgentBadge name={agentName} image={agentImage} role="Preferred Agent" />
-                <Button size="sm" variant="ghost" className="text-xs hover:bg-white/10 group-hover:text-primary transition-colors">
-                    View Matches <ArrowRight className="h-3 w-3 ml-1" />
-                </Button>
+            <CardFooter className="pt-3 border-t border-border/50 flex justify-between items-center bg-muted/20 relative z-20">
+                <AgentBadge name={agentName} image={agentImage} role="Participating Agent" />
+                {matchesHref ? (
+                    <Button asChild size="sm" variant="ghost" className="text-xs hover:bg-accent group-hover:text-primary transition-colors">
+                        <Link href={matchesHref}>
+                            View Matches <ArrowRight className="h-3 w-3 ml-1" />
+                        </Link>
+                    </Button>
+                ) : (
+                    <Button size="sm" variant="ghost" className="text-xs hover:bg-accent group-hover:text-primary transition-colors">
+                        View Matches <ArrowRight className="h-3 w-3 ml-1" />
+                    </Button>
+                )}
             </CardFooter>
         </Card>
     );

@@ -98,13 +98,24 @@ export default function IntentDetail() {
                 {/* Matches Section */}
                 <View className="mb-20">
                     <Text className="text-white text-lg font-semibold mb-4">Top Matches</Text>
-                    {/* Horizontal Listing Cards would go here */}
                     <GlassCard className="p-0">
                         <View className="h-40 bg-white/10 w-full" />
                         <View className="p-4">
                             <Text className="text-white text-lg font-bold">$795,000</Text>
                             <Text className="text-white/70">89 Elm St, Chicago</Text>
-                            <GlassButton variant="primary" title="Book Tour" className="mt-4" />
+                            <View className="flex-row mt-4">
+                                <GlassButton
+                                    variant="primary"
+                                    title="View Matches"
+                                    className="flex-1 mr-2"
+                                    onPress={() => router.push(`/(client)/intents/${id}/matches`)}
+                                />
+                                <GlassButton
+                                    variant="glass"
+                                    title="Book Tour"
+                                    className="flex-1 ml-2"
+                                />
+                            </View>
                         </View>
                     </GlassCard>
                 </View>

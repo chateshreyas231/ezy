@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 
 export default function ButtonDemoPage() {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-neutral-900 gap-12 p-8 dark">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-background gap-12 p-8">
             <div className="flex flex-col items-center gap-6">
-                <h1 className="text-3xl font-bold text-white mb-4">Standard Buttons (Replaced Liquid)</h1>
-                <div className="relative h-[200px] w-full max-w-[800px] flex items-center justify-center border border-white/10 rounded-xl bg-black/20">
+                <h1 className="text-3xl font-bold text-foreground mb-4">Standard Buttons (Replaced Liquid)</h1>
+                <div className="relative h-[200px] w-full max-w-[800px] flex items-center justify-center border border-border rounded-xl bg-card/40">
                     <Button size="lg">
                         Liquid Glass (Replaced)
                     </Button>
@@ -18,7 +18,7 @@ export default function ButtonDemoPage() {
             </div>
 
             <div className="flex flex-col items-center gap-6">
-                <h1 className="text-3xl font-bold text-white mb-4">Standard Buttons (Replaced Metal)</h1>
+                <h1 className="text-3xl font-bold text-foreground mb-4">Standard Buttons (Replaced Metal)</h1>
                 <div className="flex gap-6 flex-wrap justify-center">
                     <Button variant="secondary">Default Metal</Button>
                     <Button variant="default">Primary Metal</Button>

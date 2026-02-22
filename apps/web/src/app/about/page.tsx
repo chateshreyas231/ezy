@@ -11,14 +11,14 @@ export default function AboutPage() {
         {
           title: "Who We Are",
           body: [
-            "Ezriya is a real estate technology startup focused on simplifying complex transaction journeys. We combine modern product design, AI-assisted workflows, and role-based workspaces for every participant in a deal.",
+            "Ezriya is a real estate technology startup focused on simplifying complex deal journeys. We combine modern product design, AI-assisted workflows, and role-based workspaces for every participant in a deal.",
             "Our platform supports client portals, agent operations, brokerage coordination, and vendor marketplace execution from one unified system.",
           ],
         },
         {
           title: "Mission",
           body: [
-            "Our mission is to make every real estate transaction more transparent, more predictable, and easier to execute.",
+            "Our mission is to make every real estate journey more transparent, more predictable, and easier to navigate.",
             "We reduce context switching by centralizing communication, timelines, documents, and action plans across teams.",
           ],
         },

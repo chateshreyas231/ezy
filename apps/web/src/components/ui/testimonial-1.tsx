@@ -55,7 +55,7 @@ const testimonials = [
     name: "Ava Thompson",
     role: "Buyer Agent, Los Angeles",
     quote:
-      "Ezriya keeps my clients, listings, and deal tasks in one workflow. I spend more time closing and less time chasing updates.",
+      "Ezriya keeps my clients, listings, and deal next steps in one workflow. I spend more time on completion and less time chasing updates.",
     image:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=300&q=80",
   },
@@ -63,7 +63,7 @@ const testimonials = [
     name: "Noah Rivera",
     role: "Listing Agent, Austin",
     quote:
-      "Our handoffs are finally clear. Everyone sees the same next step, and transactions move faster with fewer surprises.",
+      "Our handoffs are finally clear. Everyone sees the same next step, and project steps move faster with fewer surprises.",
     image:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80",
   },

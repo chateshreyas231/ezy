@@ -45,28 +45,37 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-color-destructive-foreground: var(--destructive-foreground);
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --radius: 0.75rem;
+  --monolith-plaster: #fdfdfd;
+  --monolith-canvas: #ebebeb;
+  --monolith-chrome-light: #f8f9fa;
+  --monolith-chrome-dark: #d1d5db;
+  --monolith-shadow: rgba(0, 0, 0, 0.12);
+  --monolith-edge: rgba(255, 255, 255, 0.8);
+  --background: #ebebeb;
+  --foreground: #1a1a1a;
+  --card: #fdfdfd;
+  --card-foreground: #1a1a1a;
+  --popover: #fdfdfd;
+  --popover-foreground: #1a1a1a;
+  --primary: #111827;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f4f6;
+  --secondary-foreground: #1a1a1a;
+  --muted: #f3f4f6;
+  --muted-foreground: #6b7280;
+  --accent: #f5f5f5;
+  --accent-foreground: #1a1a1a;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --destructive-foreground: oklch(1 0 0);
+  --border: #d9d9d9;
+  --input: #d9d9d9;
+  --ring: #9ca3af;
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -89,6 +98,11 @@
   --info-text: #242424;
   --info-pattern-1: rgba(200, 200, 200, 0.1);
   --info-pattern-2: rgba(220, 220, 220, 0.1);
+  --color-1: 0 100% 63%;
+  --color-2: 270 100% 63%;
+  --color-3: 210 100% 63%;
+  --color-4: 195 100% 63%;
+  --color-5: 90 100% 63%;
 }
 
 .dark {
@@ -107,6 +121,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(1 0 0);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
@@ -141,6 +156,25 @@
 
   body {
     @apply bg-background text-foreground;
+    cursor: crosshair;
+    overflow-x: hidden;
+    font-family: var(--font-inter), sans-serif;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--monolith-canvas);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+  }
+
+  .mono {
+    font-family: var(--font-jetbrains-mono), monospace;
   }
 }
 
@@ -174,7 +208,56 @@
   }
 }
 
+@keyframes subtle-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes text-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes rainbow {
+  0% {
+    background-position: 0%;
+  }
+  100% {
+    background-position: 200%;
+  }
+}
+
 @layer components {
+  .plaster-texture {
+    background-color: var(--monolith-plaster);
+    position: relative;
+  }
+
+  .plaster-texture::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.03;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  .chrome-bar {
+    background: linear-gradient(90deg, #d1d5db 0%, #f9fafb 30%, #ffffff 50%, #f9fafb 70%, #d1d5db 100%);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
   .info-panel {
     border: 2px solid transparent;
     border-radius: 1rem;
@@ -193,5 +276,11 @@
       linear-gradient(45deg, var(--info-pattern-1) 25%, transparent 25%, transparent 75%, var(--info-pattern-2) 75%),
       linear-gradient(-45deg, var(--info-pattern-2) 25%, transparent 25%, transparent 75%, var(--info-pattern-1) 75%);
     background-size: 22px 22px;
+  }
+}
+
+@layer utilities {
+  .animate-rainbow {
+    animation: rainbow var(--speed, 2s) infinite linear;
   }
 }

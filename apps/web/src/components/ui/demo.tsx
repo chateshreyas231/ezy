@@ -1,5 +1,7 @@
-import Testimonial1 from "@/components/ui/testimonial-1";
+import HomePage from "@/components/ui/simple-ui";
 
-export default function DemoOne() {
-  return <Testimonial1 />;
-}
+const DemoOne = () => {
+  return <HomePage />;
+};
+
+export { DemoOne };

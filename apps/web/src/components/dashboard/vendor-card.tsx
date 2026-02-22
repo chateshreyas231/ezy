@@ -28,11 +28,11 @@ export function VendorCard({
     isVerified = false,
 }: VendorCardProps) {
     return (
-        <Card className="bg-white/5 border-white/10 backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative flex flex-col h-full">
+        <Card className="bg-card border-border backdrop-blur-sm overflow-hidden group hover:border-primary/20 transition-all relative flex flex-col h-full">
             <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
             <CardHeader className="pb-3 flex flex-row items-start gap-4">
-                <Avatar className="h-12 w-12 border border-white/10">
+                <Avatar className="h-12 w-12 border border-border">
                     <AvatarImage src={imageUrl} alt={name} />
                     <AvatarFallback>{name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
                 </Avatar>
@@ -60,13 +60,13 @@ export function VendorCard({
             <CardContent className="pb-3 flex-1">
                 <div className="flex flex-wrap gap-2 mb-4">
                     {specialties.map((specialty, index) => (
-                        <Badge key={index} variant="secondary" className="text-[10px] bg-white/5 hover:bg-white/10 text-muted-foreground border-white/5">
+                        <Badge key={index} variant="secondary" className="text-[10px] bg-muted/50 hover:bg-muted text-muted-foreground border-border/50">
                             {specialty}
                         </Badge>
                     ))}
                 </div>
             </CardContent>
-            <CardFooter className="pt-3 border-t border-white/5 flex gap-2 bg-white/2">
+            <CardFooter className="pt-3 border-t border-border/50 flex gap-2 bg-muted/20">
                 <Button className="flex-1 h-9 text-xs" variant="outline">
                     View Profile
                 </Button>

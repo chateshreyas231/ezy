@@ -11,7 +11,7 @@ export default function CareersPage() {
         {
           title: "Why Work With Us",
           body: [
-            "We are building mission-critical software for one of the world’s largest industries. Your work has immediate impact on real users and real transactions.",
+            "We are building mission-critical software for one of the world’s largest industries. Your work has immediate impact on real users and real outcomes.",
             "We value speed, product quality, ownership, and transparent communication across engineering, design, and go-to-market teams.",
           ],
         },

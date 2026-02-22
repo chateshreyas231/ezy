@@ -57,7 +57,7 @@ export default function AgentProfilePage() {
                 {/* 1. Cover Image (LinkedIn Style) */}
                 <div className="h-48 md:h-64 w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
                     <div className="absolute inset-0 bg-black/20" />
-                    <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+                    <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-card/20 rounded-full blur-3xl" />
                 </div>
 
                 {/* 2. Profile Header */}
@@ -202,7 +202,7 @@ export default function AgentProfilePage() {
                             <p className="text-muted-foreground leading-relaxed">
                                 I do not just sell homes; I curate lifestyles.
                                 <br /><br />
-                                With over 15 years of experience in the luxury real estate market of Los Angeles, James has built a reputation for his discretion, taste, and unparalleled negotiation skills. Specializing in off-market properties and celebrity estates, he brings a unique concierge approach to every transaction.
+                                With over 15 years of experience in the luxury real estate market of Los Angeles, James has built a reputation for his discretion, taste, and unparalleled strategy skills. Specializing in off-market properties and celebrity estates, he brings a unique concierge approach to every project.
                             </p>
                         </div>
 
@@ -212,7 +212,7 @@ export default function AgentProfilePage() {
                                 <p className="text-2xl font-bold">15+ Years</p>
                             </div>
                             <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
-                                <h4 className="font-semibold text-sm mb-1 text-muted-foreground">Transactions</h4>
+                                <h4 className="font-semibold text-sm mb-1 text-muted-foreground">Volume</h4>
                                 <p className="text-2xl font-bold">350+</p>
                             </div>
                             <div className="p-4 bg-muted/30 rounded-xl border border-border/50">
@@ -228,7 +228,7 @@ export default function AgentProfilePage() {
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold">Expertise</h3>
                             <div className="flex flex-wrap gap-2">
-                                {["Luxury Homes", "Waterfront", "Investment", "Relocation", "Staging", "Negotiation", "Architecture"].map(tag => (
+                                {["Luxury Homes", "Waterfront", "Investment", "Relocation", "Staging", "Strategy", "Architecture"].map(tag => (
                                     <Badge key={tag} variant="secondary" className="px-3 py-1">{tag}</Badge>
                                 ))}
                             </div>

@@ -4,6 +4,7 @@ import { DottedSurface } from "@/components/ui/dotted-surface";
 import { BlurFade } from "@/components/ui/blur-fade";
 import { CountAnimation } from "@/components/ui/count-animation";
 import { Button } from "@/components/ui/button";
+import { RainbowButton } from "@/components/ui/rainbow-button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
@@ -147,10 +148,10 @@ export default function LandingPage() {
                       className="bg-background/50 border-primary/20 focus-visible:ring-primary/30 h-11 backdrop-blur-sm"
                       required
                     />
-                    <Button type="submit" className="h-11 px-8 rounded-md font-medium group text-primary-foreground">
+                    <RainbowButton type="submit" className="h-11 px-8 rounded-md font-medium group">
                       Join Waitlist
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </Button>
+                    </RainbowButton>
                   </form>
                 ) : (
                   <div className="flex items-center gap-2 text-primary bg-primary/10 px-6 py-2 rounded-full border border-primary/20 animate-in fade-in zoom-in">
@@ -222,7 +223,7 @@ export default function LandingPage() {
         </motion.section>
 
         <motion.footer
-          className="w-full max-w-6xl mx-auto mt-8 rounded-2xl border border-white/10 bg-background/70 backdrop-blur-xl"
+          className="w-full max-w-6xl mx-auto mt-8 rounded-2xl border border-border bg-background/80 backdrop-blur-xl"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -278,7 +279,7 @@ export default function LandingPage() {
             </div>
           </div>
 
-          <div className="border-t border-white/10 px-6 py-4 flex flex-col gap-3">
+          <div className="border-t border-border px-6 py-4 flex flex-col gap-3">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
               <p className="text-xs text-muted-foreground/80">
                 © {new Date().getFullYear()} Ezriya, Inc. All rights reserved.
