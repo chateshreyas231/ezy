@@ -100,7 +100,7 @@ export default function LandingPage() {
       <div className="z-10 container relative mx-auto px-6 py-24 flex flex-col items-center gap-16">
 
         {/* Hero Section */}
-        <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center space-y-8 max-w-4xl mx-auto pt-8">
+        <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center space-y-8 max-w-5xl mx-auto pt-8">
           <BlurFade delay={0.05} inView>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs font-medium text-primary mb-4 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
