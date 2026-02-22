@@ -14,12 +14,14 @@ export function InfoPageLayout({
   subtitle,
   sections,
   updatedAt,
+  contactEmail = "connect@ezriya.com",
 }: {
   eyebrow: string;
   title: string;
   subtitle: string;
   sections: Section[];
   updatedAt: string;
+  contactEmail?: string;
 }) {
   return (
     <DottedSurface className="min-h-screen pt-24 pb-16 px-4 md:px-8">
@@ -48,8 +50,8 @@ export function InfoPageLayout({
 
         <div className="text-sm text-muted-foreground flex flex-wrap items-center gap-4">
           <span>Questions?</span>
-          <a href="mailto:connect@ezriya.com" className="text-foreground hover:underline">
-            connect@ezriya.com
+          <a href={`mailto:${contactEmail}`} className="text-foreground hover:underline">
+            {contactEmail}
           </a>
           <Link href="/" className="text-foreground hover:underline">
             Back to Home
