@@ -96,9 +96,9 @@ export default function AgentDetailPage() {
   const coverageAreas = [agent.location, "Downtown", "Waterfront", "Growth Corridor"];
   const modernStatsData = {
     freelancerCard: {
-      title: "Performance",
+      title: "Participant Metrics",
       timeFrame: "YTD",
-      metricLabel: "Closed Volume",
+      metricLabel: "Self-Reported Closed Volume",
       earnings: {
         amount: agent.stats.volume,
         change: 0,
@@ -110,8 +110,8 @@ export default function AgentDetailPage() {
         { value: recentDeals, label: "closed", subLabel: "last 90 days" },
       ] as [{ value: number; label: string; subLabel: string }, { value: number; label: string; subLabel: string }],
       ranking: {
-        place: `Top ${topRank} in brokerage`,
-        category: "based on closed volume",
+        place: `Brokerage cohort ${topRank}`,
+        category: "participant-submitted activity context",
         icon: <TrendingUp className="h-6 w-6 opacity-60" />,
       },
       availability: {
@@ -123,7 +123,7 @@ export default function AgentDetailPage() {
           return { level };
         }),
         label: `${agent.stats.active} active opportunities`,
-        helpText: `Deal pipeline includes ${agent.stats.active} active listings, ${recentDeals} recent closings (last 90 days), and qualified buyer demand from current lead flow.`,
+        helpText: `Participant-submitted pipeline includes ${agent.stats.active} active listings and ${recentDeals} recent closings (last 90 days).`,
       },
     },
     healthCard: {
@@ -156,11 +156,14 @@ export default function AgentDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end">
             <div className="lg:col-span-8">
               <Badge variant="outline" className="border-primary/25 bg-card/80 text-primary mono tracking-[0.18em] uppercase text-[10px]">
-                Agent Blueprint
+                Agent Profile
               </Badge>
               <h1 className="mt-3 text-4xl md:text-6xl font-bold tracking-tight">{agent.name}</h1>
               <p className="mt-2 text-muted-foreground text-lg">
-                High-performance advisor for buying, selling, and portfolio growth.
+                Participant-stated real estate services and experience areas.
+              </p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                All profile information is participant-submitted and provided for informational purposes only. Ezriya does not endorse, verify, or recommend agents and does not participate in pricing, negotiation, or transaction conduct.
               </p>
               <div className="mt-4 flex flex-wrap items-center gap-2 md:flex-nowrap md:justify-between">
                 <div className="flex flex-wrap items-center gap-2">
@@ -204,10 +207,10 @@ export default function AgentDetailPage() {
             </div>
 
             <div className="lg:col-span-4 rounded-2xl border border-primary/15 bg-card/75 p-5">
-              <p className="mono text-[10px] uppercase tracking-[0.2em] text-primary/70 mb-3">Real-Time Valuation</p>
+              <p className="mono text-[10px] uppercase tracking-[0.2em] text-primary/70 mb-3">Self-Reported Activity</p>
               <p className="text-3xl font-semibold">{formatMoney(agent.stats.volume)}</p>
               <div className="mt-2 flex items-center gap-2 text-sm text-emerald-600">
-                <TrendingUp className="h-4 w-4" /> +12.4% YOY Performance
+                <TrendingUp className="h-4 w-4" /> User-submitted year-over-year trend
               </div>
               <div className="mt-4 flex gap-2">
                 <Button className="flex-1">Message Agent</Button>
@@ -226,7 +229,7 @@ export default function AgentDetailPage() {
                 <Metric icon={<Users className="h-4 w-4" />} label="Closed Deals" value={`${agent.stats.sold}`} />
                 <Metric icon={<Building2 className="h-4 w-4" />} label="Active Listings" value={`${agent.stats.active}`} />
                 <Metric icon={<Star className="h-4 w-4" />} label="Rating" value={agent.rating.toFixed(1)} />
-                <Metric icon={<TrendingUp className="h-4 w-4" />} label="Close Rate" value={`${closeRate}%`} />
+                <Metric icon={<TrendingUp className="h-4 w-4" />} label="Completion Ratio" value={`${closeRate}%`} />
               </CardContent>
             </Card>
 
@@ -243,7 +246,7 @@ export default function AgentDetailPage() {
 
             <Card className={`${glassPanel} rounded-3xl`}>
               <CardContent className="p-5 space-y-3">
-                <p className="mono text-[10px] uppercase tracking-[0.2em] text-primary/70">Market Intel</p>
+                <p className="mono text-[10px] uppercase tracking-[0.2em] text-primary/70">Information</p>
                 <div className="rounded-xl border border-primary/10 bg-card/70 p-4">
                   <p className="text-sm text-muted-foreground">Average deal size</p>
                   <p className="text-xl font-semibold">{formatMoney(averageDeal)}</p>
@@ -253,8 +256,8 @@ export default function AgentDetailPage() {
                   <p className="text-xl font-semibold">{agent.experienceYears} years</p>
                 </div>
                 <div className="rounded-xl border border-primary/10 bg-card/70 p-4">
-                  <p className="text-sm text-muted-foreground">Network Strength</p>
-                  <p className="text-xl font-semibold">High</p>
+                  <p className="text-sm text-muted-foreground">Network Coverage</p>
+                  <p className="text-xl font-semibold">Participant-stated</p>
                 </div>
               </CardContent>
             </Card>
@@ -324,9 +327,9 @@ export default function AgentDetailPage() {
               <CardContent className="p-5 space-y-3">
                 <p className="mono text-[10px] uppercase tracking-[0.2em] text-primary/70">AI Assistant</p>
                 <div className="rounded-xl border border-primary/10 bg-card/70 p-4 text-sm text-muted-foreground">
-                  Ask about pricing strategy, listing match quality, and local deal velocity.
+                  Ask for information on participant metrics, listing details, and local activity signals.
                 </div>
-                <Button className="w-full"><MessageSquare className="mr-2 h-4 w-4" /> Start AI Brief</Button>
+                <Button className="w-full"><MessageSquare className="mr-2 h-4 w-4" /> Start AI Summary</Button>
                 <Button variant="outline" className="w-full"><Sparkles className="mr-2 h-4 w-4" /> Generate Prospectus</Button>
                 <Button variant="outline" className="w-full"><Globe className="mr-2 h-4 w-4" /> Share Public Profile</Button>
               </CardContent>
@@ -348,10 +351,10 @@ export default function AgentDetailPage() {
                 <h3 className="text-lg font-semibold mb-4">Client Reviews</h3>
                 <div className="grid grid-cols-1 gap-3">
                   {[
-                    "Very responsive and detailed from offer to close.",
-                    "Strong pricing strategy and smooth communication.",
-                    "Great market knowledge and negotiation support.",
-                    "Consistent follow-through and deal management.",
+                    "Communication was clear throughout the process.",
+                    "Responsive to questions and scheduling requests.",
+                    "Professional interactions across milestones.",
+                    "Consistent follow-through and workflow updates.",
                   ].map((quote) => (
                     <div key={quote} className="rounded-xl border border-primary/10 bg-card/70 p-4 text-sm text-muted-foreground">
                       {quote}
@@ -367,8 +370,8 @@ export default function AgentDetailPage() {
       </div>
 
       <ChatbotFab
-        title="Agent Concierge"
-        placeholder={`Ask about ${agent.name}'s listings, specialties, and network`}
+        title="Agent Information Assistant"
+        placeholder={`Ask for information about ${agent.name}'s listings, focus areas, and profile details`}
       />
     </DottedSurface>
   );

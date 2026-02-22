@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import SphereImageGrid, { ImageData } from "@/components/ui/image-sphere";
 import AgentChatInterface from "@/components/agent-chat-interface";
 import { MOCK_AGENTS, MOCK_LISTINGS } from "@/lib/mock-data";
@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Building2, MapPin, Trophy, Award, UserRoundCheck, ChevronLeft, ChevronRight, LayoutGrid, Globe, BarChart3, Activity } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Award, UserRoundCheck, ChevronLeft, ChevronRight, LayoutGrid, Globe, BarChart3, Activity } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FreelancerStatsCard } from "@/components/ui/stats-card";
@@ -18,9 +18,19 @@ export default function AgentExploreView() {
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedAgentId, setSelectedAgentId] = useState<string | null>(null);
     const [showExploreGrid, setShowExploreGrid] = useState(false);
+    const [viewportWidth, setViewportWidth] = useState<number>(1024);
 
-    // Transform MOCK_AGENTS to ImageData for the Sphere
-    // DUPLICATE DATA TO MAKE SPHERE DENSER
+    useEffect(() => {
+        const updateViewport = () => setViewportWidth(window.innerWidth);
+        updateViewport();
+        window.addEventListener("resize", updateViewport);
+        return () => window.removeEventListener("resize", updateViewport);
+    }, []);
+
+    const isMobile = viewportWidth < 768;
+
+    // Transform MOCK_AGENTS to ImageData for the sphere.
+    // Keep density controlled so the globe stays readable.
     const sphereImages: ImageData[] = useMemo(() => {
         const baseImages = MOCK_AGENTS.map((agent) => ({
             id: agent.id,
@@ -31,19 +41,29 @@ export default function AgentExploreView() {
             agentId: agent.id
         }));
 
-        // Create 3x duplicates for visual density
+        const duplicateCount = isMobile ? 0 : 1;
         let allImages = [...baseImages];
-        for (let i = 0; i < 3; i++) {
+        for (let i = 0; i < duplicateCount; i++) {
             const dups = baseImages.map(img => ({
                 ...img,
                 id: `${img.id}-dup-${i}`,
-                // We keep the agentId same so clicking a duplicate selects the original agent
             }));
             allImages = [...allImages, ...dups];
         }
 
         return allImages;
-    }, []);
+    }, [isMobile]);
+
+    const sphereConfig = useMemo(() => {
+        if (viewMode === "split") {
+            return isMobile
+                ? { containerSize: 260, sphereRadius: 95, baseImageScale: 0.14 }
+                : { containerSize: 420, sphereRadius: 165, baseImageScale: 0.11 };
+        }
+        return isMobile
+            ? { containerSize: 320, sphereRadius: 125, baseImageScale: 0.13 }
+            : { containerSize: 560, sphereRadius: 220, baseImageScale: 0.11 };
+    }, [isMobile, viewMode]);
 
     const selectedAgent = useMemo(() => {
         return MOCK_AGENTS.find((a) => a.id === selectedAgentId) || null;
@@ -66,9 +86,9 @@ export default function AgentExploreView() {
 
         return {
             freelancerCard: {
-                title: "Performance",
+                title: "Participant Metrics",
                 timeFrame: "YTD",
-                metricLabel: "Closed Volume",
+                metricLabel: "Self-Reported Closed Volume",
                 earnings: {
                     amount: selectedAgent.stats.volume,
                     change: 0,
@@ -80,9 +100,9 @@ export default function AgentExploreView() {
                     { value: recentDeals, label: "closed", subLabel: "last 90 days" },
                 ] as [{ value: number; label: string; subLabel: string }, { value: number; label: string; subLabel: string }],
                 ranking: {
-                    place: `Top ${topRank} in brokerage`,
-                    category: "based on closed volume",
-                    icon: <Trophy className="h-6 w-6 opacity-60" />,
+                    place: `Brokerage cohort ${topRank}`,
+                    category: "participant-submitted activity context",
+                    icon: <BarChart3 className="h-6 w-6 opacity-60" />,
                 },
                 availability: {
                     title: "Deal Pipeline",
@@ -93,7 +113,7 @@ export default function AgentExploreView() {
                         return { level };
                     }),
                     label: `${selectedAgent.stats.active} active opportunities`,
-                    helpText: `Deal pipeline includes ${selectedAgent.stats.active} active listings, ${recentDeals} recent closings (last 90 days), and qualified buyer demand from current lead flow.`,
+                    helpText: `Participant-submitted pipeline includes ${selectedAgent.stats.active} active listings and ${recentDeals} recent closings (last 90 days).`,
                 },
             },
             healthCard: {
@@ -161,22 +181,20 @@ export default function AgentExploreView() {
     };
 
     return (
-        <div className="relative w-full h-[calc(100vh-4rem)] overflow-hidden flex flex-col md:flex-row">
+        <div className="relative flex min-h-[calc(100dvh-4rem)] w-full flex-col overflow-y-auto md:h-[calc(100vh-4rem)] md:flex-row md:overflow-hidden">
             {/* Background gradients */}
             <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-primary/5 -z-10" />
 
             {/* LEFT SIDE (Globe) */}
-            <motion.div
-                className={cn(
-                    "relative flex flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)]",
-                    viewMode === "split" ? "w-full md:w-1/2 lg:w-5/12 scale-90 opacity-90" : "w-full h-full"
-                )}
-                initial={false}
-                animate={{
-                    width: viewMode === "split" ? "42%" : "100%",
-                    x: viewMode === "split" ? 0 : 0
-                }}
-            >
+            {!(isMobile && viewMode === "split") && (
+                <motion.div
+                    className={cn(
+                        "relative flex min-h-[66vh] flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] md:min-h-0",
+                        viewMode === "split" ? "w-full md:w-1/2 lg:w-5/12 md:scale-90 md:opacity-90" : "w-full h-full"
+                    )}
+                    initial={false}
+                    animate={{ opacity: 1 }}
+                >
                 <div className="relative w-full h-full flex flex-col items-center justify-center">
                     {viewMode === "globe" && (
                         <motion.div
@@ -186,13 +204,13 @@ export default function AgentExploreView() {
                             className="absolute inset-x-0 top-6 z-10 mx-auto max-w-3xl space-y-2 px-4 text-center md:top-10"
                         >
                             <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary mb-2">
-                                AI-Powered Network
+                                Agent Directory
                             </Badge>
-                            <h1 className="text-4xl md:text-6xl font-bold tracking-tight">
-                                Find Your Perfect Agent
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
+                                Explore Agent Profiles
                             </h1>
-                            <p className="text-muted-foreground text-lg max-w-lg mx-auto">
-                                Tell us what you need, and our AI will connect you with the top performers.
+                            <p className="text-muted-foreground text-sm md:text-lg max-w-lg mx-auto">
+                                Browse participant-submitted profiles, filters, and listing activity for review.
                             </p>
                         </motion.div>
                     )}
@@ -202,13 +220,13 @@ export default function AgentExploreView() {
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
-                            className="absolute top-4 right-4 z-20"
+                            className="absolute right-3 top-3 z-20 md:right-4 md:top-4"
                         >
                             <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={toggleExploreGrid}
-                                className="bg-white text-foreground border-neutral-200 hover:bg-white/90 backdrop-blur-md shadow-sm"
+                                className="bg-white text-foreground border-neutral-200 hover:bg-white/90 backdrop-blur-md shadow-sm text-xs md:text-sm"
                             >
                                 {showExploreGrid ? (
                                     <>
@@ -227,19 +245,20 @@ export default function AgentExploreView() {
 
                     <div className={cn(
                         "transition-all duration-700 delay-100",
-                        viewMode === "split" ? "scale-75 -ml-12" : "scale-100 mt-28 md:mt-36"
+                        viewMode === "split" ? "scale-90 md:scale-75 md:-ml-8" : "scale-100 mt-20 md:mt-36"
                     )}>
                         {!showExploreGrid ? (
                             <SphereImageGrid
                                 images={sphereImages}
-                                containerSize={viewMode === "split" ? 500 : 700}
-                                sphereRadius={viewMode === "split" ? 200 : 280}
+                                containerSize={sphereConfig.containerSize}
+                                sphereRadius={sphereConfig.sphereRadius}
+                                baseImageScale={sphereConfig.baseImageScale}
                                 autoRotate={true}
                                 onImageClick={handleAgentClick}
                                 selectedId={selectedAgentId}
                             />
                         ) : (
-                            <div className="w-[800px] h-[600px] overflow-y-auto p-4 grid grid-cols-3 gap-4">
+                            <div className="h-[52vh] w-[92vw] max-w-[960px] overflow-y-auto p-3 md:h-[600px] md:p-4 grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
                                 {MOCK_AGENTS.map(agent => (
                                     <Card
                                         key={agent.id}
@@ -259,7 +278,7 @@ export default function AgentExploreView() {
                                                 <div className="text-xs text-muted-foreground">{agent.brokerage}</div>
                                             </div>
                                             <Badge variant="secondary" className="text-xs">
-                                                {agent.rating} Rating
+                                                {agent.rating} User-submitted rating
                                             </Badge>
                                         </CardContent>
                                     </Card>
@@ -270,7 +289,7 @@ export default function AgentExploreView() {
 
                     <div className={cn(
                         "absolute transition-all duration-500 w-full px-4 max-w-2xl",
-                        viewMode === "split" ? "bottom-8" : "bottom-20 md:bottom-32"
+                        viewMode === "split" ? "bottom-6 md:bottom-8" : "bottom-8 md:bottom-32"
                     )}>
                         <AgentChatInterface
                             onSearch={handleSearch}
@@ -279,29 +298,30 @@ export default function AgentExploreView() {
                         />
                     </div>
                 </div>
-            </motion.div>
+                </motion.div>
+            )}
 
             {/* RIGHT SIDE (Agent Details / Explore Grid) */}
             <AnimatePresence>
                 {viewMode === "split" && selectedAgent && (
                     <motion.div
-                        initial={{ x: "100%", opacity: 0 }}
-                        animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: "100%", opacity: 0 }}
+                        initial={isMobile ? { y: 40, opacity: 0 } : { x: "100%", opacity: 0 }}
+                        animate={{ x: 0, y: 0, opacity: 1 }}
+                        exit={isMobile ? { y: 40, opacity: 0 } : { x: "100%", opacity: 0 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute md:relative right-0 top-0 w-full md:w-1/2 lg:w-7/12 h-full bg-background/50 backdrop-blur-3xl border-l border-border/50 shadow-2xl z-20 overflow-y-auto"
+                        className="relative right-0 top-0 z-20 h-full w-full overflow-y-auto border-t border-border/50 bg-background/65 shadow-2xl backdrop-blur-3xl md:w-1/2 md:border-l md:border-t-0 lg:w-7/12"
                     >
-                        <div className="p-6 md:p-8 space-y-6">
+                        <div className="space-y-6 p-4 md:p-8">
                             <Button variant="ghost" size="sm" onClick={handleReset} className="mb-2">
                                 <ArrowLeft className="w-4 h-4 mr-2" /> Back to Globe
                             </Button>
 
                             {/* Header Section */}
-                            <div className="flex items-start gap-4">
+                            <div className="flex items-start gap-3 md:gap-4">
                                 <div className="relative">
                                     {/* Navigation Arrows Removed */}
 
-                                    <div className="relative w-24 h-24 rounded-full overflow-hidden border-4 border-background shadow-xl">
+                                    <div className="relative h-20 w-20 md:h-24 md:w-24 rounded-full overflow-hidden border-4 border-background shadow-xl">
                                         <Image
                                             src={selectedAgent.avatar}
                                             alt={selectedAgent.name}
@@ -315,9 +335,9 @@ export default function AgentExploreView() {
                                 </div>
 
                                 <div className="flex-1 space-y-2">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                         <div>
-                                            <h2 className="text-3xl font-bold">{selectedAgent.name}</h2>
+                                            <h2 className="text-2xl md:text-3xl font-bold">{selectedAgent.name}</h2>
                                             <p className="text-muted-foreground flex items-center gap-1.5 mt-1">
                                                 <Building2 className="w-4 h-4" /> {selectedAgent.brokerage}
                                             </p>
@@ -343,7 +363,7 @@ export default function AgentExploreView() {
                                                 </Button>
                                             </div>
                                             <Badge className="bg-yellow-500/10 text-yellow-700 border-yellow-500/20 px-3 py-1">
-                                                <Trophy className="w-3.5 h-3.5 mr-1.5" /> Top 1%
+                                                Participant profile
                                             </Badge>
                                         </div>
                                     </div>
@@ -363,10 +383,10 @@ export default function AgentExploreView() {
                                     <div className="flex items-center justify-between">
                                         <h3 className="flex items-center gap-2 text-lg font-semibold">
                                             <BarChart3 className="h-5 w-5 text-primary" />
-                                            Performance Snapshot
+                                            Participant Metrics Snapshot
                                         </h3>
                                         <Badge variant="outline" className="bg-background/70 backdrop-blur-sm">
-                                            Live analytics
+                                            Self-reported data
                                         </Badge>
                                     </div>
                                     <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
@@ -445,11 +465,10 @@ export default function AgentExploreView() {
                                             <UserRoundCheck className="w-4 h-4" />
                                         </div>
                                         <div>
-                                            <h4 className="font-semibold text-sm mb-1">Why this match?</h4>
+                                            <h4 className="font-semibold text-sm mb-1">Why this suggestion?</h4>
                                             <p className="text-sm text-muted-foreground">
                                                 Based on your search for <span className="text-foreground font-medium">&quot;{searchQuery}&quot;</span>,
-                                                we recommended {selectedAgent.name} because of their extensive experience in this market
-                                                and high transaction volume in the luxury sector.
+                                                this profile is shown for review using participant-submitted specialties, location, and activity fields.
                                             </p>
                                         </div>
                                     </div>

@@ -29,8 +29,8 @@ const defaultData: Gallery4Item[] = [
   },
   {
     id: "market-2",
-    title: "Commercial Pipeline Strategy",
-    description: "A blueprint for improving close rates in office and mixed-use negotiations.",
+    title: "Commercial Pipeline Overview",
+    description: "A workflow summary for office and mixed-use transaction pipelines.",
     href: "#",
     image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1080&fit=crop",
   },
@@ -45,7 +45,7 @@ const defaultData: Gallery4Item[] = [
 
 const Gallery4 = ({
   title = "Broker Case Studies",
-  description = "A quick look at strategies, playbooks, and execution patterns driving top brokerage performance.",
+  description = "A quick look at workflow patterns and operating playbooks used by broker organizations.",
   items = defaultData,
 }: Gallery4Props) => {
   const [currentSlide, setCurrentSlide] = useState(0);

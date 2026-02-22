@@ -239,6 +239,10 @@
 }
 
 @layer components {
+  .font-okine {
+    font-family: "Okine", var(--font-inter), sans-serif;
+  }
+
   .plaster-texture {
     background-color: var(--monolith-plaster);
     position: relative;

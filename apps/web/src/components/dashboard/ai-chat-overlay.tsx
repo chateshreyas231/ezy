@@ -54,6 +54,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                         content: (
                             <div className="space-y-4">
                                 <p>Hello, I&apos;m the Ezriya assistant. I can help you organize your real estate journey.</p>
+                                <p className="text-xs text-muted-foreground">User controls all decisions. AI provides information and workflow support only.</p>
                                 <p>What would you like to work on today?</p>
                                 <div className="flex flex-col gap-2 pt-2">
                                     <Button
@@ -132,7 +133,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                                 {isSell ? <Building className="h-5 w-5" /> : <Search className="h-5 w-5" />}
                             </div>
                             <div>
-                                <h4 className="font-semibold">{isSell ? "Modern Property Draft" : "Strategic Purchase Intent"}</h4>
+                                <h4 className="font-semibold">{isSell ? "Property Draft" : "Purchase Intent Draft"}</h4>
                                 <p className="text-xs text-muted-foreground">Based on your input</p>
                             </div>
                         </div>
@@ -142,17 +143,17 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                                 <span className="font-mono">{lastInput}</span>
                             </div>
                             <div className="bg-white/5 p-2 rounded">
-                                <span className="text-muted-foreground block">Confidence</span>
-                                <span className="text-green-400 font-bold">94% Match</span>
+                                <span className="text-muted-foreground block">Status</span>
+                                <span className="text-green-400 font-bold">Ready for review</span>
                             </div>
                         </div>
                     </div>
 
-                    <p>To finalize this and connect with qualified specialists in this price range, a verification fee applies.</p>
+                    <p>Review this draft and continue when you are ready.</p>
 
                     <Button className="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-black font-semibold">
                         <DollarSign className="h-4 w-4 mr-2" />
-                        Pay $50 & Start {isSell ? "Listing Process" : "Intent"}
+                        Continue {isSell ? "Listing Process" : "Intent"}
                     </Button>
                 </div>
             );
@@ -164,7 +165,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
         }
 
         if (currentStep === "PAYMENT") {
-            addMessage("ai", "Please click the button above to continue to the secure payment link.");
+            addMessage("ai", "Please click the button above to continue.");
             setIsLoading(false);
         }
     };

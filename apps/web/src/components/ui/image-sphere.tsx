@@ -639,13 +639,14 @@ const SphereImageGrid: React.FC<SphereImageGridProps> = ({
                 style={{
                     width: containerSize,
                     height: containerSize,
-                    perspective: `${perspective}px`
+                    perspective: `${perspective}px`,
+                    touchAction: 'none'
                 }}
                 onMouseDown={handleMouseDown}
                 onTouchStart={handleTouchStart}
             >
                 <div className="relative w-full h-full" style={{ zIndex: 10 }}>
-                    {images.map((image, index) => renderImageNode(image, index))}
+                    {sphereImages.map((image, index) => renderImageNode(image, index))}
 
                     {centeredImage && (
                         <div

@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
       updatedAt="February 12, 2026"
       sections={[
         {
-          title: "Information We Collect",
+          title: "Data Categories",
           body: [
             "We collect account and contact information, platform usage data, and transaction workflow metadata required to deliver the service.",
             "We may also process user-submitted documents and communications based on your workspace activity and permissions.",
@@ -23,10 +23,10 @@ export default function PrivacyPolicyPage() {
           ],
         },
         {
-          title: "Data Rights",
+          title: "Jurisdictional Rights",
           body: [
             "You may request access, correction, or deletion of your personal data by contacting connect@ezriya.com.",
-            "We retain data for legal, contractual, and operational reasons based on jurisdictional requirements.",
+            "Rights and retention timelines vary by state and jurisdiction, including California, Colorado, and Virginia requirements where applicable.",
           ],
         },
       ]}

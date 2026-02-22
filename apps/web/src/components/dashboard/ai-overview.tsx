@@ -39,8 +39,8 @@ export function AIOverview({ onReviewMatches, onUpdateSearchCriteria }: AIOvervi
             transition={{ duration: 0.5 }}
         >
             <GradientSkewCard
-                title="Market Intelligence"
-                description="Monitoring market movement, tracking new listings, and surfacing recommendations for active clients."
+                title="Market Information"
+                description="Monitoring market movement, tracking new listings, and organizing information for active workflows."
                 gradientFrom="#03a9f4"
                 gradientTo="#ff0058"
                 className="w-full min-h-[240px]"
@@ -66,7 +66,7 @@ export function AIOverview({ onReviewMatches, onUpdateSearchCriteria }: AIOvervi
                             <div className="info-panel bg-transparent border-0 shadow-none rounded-xl p-[2px]" style={panelStyle("var(--info-border-color-1)")}>
                                 <div className="info-panel-inner rounded-[0.65rem] p-3 flex flex-col items-center justify-center min-w-[120px]">
                                     <span className="text-xs text-muted-foreground flex items-center gap-1 mb-1">
-                                        <TrendingUp className="h-3 w-3 text-green-400" /> Market Impact
+                                        <TrendingUp className="h-3 w-3 text-green-400" /> Market Trend
                                     </span>
                                     <span className="text-xl font-bold font-mono text-foreground">+12.5%</span>
                                 </div>
@@ -84,7 +84,7 @@ export function AIOverview({ onReviewMatches, onUpdateSearchCriteria }: AIOvervi
                     <div className="mt-4 border-t border-white/10 p-4 flex flex-col md:flex-row gap-4 items-center justify-between">
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Sparkles className="h-4 w-4 text-purple-400" />
-                            <span>Recommended Actions:</span>
+                            <span>User Actions:</span>
                         </div>
                         <div className="flex gap-2">
                             <Button

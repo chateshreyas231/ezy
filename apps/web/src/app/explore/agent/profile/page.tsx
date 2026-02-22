@@ -78,7 +78,7 @@ export default function AgentProfilePage() {
                             <div className="text-center md:text-left mb-2">
                                 <h1 className="text-3xl font-bold flex items-center justify-center md:justify-start gap-2">
                                     {agent.name}
-                                    <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 text-xs border-blue-200/20">Verified</Badge>
+                                    <Badge variant="secondary" className="bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 text-xs border-blue-200/20">Participant profile</Badge>
                                 </h1>
                                 <p className="text-muted-foreground font-medium">{agent.brokerage}</p>
                                 <div className="flex items-center justify-center md:justify-start gap-2 text-sm text-muted-foreground mt-1">
@@ -103,9 +103,12 @@ export default function AgentProfilePage() {
                     {/* Bio & Links */}
                     <div className="mt-6 space-y-3 max-w-2xl text-center md:text-left mx-auto md:mx-0">
                         <p className="text-sm md:text-base leading-relaxed">
-                            Luxury Real Estate Specialist 🏰 | Top 1% Nationwide 🏆 <br />
-                            Helping you find your dream home in LA. 🌴 <br />
+                            Participant-stated focus: Luxury Homes, Waterfront, Off-Market. <br />
+                            Services described by participant for Los Angeles workflows. <br />
                             Design enthusiast. Architecture lover.
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                            All profile information is participant-submitted and provided for informational purposes only. Ezriya does not endorse, verify, or recommend agents and does not participate in pricing, negotiation, or transaction conduct.
                         </p>
                         <div className="flex gap-4 justify-center md:justify-start">
                             <a href="#" className="flex items-center gap-1 text-sm text-blue-500 hover:underline">
@@ -200,9 +203,9 @@ export default function AgentProfilePage() {
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold">About Me</h3>
                             <p className="text-muted-foreground leading-relaxed">
-                                I do not just sell homes; I curate lifestyles.
+                                Participant-stated background and service areas.
                                 <br /><br />
-                                With over 15 years of experience in the luxury real estate market of Los Angeles, James has built a reputation for his discretion, taste, and unparalleled strategy skills. Specializing in off-market properties and celebrity estates, he brings a unique concierge approach to every project.
+                                With over 15 years of experience in Los Angeles real estate, James describes work across luxury and off-market properties with a coordination-focused process.
                             </p>
                         </div>
 
@@ -228,7 +231,7 @@ export default function AgentProfilePage() {
                         <div className="space-y-4">
                             <h3 className="text-xl font-bold">Expertise</h3>
                             <div className="flex flex-wrap gap-2">
-                                {["Luxury Homes", "Waterfront", "Investment", "Relocation", "Staging", "Strategy", "Architecture"].map(tag => (
+                                {["Luxury Homes", "Waterfront", "Investment", "Relocation", "Staging", "Experience Area", "Architecture"].map(tag => (
                                     <Badge key={tag} variant="secondary" className="px-3 py-1">{tag}</Badge>
                                 ))}
                             </div>
@@ -248,7 +251,7 @@ export default function AgentProfilePage() {
                                 </div>
                                 <div className="flex justify-between text-sm text-muted-foreground">
                                     <span>Based on 128 Reviews</span>
-                                    <span>Top Rated Agent</span>
+                                    <span>User-submitted</span>
                                 </div>
                             </div>
                         </div>
@@ -267,7 +270,7 @@ export default function AgentProfilePage() {
                                         <span className="ml-auto text-xs text-muted-foreground">2 weeks ago</span>
                                     </div>
                                     <p className="text-sm italic text-muted-foreground leading-relaxed">
-                                        James is simply the best. He found us a property that was not even on the market yet. His connections are real. He understood exactly what we were looking for and did not waste our time.
+                                        Clear communication, responsive updates, and professional coordination through each step.
                                     </p>
                                 </div>
                             ))}

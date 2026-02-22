@@ -53,14 +53,17 @@ export default function HomePage() {
         </BlurFade>
         <BlurFade delay={0.5} inView>
           <span className="font-[Outfit] text-[16px] font-normal text-[#737880] sm:text-[20px]">
-            Find the right brokers and vendors with AI-assisted search.
+            Browse broker and vendor profiles with optional search filters.
           </span>
         </BlurFade>
+        <p className="mx-auto mt-3 max-w-2xl text-xs text-muted-foreground">
+          Profiles and metrics are participant-submitted and provided for informational review.
+        </p>
       </header>
 
       <div className="relative z-10 mx-auto mb-16 max-w-2xl">
         <AIInputWithSearch
-          placeholder="Find brokers in NY, staging vendors in Miami, mortgage experts..."
+          placeholder="Find brokers in NY, staging vendors in Miami, mortgage providers..."
           onSubmit={(value, withSearch) => {
             setQuery(value);
             if (!withSearch) {

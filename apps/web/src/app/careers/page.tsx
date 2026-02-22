@@ -5,14 +5,14 @@ export default function CareersPage() {
     <InfoPageLayout
       eyebrow="Company"
       title="Careers at Ezriya"
-      subtitle="Join a product-driven team building the operating system for modern real estate collaboration."
+      subtitle="Join a product-driven team building real estate workflow software."
       updatedAt="February 12, 2026"
       sections={[
         {
           title: "Why Work With Us",
           body: [
-            "We are building mission-critical software for one of the world’s largest industries. Your work has immediate impact on real users and real outcomes.",
-            "We value speed, product quality, ownership, and transparent communication across engineering, design, and go-to-market teams.",
+            "We build software used by real people in day-to-day real estate workflows.",
+            "We value clear thinking, strong execution, and collaboration across engineering, design, and operations.",
           ],
         },
         {

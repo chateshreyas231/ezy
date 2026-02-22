@@ -5,14 +5,14 @@ export default function PartnerProgramPage() {
     <InfoPageLayout
       eyebrow="Company"
       title="Partner Program"
-      subtitle="Collaborate with Ezriya as a brokerage, technology, service, or channel partner."
+      subtitle="Collaborate with Ezriya through implementation support, integration guidance, and operational enablement."
       updatedAt="February 12, 2026"
       sections={[
         {
           title: "Who Can Partner",
           body: [
-            "We work with broker organizations, real estate teams, service providers, technology integrators, and strategic distribution partners.",
-            "Ideal partners focus on measurable workflow improvement and customer experience outcomes.",
+            "We work with broker organizations, real estate teams, service providers, and technology integrators.",
+            "Partner work is focused on software adoption, workflow setup, and operational rollout.",
           ],
         },
         {

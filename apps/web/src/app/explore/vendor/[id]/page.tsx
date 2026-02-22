@@ -58,7 +58,7 @@ export default function VendorDetailPage() {
                     <p className="text-white/90">{vendor.name}</p>
                     <p className="mt-2 flex items-center gap-2 text-sm text-white/90">
                       <Star className="h-4 w-4 text-yellow-300 fill-yellow-300" />
-                      {vendor.rating.toFixed(1)} rating ({vendor.reviewCount} reviews)
+                      {vendor.rating.toFixed(1)} user-submitted rating ({vendor.reviewCount} reviews)
                     </p>
                   </div>
                 </div>
@@ -72,6 +72,9 @@ export default function VendorDetailPage() {
 
               <p className="mt-5 rounded-lg border border-border bg-card/85 backdrop-blur-sm p-4 text-sm text-muted-foreground">
                 {vendor.bio}
+              </p>
+              <p className="mt-3 text-xs text-muted-foreground">
+                Vendor profiles, ratings, and project information are participant-submitted and provided for informational purposes only.
               </p>
             </div>
           </CardContent>
@@ -88,7 +91,7 @@ export default function VendorDetailPage() {
           <Card className="lg:col-span-2 border-border bg-card shadow-sm">
             <CardHeader>
               <CardTitle>Work Portfolio</CardTitle>
-              <CardDescription>Recent projects and delivery outcomes.</CardDescription>
+              <CardDescription>Recent projects and delivery notes shared by the vendor.</CardDescription>
             </CardHeader>
             <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {vendor.portfolio.map((project) => (
@@ -122,7 +125,7 @@ export default function VendorDetailPage() {
           <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <CardTitle>Client Reviews</CardTitle>
-              <CardDescription>Recent feedback from agents and clients.</CardDescription>
+              <CardDescription>Recent user-submitted feedback from agents and clients.</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button>Contact Vendor</Button>
@@ -149,7 +152,7 @@ export default function VendorDetailPage() {
       </div>
 
       <ChatbotFab
-        title="Vendor Concierge"
+        title="Vendor Information Assistant"
         placeholder={`Ask about ${vendor.company} services, timeline, and availability`}
       />
     </DottedSurface>

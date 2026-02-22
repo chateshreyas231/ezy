@@ -5,28 +5,28 @@ export default function AboutPage() {
     <InfoPageLayout
       eyebrow="Company"
       title="About Ezriya"
-      subtitle="Ezriya builds AI-powered real estate infrastructure that helps clients, agents, brokers, and vendors work in one connected workflow."
+      subtitle="Ezriya is real estate workflow software with AI-assisted coordination tools and role-based workspaces."
       updatedAt="February 12, 2026"
       sections={[
         {
           title: "Who We Are",
           body: [
-            "Ezriya is a real estate technology startup focused on simplifying complex deal journeys. We combine modern product design, AI-assisted workflows, and role-based workspaces for every participant in a deal.",
-            "Our platform supports client portals, agent operations, brokerage coordination, and vendor marketplace execution from one unified system.",
+            "Ezriya is a software company focused on real estate workflow coordination.",
+            "Our platform supports client workspaces, agent operations, broker organization workflows, and vendor coordination in one system.",
           ],
         },
         {
-          title: "Mission",
+          title: "Product Scope",
           body: [
-            "Our mission is to make every real estate journey more transparent, more predictable, and easier to navigate.",
-            "We reduce context switching by centralizing communication, timelines, documents, and action plans across teams.",
+            "Ezriya provides software and infrastructure for activity tracking, document organization, and collaboration.",
+            "Users and licensed professionals make their own decisions and handle transaction-specific services independently.",
           ],
         },
         {
           title: "What We Build",
           body: [
-            "Ezriya provides client workspaces, AI guidance, market intelligence, listing exploration, vendor discovery, and cross-role collaboration features.",
-            "We design workflows that can scale from single-agent operations to multi-office broker organizations.",
+            "We build AI-assisted coordination tools, participant directories, and role-based workspaces.",
+            "We do not provide brokerage services, representation, or negotiation services.",
           ],
         },
       ]}

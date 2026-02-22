@@ -52,24 +52,24 @@ type BrokerProfile = {
 const BROKER_PROFILES: Record<string, BrokerProfile> = {
   "broker-1": {
     history:
-      "Founded in 2008 as a boutique Beverly Hills advisory, Elite Realty Group scaled into a multi-market brokerage by combining high-touch client service with disciplined workflow systems.",
-    values: ["Client-first service", "Data-driven pricing", "Disciplined negotiation", "Efficient operations"],
+      "Founded in 2008 in Beverly Hills, Elite Realty Group expanded into multiple markets through standardized workflow systems.",
+    values: ["Client communication", "Pricing process", "Negotiation process", "Operational consistency"],
     testimonials: [
       {
         name: "Natalie Brooks",
         role: "Luxury Seller",
-        text: "Elite's team orchestrated everything from staging to offer strategy. We closed above ask with clean terms.",
+        text: "The team coordinated staging, documentation, and communication clearly from listing to close.",
         rating: 5,
       },
       {
         name: "Kevin Tran",
         role: "Buyer",
-        text: "They matched us with the right agent and lender partner quickly. The process felt highly coordinated.",
+        text: "The process felt organized, with clear handoffs between participants.",
         rating: 5,
       },
     ],
     targets: [
-      { label: "Quarterly Volume Goal", progress: 78, note: "On track to exceed target by 8%." },
+      { label: "Quarterly Volume Goal", progress: 78, note: "Current activity is tracking near target." },
       { label: "New Development Mandates", progress: 62, note: "Two mandates currently in legal finalization." },
       { label: "Luxury Segment Share", progress: 71, note: "Strong momentum in waterfront submarket." },
     ],
@@ -81,19 +81,19 @@ const BROKER_PROFILES: Record<string, BrokerProfile> = {
 function fallbackProfile(): BrokerProfile {
   return {
     history:
-      "This brokerage has grown through a combination of agent development, disciplined workflow management, and regional expansion.",
-    values: ["Client advocacy", "Operational excellence", "Market intelligence", "Long-term relationships"],
+      "This brokerage has grown through agent development, workflow management, and regional expansion.",
+    values: ["Client support", "Operational consistency", "Market information", "Long-term relationships"],
     testimonials: [
       {
         name: "Jordan Lee",
         role: "Seller",
-        text: "The broker team paired us with the right listing strategy and moved quickly from launch to close.",
+        text: "The team shared clear listing updates and timeline coordination from launch to close.",
         rating: 5,
       },
       {
         name: "Avery Cole",
         role: "Investor",
-        text: "Clear communication and strong support from underwriting to negotiations.",
+        text: "Clear communication and steady support from underwriting through closing steps.",
         rating: 4,
       },
     ],
@@ -161,7 +161,7 @@ export default function BrokerDetailPage() {
           metricOneLabel="of market execution"
           metricTwoValue={`${broker.stats.totalSold}+`}
           metricTwoLabel="closed workflows"
-          heading="A focused brokerage profile built for quick decision-making."
+          heading="Broker profile and organization overview."
           paragraphOne={profile.history}
           paragraphTwo={`${broker.name} operates across ${broker.serviceAreas.join(", ")} with specialization in ${broker.specializations.join(", ")}.`}
         />
@@ -203,12 +203,12 @@ export default function BrokerDetailPage() {
           <Card className="border-border bg-card shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><TrendingUp className="h-4 w-4" /> Performance</CardTitle>
-              <CardDescription>Rankings, average deal size, growth, and strategic targets.</CardDescription>
+              <CardDescription>Self-reported metrics for organization review.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <PerfRow label="City Rank" value={`#${profile.rankings.cityRank}`} />
-              <PerfRow label="Regional Rank" value={`#${profile.rankings.regionalRank}`} />
-              <PerfRow label="Luxury Segment" value={`#${profile.rankings.luxuryRank}`} />
+              <PerfRow label="City Cohort" value={`#${profile.rankings.cityRank}`} />
+              <PerfRow label="Regional Cohort" value={`#${profile.rankings.regionalRank}`} />
+              <PerfRow label="Luxury Cohort" value={`#${profile.rankings.luxuryRank}`} />
               <PerfRow label="Avg Deal" value={formatMoney(avgDeal)} />
               <PerfRow label="YoY Growth" value={`+${broker.stats.yearlyGrowth.toFixed(1)}%`} />
 
@@ -244,8 +244,8 @@ export default function BrokerDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="border-border bg-card shadow-sm">
             <CardHeader>
-              <CardTitle>Top Agents</CardTitle>
-              <CardDescription>Core team members driving listing and closing volume.</CardDescription>
+              <CardTitle>Agent Profiles</CardTitle>
+              <CardDescription>Team members listed by participant-submitted activity details.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               {roster.map((agent, idx) => {
@@ -300,7 +300,7 @@ export default function BrokerDetailPage() {
           <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <CardTitle>Client Reviews</CardTitle>
-              <CardDescription>Feedback from buyers, sellers, and investment partners.</CardDescription>
+              <CardDescription>User-submitted feedback from buyers, sellers, and partners.</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button>Contact Brokerage</Button>
@@ -328,9 +328,13 @@ export default function BrokerDetailPage() {
         </Card>
       </div>
 
+      <div className="max-w-7xl mx-auto mt-2 text-xs text-muted-foreground">
+        Broker profile details and metrics are participant-submitted and informational only. Ezriya does not endorse, verify, or recommend broker organizations.
+      </div>
+
       <ChatbotFab
-        title="Broker Concierge"
-        placeholder={`Ask about ${broker.name} team strength, listings, and performance`}
+        title="Broker Information Assistant"
+        placeholder={`Ask for information about ${broker.name} team details, listings, and self-reported metrics`}
       />
     </DottedSurface>
   );

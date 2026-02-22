@@ -30,28 +30,28 @@ export default function ListingManagePage() {
       amount: Math.max(100000, listing.price - 50000),
       type: "Cash",
       contingencies: "None",
-      status: "Strong",
-      analysis: "Fast close timeline with high certainty and minimal legal delays.",
+      status: "For review",
+      analysis: "Shorter timeline and fewer conditions based on participant-submitted terms.",
     },
     {
       id: 2,
       amount: listing.price + 100000,
       type: "Mortgage",
       contingencies: "Inspection",
-      status: "Highest",
-      analysis: "Highest offer value, but financing conditions can increase completion time.",
+      status: "For review",
+      analysis: "Higher amount with financing conditions that may affect timing.",
     },
     {
       id: 3,
       amount: Math.max(100000, listing.price - 180000),
       type: "Cash",
       contingencies: "None",
-      status: "Low",
-      analysis: "Lower price anchor. Consider countering with tighter timeline terms.",
+      status: "For review",
+      analysis: "Lower price anchor with fewer conditions for user review.",
     },
   ];
 
-  const contentHeading = `${listing.title} Offer Intelligence`;
+  const contentHeading = `${listing.title} Offer Information`;
 
   return (
     <div className="min-h-screen bg-background">
@@ -61,7 +61,7 @@ export default function ListingManagePage() {
         bgImageSrc={listing.images[1] ?? listing.images[0]}
         title={listing.title}
         date={listing.location}
-        scrollToExpand="Scroll to reveal listing intelligence"
+        scrollToExpand="Scroll to reveal listing information"
         textBlend
       >
         <div className="max-w-6xl mx-auto space-y-8">
@@ -76,14 +76,17 @@ export default function ListingManagePage() {
               <p className="text-muted-foreground">
                 {listing.title} • {listing.location} • {formatPrice(listing.price)}
               </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Offer information is provided for user review. Ezriya does not provide pricing, negotiation, or transaction advice.
+              </p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <Card className="lg:col-span-2 border-border bg-card text-foreground">
               <CardHeader>
-                <CardTitle>Offer Analysis</CardTitle>
-                <CardDescription className="text-muted-foreground">AI-ranked offers based on speed, certainty, and value.</CardDescription>
+                <CardTitle>Offer Comparison Signals</CardTitle>
+                <CardDescription className="text-muted-foreground">Participant metrics and terms shown for review only.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
                 {offers.map((offer, idx) => (
@@ -99,14 +102,14 @@ export default function ListingManagePage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        {idx === 1 && <span className="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-1 rounded-full font-bold">Recommended</span>}
-                        {idx === 0 && <span className="bg-sky-500/20 text-sky-300 text-xs px-2 py-1 rounded-full font-bold">Fastest close</span>}
+                        {idx === 1 && <span className="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-1 rounded-full font-bold">Higher amount</span>}
+                        {idx === 0 && <span className="bg-sky-500/20 text-sky-300 text-xs px-2 py-1 rounded-full font-bold">Shorter timeline</span>}
                       </div>
                     </div>
                     <div className="bg-muted/30 p-3 rounded-lg text-sm flex gap-2 items-start">
                       <AlertCircle className="w-4 h-4 mt-0.5 text-cyan-300" />
                       <p>
-                        <span className="font-semibold">Insight:</span> {offer.analysis}
+                        <span className="font-semibold">Information to review:</span> {offer.analysis}
                       </p>
                     </div>
                     <div className="mt-4 flex gap-2">
@@ -148,7 +151,7 @@ export default function ListingManagePage() {
 
               <Card className="border-border bg-card text-foreground">
                 <CardHeader>
-                  <CardTitle>Suggested Actions</CardTitle>
+                  <CardTitle>User Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   <Button variant="outline" className="w-full justify-start border-border/50 text-foreground hover:bg-accent">
@@ -166,4 +169,3 @@ export default function ListingManagePage() {
     </div>
   );
 }
-

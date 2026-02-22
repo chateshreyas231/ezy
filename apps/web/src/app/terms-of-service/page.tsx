@@ -18,7 +18,7 @@ export default function TermsOfServicePage() {
         {
           title: "Service Scope",
           body: [
-            "Ezriya provides workflow and collaboration software. We do not directly broker transactions unless explicitly stated in signed agreements.",
+            "Ezriya provides software only. We do not provide brokerage services, represent buyers or sellers, or participate in negotiation or transaction conduct.",
             "Feature availability may change as the platform evolves.",
           ],
         },

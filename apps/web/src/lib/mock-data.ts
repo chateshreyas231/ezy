@@ -93,7 +93,7 @@ export const MOCK_AGENTS: MockAgent[] = [
         location: "San Francisco, CA",
         experienceYears: 11,
         rating: 4.8,
-        specialties: ["Condos", "First-Time Buyers", "Negotiation"],
+        specialties: ["Condos", "First-Time Buyers", "Negotiation Process"],
         stats: { sold: 39, active: 9, volume: 92000000 },
     },
     {
@@ -129,7 +129,7 @@ export const MOCK_AGENTS: MockAgent[] = [
         location: "Seattle, WA",
         experienceYears: 6,
         rating: 4.6,
-        specialties: ["Townhomes", "Tech Relocation", "Seller Strategy"],
+        specialties: ["Townhomes", "Tech Relocation", "Seller Workflow"],
         stats: { sold: 19, active: 8, volume: 36000000 },
     },
     {
@@ -189,7 +189,7 @@ export const MOCK_AGENTS: MockAgent[] = [
         location: "Atlanta, GA",
         experienceYears: 10,
         rating: 4.6,
-        specialties: ["Industrial", "Office Conversions", "Tenant Advisory"],
+        specialties: ["Industrial", "Office Conversions", "Tenant Services"],
         stats: { sold: 29, active: 12, volume: 69000000 },
     },
     {
@@ -268,7 +268,7 @@ export const MOCK_BROKERS: MockBroker[] = [
         name: "Empire Peak Realty",
         role: "broker",
         logo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=320&q=80",
-        tagline: "Institutional-grade advisory for buy, sell, lease, and mixed-use portfolios.",
+        tagline: "Institutional-grade workflow support for buy, sell, lease, and mixed-use portfolios.",
         foundedYear: 2003,
         headquarters: "New York, NY",
         owner: "Evelyn Carter",
@@ -296,7 +296,7 @@ export const MOCK_BROKERS: MockBroker[] = [
         owner: "Rebecca Monroe",
         managingPartners: ["Trevor King", "Lena Hoffman"],
         serviceAreas: ["Chicago", "Denver", "Phoenix", "Nashville"],
-        specializations: ["Relocation", "New Development", "Investor Advisory", "Luxury Rentals"],
+        specializations: ["Relocation", "New Development", "Investor Workflows", "Luxury Rentals"],
         agents: ["agent-7", "agent-8"],
         stats: {
             totalSold: 126,
@@ -421,7 +421,7 @@ export const MOCK_VENDORS: MockVendor[] = [
         responseTimeHours: 8,
         rating: 4.9,
         reviewCount: 163,
-        bio: "End-to-end staging partner for high-end listings, focused on design narratives that increase perceived value.",
+        bio: "End-to-end staging partner for high-end listings, focused on clear design presentation.",
         certifications: ["RESA Certified Stager"],
         languages: ["English", "Portuguese"],
         portfolio: [
@@ -458,7 +458,7 @@ export const MOCK_VENDORS: MockVendor[] = [
         responseTimeHours: 2,
         rating: 4.7,
         reviewCount: 301,
-        bio: "Mortgage advisory and lending support for primary buyers, investors, and high-value loan structures.",
+        bio: "Mortgage workflow and lending support for primary buyers, investors, and high-value loan structures.",
         certifications: ["NMLS Licensed Originator"],
         languages: ["English", "Hindi"],
         portfolio: [
@@ -532,7 +532,7 @@ export const MOCK_VENDORS: MockVendor[] = [
         responseTimeHours: 7,
         rating: 4.8,
         reviewCount: 142,
-        bio: "Renovation partner for agents and sellers looking to maximize listing value before market launch.",
+        bio: "Renovation partner for agents and sellers preparing listings before market launch.",
         certifications: ["Licensed General Contractor", "EPA Lead-Safe Certified"],
         languages: ["English"],
         portfolio: [

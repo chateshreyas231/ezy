@@ -38,7 +38,7 @@ const SendButton = memo(({ disabled }: { disabled: boolean }) => (
 SendButton.displayName = "SendButton";
 
 export default function PromptInputDynamicGrow({
-  placeholder = "Ask AI to find the best match...",
+  placeholder = "Ask for information...",
   onSubmit,
   disabled = false,
   glowIntensity = 0.4,

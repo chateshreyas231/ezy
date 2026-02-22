@@ -215,7 +215,7 @@ export function OverviewSection({
                     onExploreDetail({
                         key: "new_matches",
                         title: `Review Priority Matches${primaryJourney ? ` (${INTENT_LABEL[primaryJourney.intentType]})` : ""}`,
-                        summary: "Inspect top matched homes and decide next actions.",
+                        summary: "Inspect matched homes and select next actions.",
                         intentType: primaryJourney?.intentType,
                         listingId: primaryJourney?.propertyId,
                     })
@@ -285,7 +285,7 @@ export function OverviewSection({
 
                 <GradientSkewCard
                     title="Priority Action Center"
-                    description="Recommendations generated from the highest-priority journeys."
+                    description="Information generated from the highest-priority journeys for user review."
                     gradientFrom="#4dff03"
                     gradientTo="#00d0ff"
                     showGradient={false}
@@ -347,7 +347,7 @@ export function OverviewSection({
             <div className="grid gap-6 lg:grid-cols-2">
                 <GradientSkewCard
                     title="Deal Room Snapshot"
-                    description="Cross-intent deadlines, documents, and negotiation updates."
+                    description="Cross-intent deadlines, documents, and transaction updates."
                     gradientFrom="#ffbc00"
                     gradientTo="#ff0058"
                     showGradient={false}
@@ -568,8 +568,8 @@ export function NetworkSection() {
             <div className="grid gap-4 md:grid-cols-3">
                 <Card className="bg-white/5 border-white/10">
                     <CardContent className="p-4 space-y-2">
-                        <p className="font-semibold">Top Buyer Agents</p>
-                        <p className="text-sm text-muted-foreground">Ranked by your budget, market, and timeline fit.</p>
+                        <p className="font-semibold">Buyer Agent Directory</p>
+                        <p className="text-sm text-muted-foreground">Profiles filtered by your budget, market, and timeline inputs.</p>
                         <Button asChild variant="outline" size="sm" className="gap-1">
                             <Link href="/explore/agent">Explore <ArrowRight className="h-3 w-3" /></Link>
                         </Button>

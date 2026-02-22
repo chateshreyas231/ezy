@@ -312,7 +312,7 @@ export default function DashboardOverviewPage() {
             });
             addWorkspaceMessage(
                 "ai",
-                "Confirmed. Buyer intent created and saved in Buying Plans. I will now run matching and strategy guidance for this intent."
+                "Confirmed. Buyer intent created and saved in Buying Plans. I will now organize matching information for your review."
             );
             return;
         }
@@ -333,12 +333,12 @@ export default function DashboardOverviewPage() {
                 videos: /yes|ready|uploaded/i.test(videos ?? ""),
                 floorplans: /yes|ready|uploaded/i.test(floorplans ?? ""),
             },
-            strategyNotes: `Timeline: ${timeline || "N/A"} | AI recommends market-comps + staging plan before launch.`,
+            strategyNotes: `Timeline: ${timeline || "N/A"} | Information: market comps and staging checklist for user review.`,
             createdAt: new Date().toISOString(),
         });
         addWorkspaceMessage(
             "ai",
-            "Confirmed. Seller listing intent created and saved in My Listings. I will now generate a launch strategy and find buyer matches."
+            "Confirmed. Seller listing intent created and saved in My Listings. I will now organize launch information and matching records for your review."
         );
     }
 
@@ -347,7 +347,7 @@ export default function DashboardOverviewPage() {
 
         if (text.includes("priority") || text.includes("urgent")) {
             const top = snapshot.prioritizedJourneys.slice(0, 2).map((j) => j.label).join(" and ");
-            return `Top priority lanes right now are ${top}. I recommend handling these first based on urgency score and financial impact.`;
+            return `Top priority lanes right now are ${top}. Review these first based on urgency score and financial impact.`;
         }
 
         if (text.includes("buy") || text.includes("budget")) {
@@ -502,7 +502,10 @@ export default function DashboardOverviewPage() {
                                     Conversation-First Client Workspace
                                 </div>
                                 <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
-                                    This is your only client AI workspace. I create buyer intents and seller listings, ask required media/questions, confirm details, save to plans/listings, and run matching strategy.
+                                    This workspace helps organize buyer intents and seller listings, collect required media/questions, and save details for review.
+                                </p>
+                                <p className="mt-2 text-xs text-muted-foreground max-w-2xl">
+                                    User controls all decisions. AI does not provide legal, financial, or real estate advice.
                                 </p>
                                 <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
                                     <Button onClick={startBuyIntentFlow}>
@@ -534,7 +537,7 @@ export default function DashboardOverviewPage() {
                                 ref={inputRef}
                                 value={input}
                                 onChange={(event) => setInput(event.target.value)}
-                                placeholder="Type: start buy intent, start sell listing, or ask strategy..."
+                                placeholder="Type: start buy intent, start sell listing, or ask for information..."
                             />
                             <Button type="button" variant="outline" size="icon" onClick={startVoiceInput}>
                                 <Mic className={`h-4 w-4 ${isListening ? "text-blue-400" : ""}`} />

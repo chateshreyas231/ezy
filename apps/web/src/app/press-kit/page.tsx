@@ -11,7 +11,7 @@ export default function PressKitPage() {
         {
           title: "Brand Summary",
           body: [
-            "Ezriya is an AI-powered real estate platform connecting clients, agents, brokers, and vendors in one operating environment.",
+            "Ezriya is a workflow platform for real estate collaboration.",
             "Preferred short description: “Ezriya is a workflow platform for modern real estate collaboration.”",
           ],
         },

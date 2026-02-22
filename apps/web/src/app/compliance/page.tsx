@@ -18,7 +18,7 @@ export default function CompliancePage() {
         {
           title: "Industry and Regulatory Alignment",
           body: [
-            "We design our workflows to support brokerage and workflow operations with clear auditability and accountability.",
+            "We design workflows with policy-driven controls, audit logging, and operational accountability.",
             "Customers are responsible for legal obligations specific to their jurisdiction and workflow activities.",
           ],
         },

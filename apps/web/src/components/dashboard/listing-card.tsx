@@ -52,11 +52,11 @@ export function ListingCard({
                     <div className="text-xs text-muted-foreground mb-1">List Price</div>
                 </div>
 
-                {/* Pricing Guidance Widget */}
+                {/* Pricing Information Widget */}
                 <div className="bg-purple-500/5 border border-purple-500/10 rounded-lg p-3">
                     <div className="flex items-center gap-2 mb-2">
                         <Sparkles className="h-3.5 w-3.5 text-purple-400" />
-                        <span className="text-xs font-medium text-purple-300">Pricing Guidance</span>
+                        <span className="text-xs font-medium text-purple-300">Pricing Information</span>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="text-sm font-semibold text-foreground">$2.6M - $2.8M</span>

@@ -116,7 +116,7 @@ export default function LandingPage() {
               Real estate workflows <br />
               made simpler <br />
               <span className="bg-[length:200%_200%] bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-500 to-cyan-400 animate-[gradient-x_4s_ease_infinite]">
-                with Ezriya AI
+                Powered by Ezriya AI
               </span>
             </h1>
           </BlurFade>

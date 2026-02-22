@@ -5,21 +5,20 @@ export default function ContactPage() {
     <InfoPageLayout
       eyebrow="Company"
       title="Contact Ezriya"
-      subtitle="Get in touch for sales, support, partnerships, media, and compliance requests."
+      subtitle="Contact our team through one shared inbox for product, support, or operations questions."
       updatedAt="February 12, 2026"
       sections={[
         {
-          title: "Primary Contacts",
+          title: "Inbox Routing",
           body: [
             "General: connect@ezriya.com",
-            "Sales: connect@ezriya.com",
             "Support: connect@ezriya.com",
+            "Partnerships: connect@ezriya.com",
           ],
         },
         {
-          title: "Specialized Requests",
+          title: "Additional Requests",
           body: [
-            "Partnerships: connect@ezriya.com",
             "Press: connect@ezriya.com",
             "Security: connect@ezriya.com",
             "Compliance: connect@ezriya.com",

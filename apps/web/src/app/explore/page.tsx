@@ -22,7 +22,7 @@ const routeCards = [
   },
   {
     title: "Agent Explore",
-    subtitle: "Network insights and agent profiles",
+    subtitle: "Participant directory and profile information",
     imageUrl:
       "https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3",
     actionText: "Open Agent",
@@ -63,7 +63,10 @@ export default function ExplorePage() {
           </Badge>
           <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-5xl">Pick your workspace</h1>
           <p className="mx-auto max-w-2xl text-sm text-muted-foreground md:text-base">
-            Chat with AI to describe what you need, then jump into Client, Agent, or Directory.
+            Choose Client, Agent, or Directory.
+          </p>
+          <p className="mx-auto max-w-2xl text-xs text-muted-foreground">
+            Directory information is participant-submitted and for review only.
           </p>
         </header>
 
@@ -89,7 +92,7 @@ export default function ExplorePage() {
             onSubmit={(value) => {
               const suggestion = routeSuggestion(value);
               const assistantMessage = suggestion
-                ? `Best match: ${suggestion}. Use the cards below to open it.`
+                ? `Suggested route: ${suggestion}. Use the cards below to open it.`
                 : "I could not match that cleanly. Use the cards below to choose Client, Agent, or Directory.";
 
               setMessages((current) => [

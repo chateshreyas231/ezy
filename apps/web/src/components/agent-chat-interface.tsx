@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Sparkles, User, Search, MapPin, DollarSign, ArrowRight } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Sparkles, Search, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
@@ -12,10 +12,10 @@ interface AgentChatInterfaceProps {
 }
 
 const SUGGESTIONS = [
-    "Find top agents in Miami",
-    "Luxury brokers with >$100M volume",
-    "Who specializes in historic homes?",
-    "Commercial real estate experts"
+    "Find agents in Miami",
+    "Agents with condo experience",
+    "Who lists historic homes?",
+    "Commercial real estate participants"
 ];
 
 const AgentChatInterface: React.FC<AgentChatInterfaceProps> = ({
@@ -51,8 +51,8 @@ const AgentChatInterface: React.FC<AgentChatInterfaceProps> = ({
                         onChange={(e) => setQuery(e.target.value)}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                        placeholder="Ask anything about our agent network..."
-                        className="border-0 bg-transparent py-6 text-lg focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50"
+                        placeholder="Ask for agent directory information..."
+                        className="border-0 bg-transparent py-4 md:py-6 text-base md:text-lg focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50"
                     />
 
                     <div className="pr-2">
@@ -106,7 +106,7 @@ const AgentChatInterface: React.FC<AgentChatInterfaceProps> = ({
             {!isFocused && !isExpanded && (
                 <div className="flex flex-wrap justify-center gap-2 mt-6">
                     <div className="text-sm text-muted-foreground mr-2 py-1">Try asking:</div>
-                    {["Top 1% Agents", "Miami Luxury", "Commercial"].map((tag) => (
+                    {["Miami agents", "Condo focus", "Commercial"].map((tag) => (
                         <button
                             key={tag}
                             onClick={() => {

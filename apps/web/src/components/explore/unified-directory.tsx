@@ -62,7 +62,7 @@ export default function UnifiedDirectory() {
       description: broker.tagline,
       rating: broker.stats.averageRating.toFixed(1),
       meta: `${formatMoney(broker.stats.totalVolume)} volume`,
-      tagA: broker.specializations[0] ?? "Market Strategy",
+      tagA: broker.specializations[0] ?? "Market Focus",
       tagB: broker.specializations[1] ?? "Growth",
     }));
 
@@ -78,7 +78,7 @@ export default function UnifiedDirectory() {
       rating: vendor.rating.toFixed(1),
       meta: `${vendor.responseTimeHours}h response`,
       tagA: vendor.specialties[0] ?? vendor.category,
-      tagB: vendor.specialties[1] ?? "Verified",
+      tagB: vendor.specialties[1] ?? "Participant-listed",
     }));
 
     return [...brokerItems, ...vendorItems];
@@ -92,8 +92,7 @@ export default function UnifiedDirectory() {
       .filter((item) => {
         const haystack = `${item.name} ${item.subtitle} ${item.description} ${item.tagA} ${item.tagB}`.toLowerCase();
         return normalized.length === 0 || haystack.includes(normalized);
-      })
-      .sort((a, b) => Number(b.rating) - Number(a.rating));
+      });
   }, [items, mode, query]);
 
   return (
@@ -105,12 +104,15 @@ export default function UnifiedDirectory() {
           </Badge>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-[1.05]">Brokers and Vendors in One Place</h1>
           <p className="text-muted-foreground max-w-3xl mx-auto text-sm md:text-base">
-            Search across brokerages and service vendors from one directory. Use the AI bar below to quickly filter who fits your needs.
+            Search across brokerages and service vendors from one directory. Use the search bar below to filter by city, category, and profile details.
+          </p>
+          <p className="text-xs text-muted-foreground max-w-3xl mx-auto">
+            Directory profiles and metrics are participant-submitted and informational only. Ezriya does not endorse or verify participants.
           </p>
 
           <div className="pt-2 max-w-3xl mx-auto">
             <PromptInputDynamicGrow
-              placeholder="Try: top-rated broker in Miami or fast inspection vendor in LA"
+              placeholder="Try: broker in Miami or inspection vendor in Los Angeles"
               onSubmit={(value) => setQuery(value)}
             />
           </div>
@@ -172,7 +174,7 @@ export default function UnifiedDirectory() {
 
       <ChatbotFab
         title="Directory Assistant"
-        placeholder="Ask for broker or vendor matches by city, service, and rating"
+        placeholder="Ask for broker or vendor information by city and service"
       />
     </DottedSurface>
   );
