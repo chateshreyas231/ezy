@@ -74,7 +74,7 @@ export default function LandingPage() {
   };
 
   return (
-    <DottedSurface className="min-h-screen flex flex-col relative overflow-hidden bg-background">
+    <DottedSurface className="font-okine min-h-screen flex flex-col relative overflow-hidden bg-background">
       {/* Radial Gradient Overlay */}
       <div
         aria-hidden="true"
@@ -113,16 +113,17 @@ export default function LandingPage() {
 
           <BlurFade delay={0.12} inView>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tighter text-foreground">
-              Built for Modern Real Estate <br />
+              Real estate workflows <br />
+              made simpler <br />
               <span className="bg-[length:200%_200%] bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-blue-500 to-cyan-400 animate-[gradient-x_4s_ease_infinite]">
-                Powered by Ezriya AI
+                with Ezriya AI
               </span>
             </h1>
           </BlurFade>
 
           <BlurFade delay={0.18} inView>
             <p className="text-xl md:text-2xl text-muted-foreground/80 max-w-2xl mx-auto font-light leading-relaxed">
-              Manage your buying and selling workflows, data, and collaboration in one place.
+              Manage your buying and selling activity, information, and collaboration in one place.
             </p>
           </BlurFade>
 
@@ -149,7 +150,7 @@ export default function LandingPage() {
                       required
                     />
                     <RainbowButton type="submit" className="h-11 px-8 rounded-md font-medium group">
-                      Join Waitlist
+                      Join the waitlist
                       <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </RainbowButton>
                   </form>
@@ -166,10 +167,10 @@ export default function LandingPage() {
 
           <BlurFade delay={0.3} inView>
             <div className="text-center pt-8">
-              <p className="text-sm text-muted-foreground mb-3">Explore the platform experience.</p>
+              <p className="text-sm text-muted-foreground mb-3">Explore the platform</p>
               <Button variant="ghost" className="rounded-full px-6 hover:bg-primary/5 hover:text-primary" asChild>
                 <Link href="/explore" className="flex items-center gap-2">
-                  View Platform <Sparkles className="h-4 w-4" />
+                  Explore the platform <Sparkles className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -236,10 +237,10 @@ export default function LandingPage() {
                 Ezriya
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                AI-powered real estate infrastructure for clients, agents, brokers, and vendor networks.
+                Real estate workflow software for clients, agents, brokers, and vendors.
               </p>
               <p className="text-xs text-muted-foreground/80">
-                Professional-grade workflows, transparent collaboration, and structured deal execution.
+                Built for modern real estate workflows and user-directed collaboration.
               </p>
             </div>
 
@@ -292,7 +293,7 @@ export default function LandingPage() {
               </div>
             </div>
             <p className="text-[10px] text-muted-foreground/50 leading-tight max-w-4xl">
-              Ezriya is a technology platform and does not provide real estate brokerage services. We do not represent buyers or sellers. All real estate transactions are performed by licensed agents and brokers in our network.
+              Ezriya is a technology platform. We do not provide real estate brokerage services, represent buyers or sellers, or participate in negotiations or transactions. All real estate services are provided by licensed professionals operating independently.
             </p>
           </div>
         </motion.footer>
