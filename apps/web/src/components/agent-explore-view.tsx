@@ -181,7 +181,7 @@ export default function AgentExploreView() {
     };
 
     return (
-        <div className="relative flex min-h-[calc(100dvh-4rem)] w-full flex-col overflow-y-auto md:h-[calc(100vh-4rem)] md:flex-row md:overflow-hidden">
+        <div className="relative flex h-[calc(100dvh-4rem)] w-full flex-col overflow-hidden md:h-[calc(100vh-4rem)] md:flex-row">
             {/* Background gradients */}
             <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-primary/5 -z-10" />
 
@@ -189,8 +189,8 @@ export default function AgentExploreView() {
             {!(isMobile && viewMode === "split") && (
                 <motion.div
                     className={cn(
-                        "relative flex min-h-[70vh] flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] md:min-h-0",
-                        viewMode === "split" ? "w-full md:w-1/2 lg:w-5/12 md:scale-90 md:opacity-90" : "w-full h-full"
+                        "relative flex h-full w-full flex-col items-center justify-center transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)]",
+                        viewMode === "split" ? "md:w-1/2 lg:w-5/12 md:scale-90 md:opacity-90" : "flex-1"
                     )}
                     initial={false}
                     animate={{ opacity: 1 }}
@@ -201,7 +201,7 @@ export default function AgentExploreView() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
-                                className="absolute inset-x-0 top-6 z-10 mx-auto max-w-3xl space-y-2 px-4 text-center md:top-10"
+                                className="absolute inset-x-0 top-6 md:top-10 z-10 mx-auto max-w-3xl space-y-2 px-4 text-center w-full"
                             >
                                 <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary mb-2">
                                     Agent Directory
@@ -244,8 +244,8 @@ export default function AgentExploreView() {
                         )}
 
                         <div className={cn(
-                            "transition-all duration-700 delay-100 flex-1 flex items-center justify-center",
-                            viewMode === "split" ? "scale-90 md:scale-75 md:-ml-8" : "scale-100"
+                            "transition-all duration-700 delay-100 flex-1 flex items-center justify-center w-full min-h-0",
+                            viewMode === "split" ? "scale-90 md:scale-75 md:-ml-8 mt-12 md:mt-0" : "scale-100"
                         )}>
                             {!showExploreGrid ? (
                                 <SphereImageGrid
@@ -288,8 +288,8 @@ export default function AgentExploreView() {
                         </div>
 
                         <div className={cn(
-                            "absolute transition-all duration-500 w-full px-4 max-w-2xl",
-                            viewMode === "split" ? "bottom-4 md:bottom-8" : "bottom-6 md:bottom-12"
+                            "absolute bottom-4 w-full px-4 max-w-2xl transition-all duration-500 z-30",
+                            viewMode === "split" ? "md:bottom-8" : "md:bottom-12"
                         )}>
                             <AgentChatInterface
                                 onSearch={handleSearch}
@@ -418,7 +418,7 @@ export default function AgentExploreView() {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {agentListings.map(listing => (
-                                        <Link href={`/listing/${listing.id}`} key={listing.id} className="group">
+                                        <Link href={`/explore/agent/listing/${listing.id}`} key={listing.id} className="group">
                                             <div className="rounded-xl overflow-hidden border border-border/50 bg-card hover:shadow-xl hover:border-primary/30 transition-all duration-300">
                                                 <div className="relative aspect-[4/3]">
                                                     <Image
