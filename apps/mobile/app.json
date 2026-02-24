@@ -1,0 +1,24 @@
+{
+  "expo": {
+    "name": "Ezriya",
+    "slug": "ezriya-mobile",
+    "scheme": "ezriya",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "ios": {
+      "bundleIdentifier": "com.ezriya.mobile",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.ezriya.mobile"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

@@ -74,7 +74,37 @@ export default function LandingPage() {
   };
 
   return (
-    <DottedSurface className="font-okine min-h-screen flex flex-col relative overflow-hidden bg-background">
+    <div className="font-okine min-h-screen w-full relative bg-transparent">
+      {/* Top gradient background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80 min-h-screen"
+      >
+        <div
+          style={{
+            clipPath:
+              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            background: `linear-gradient(to top right, oklch(0.646 0.222 41.116), oklch(0.488 0.243 264.376))`
+          }}
+          className="relative left-[calc(100%-11rem)] aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] opacity-40 sm:left-[calc(100%-20rem)] sm:w-[72.1875rem] min-h-screen"
+        />
+      </div>
+
+      {/* Bottom gradient background */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
+      >
+        <div
+          style={{
+            clipPath:
+              'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)',
+            background: `linear-gradient(to top right, oklch(0.646 0.222 41.116), oklch(0.488 0.243 264.376))`
+          }}
+          className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 opacity-40 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"
+        />
+      </div>
+
       {/* Radial Gradient Overlay */}
       <div
         aria-hidden="true"
@@ -97,10 +127,9 @@ export default function LandingPage() {
         transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      <div className="z-10 container relative mx-auto px-6 py-24 flex flex-col items-center gap-16">
-
+      <div className="z-10 container relative mx-auto px-6 pt-32 pb-6 flex flex-col items-center gap-16">
         {/* Hero Section */}
-        <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center space-y-8 max-w-5xl mx-auto pt-8">
+        <div className="min-h-[70vh] w-full flex flex-col items-center justify-center text-center space-y-8 max-w-5xl mx-auto pt-16">
           <BlurFade delay={0.05} inView>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/5 text-xs font-medium text-primary mb-4 backdrop-blur-sm">
               <span className="relative flex h-2 w-2">
@@ -167,10 +196,10 @@ export default function LandingPage() {
 
           <BlurFade delay={0.3} inView>
             <div className="text-center pt-8">
-              <p className="text-sm text-muted-foreground mb-3">Explore the platform</p>
+
               <Button variant="ghost" className="rounded-full px-6 hover:bg-primary/5 hover:text-primary" asChild>
                 <Link href="/explore" className="flex items-center gap-2">
-                  Explore the platform <Sparkles className="h-4 w-4" />
+                  Take a sneak peak<Sparkles className="h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -224,7 +253,7 @@ export default function LandingPage() {
         </motion.section>
 
         <motion.footer
-          className="w-full max-w-6xl mx-auto mt-8 rounded-2xl border border-border bg-background/80 backdrop-blur-xl"
+          className="w-full max-w-6xl mx-auto mt-4 rounded-2xl border border-border bg-background/80 backdrop-blur-xl"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
@@ -298,6 +327,6 @@ export default function LandingPage() {
           </div>
         </motion.footer>
       </div>
-    </DottedSurface>
+    </div>
   );
 }

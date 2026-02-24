@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono } from "next/font/google";
+import { Mulish, JetBrains_Mono } from "next/font/google";
 import { Loader2 } from "lucide-react";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const mulish = Mulish({
+  variable: "--font-mulish",
   subsets: ["latin"],
 });
 
@@ -32,7 +32,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${inter.variable} ${jetbrainsMono.variable} antialiased`}
+        className={`${mulish.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"

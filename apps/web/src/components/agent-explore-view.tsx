@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FreelancerStatsCard } from "@/components/ui/stats-card";
 import { HealthStatCard } from "@/components/ui/health-stat-card";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 export default function AgentExploreView() {
     const [viewMode, setViewMode] = useState<"globe" | "split">("globe");
@@ -41,7 +42,7 @@ export default function AgentExploreView() {
             agentId: agent.id
         }));
 
-        const duplicateCount = isMobile ? 3 : 1; // Increased from 0 to 3 for much denser mobile globe
+        const duplicateCount = isMobile ? 8 : 6; // Reduced slightly for a balanced dense globe
         let allImages = [...baseImages];
         for (let i = 0; i < duplicateCount; i++) {
             const dups = baseImages.map(img => ({
@@ -123,10 +124,10 @@ export default function AgentExploreView() {
                     { title: "Response", value: responseMinutes, unit: "min", changePercent: 9, changeDirection: "up" as const },
                 ],
                 graphData: [
-                    { label: "Lead quality", value: 88, color: "#3B82F6", description: "Qualified buyer opportunities" },
-                    { label: "Conversion", value: 72, color: "#22C55E", description: "Lead to closed-deal efficiency" },
-                    { label: "Response", value: 81, color: "#F59E0B", description: "Client response consistency" },
-                    { label: "Retention", value: 77, color: "#EF4444", description: "Repeat client relationship health" },
+                    { label: "Lead quality", value: 88, color: "#334155", description: "Qualified buyer opportunities" },
+                    { label: "Conversion", value: 72, color: "#475569", description: "Lead to closed-deal efficiency" },
+                    { label: "Response", value: 81, color: "#64748B", description: "Client response consistency" },
+                    { label: "Retention", value: 77, color: "#94A3B8", description: "Repeat client relationship health" },
                 ],
             },
         };
@@ -207,10 +208,10 @@ export default function AgentExploreView() {
                                     Agent Directory
                                 </Badge>
                                 <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight">
-                                    Explore Agent Profiles
+                                    <AnimatedText text="Explore Agent Profiles" baseDelay={0} wordDelay={150} />
                                 </h1>
                                 <p className="text-muted-foreground text-sm md:text-lg max-w-lg mx-auto">
-                                    Browse participant-submitted profiles, filters, and listing activity for review.
+                                    <AnimatedText text="Browse agent submitted profiles, filters, and listing activity for review." baseDelay={500} wordDelay={100} />
                                 </p>
                             </motion.div>
                         )}
@@ -313,7 +314,7 @@ export default function AgentExploreView() {
                     >
                         <div className="space-y-6 p-4 md:p-8">
                             <Button variant="ghost" size="sm" onClick={handleReset} className="mb-2">
-                                <ArrowLeft className="w-4 h-4 mr-2" /> Back to Globe
+                                <ArrowLeft className="w-4 h-4 mr-2" /> Back to Agent Network
                             </Button>
 
                             {/* Header Section */}
@@ -337,7 +338,9 @@ export default function AgentExploreView() {
                                 <div className="flex-1 space-y-2">
                                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                         <div>
-                                            <h2 className="text-2xl md:text-3xl font-bold">{selectedAgent.name}</h2>
+                                            <h2 className="text-2xl md:text-3xl font-bold">
+                                                <AnimatedText text={selectedAgent.name} baseDelay={0} wordDelay={150} />
+                                            </h2>
                                             <p className="text-muted-foreground flex items-center gap-1.5 mt-1">
                                                 <Building2 className="w-4 h-4" /> {selectedAgent.brokerage}
                                             </p>
@@ -383,7 +386,7 @@ export default function AgentExploreView() {
                                     <div className="flex items-center justify-between">
                                         <h3 className="flex items-center gap-2 text-lg font-semibold">
                                             <BarChart3 className="h-5 w-5 text-primary" />
-                                            Participant Metrics Snapshot
+                                            <AnimatedText text="Participant Metrics Snapshot" baseDelay={0} wordDelay={100} />
                                         </h3>
                                         <Badge variant="outline" className="bg-background/70 backdrop-blur-sm">
                                             Self-reported data
@@ -411,7 +414,7 @@ export default function AgentExploreView() {
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-xl font-semibold flex items-center gap-2">
                                         <Award className="w-5 h-5 text-primary" />
-                                        Active Listings
+                                        <AnimatedText text="Active Listings" baseDelay={0} wordDelay={100} />
                                     </h3>
                                     <Button variant="link" className="text-primary p-0 h-auto">View All</Button>
                                 </div>
@@ -420,7 +423,7 @@ export default function AgentExploreView() {
                                     {agentListings.map(listing => (
                                         <Link href={`/explore/agent/listing/${listing.id}`} key={listing.id} className="group">
                                             <div className="rounded-xl overflow-hidden border border-border/50 bg-card hover:shadow-xl hover:border-primary/30 transition-all duration-300">
-                                                <div className="relative aspect-[4/3]">
+                                                <div className="relative aspect-[4/3] overflow-hidden">
                                                     <Image
                                                         src={listing.images[0]}
                                                         alt={listing.title}

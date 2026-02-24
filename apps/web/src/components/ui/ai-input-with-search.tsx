@@ -67,6 +67,7 @@ export function AIInputWithSearch({
           <button
             type="button"
             onClick={() => setShowSearch((prev) => !prev)}
+            suppressHydrationWarning
             className={cn(
               "mr-1 inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs transition-colors",
               showSearch

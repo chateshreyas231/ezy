@@ -107,8 +107,9 @@ const Carousel = memo(function Carousel({
     >
       <motion.div
         drag={isCarouselActive ? "x" : false}
+        dragDirectionLock={true}
         className="relative flex h-full origin-center cursor-grab justify-center active:cursor-grabbing"
-        style={{ transform, rotateY: rotation, width: cylinderWidth, transformStyle: "preserve-3d" }}
+        style={{ transform, rotateY: rotation, width: cylinderWidth, transformStyle: "preserve-3d", touchAction: "pan-y" }}
         onDragStart={() => controls.stop()}
         onDrag={(_, info) => isCarouselActive && rotation.set(rotation.get() + info.offset.x * 0.05)}
         onDragEnd={(_, info) =>

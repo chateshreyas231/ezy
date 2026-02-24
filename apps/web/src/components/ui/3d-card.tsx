@@ -102,6 +102,7 @@ export const InteractiveTravelCard = React.forwardRef<HTMLDivElement, Interactiv
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               style={{ transform: "translateZ(40px)" }}
+              suppressHydrationWarning
               className={cn(
                 "w-full rounded-lg py-3 text-center font-semibold text-white transition-colors",
                 "bg-white/10 backdrop-blur-md ring-1 ring-inset ring-white/20 hover:bg-white/20",

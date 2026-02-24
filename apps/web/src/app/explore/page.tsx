@@ -5,6 +5,7 @@ import { AIInputWithSearch } from "@/components/ui/ai-input-with-search";
 import { Badge } from "@/components/ui/badge";
 import { InteractiveTravelCard } from "@/components/ui/3d-card";
 import { DottedSurface } from "@/components/ui/dotted-surface";
+import { AnimatedText } from "@/components/ui/animated-text";
 
 type ChatMessage = {
   role: "user" | "assistant";
@@ -61,12 +62,14 @@ export default function ExplorePage() {
           <Badge variant="outline" className="border-primary/20 bg-primary/10 text-primary">
             Explore Platform
           </Badge>
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-5xl">Pick your workspace</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground md:text-5xl">
+            <AnimatedText text="Pick your workspace" baseDelay={0} wordDelay={150} />
+          </h1>
           <p className="mx-auto max-w-2xl text-sm text-muted-foreground md:text-base">
-            Choose Client, Agent, or Directory.
+            <AnimatedText text="Choose Client, Agent, or Directory." baseDelay={400} wordDelay={150} />
           </p>
           <p className="mx-auto max-w-2xl text-xs text-muted-foreground">
-            Directory information is participant-submitted and for review only.
+            <AnimatedText text="Directory information is participant-submitted and for review only." baseDelay={1000} wordDelay={100} />
           </p>
         </header>
 
@@ -101,7 +104,7 @@ export default function ExplorePage() {
                 { role: "assistant", content: assistantMessage },
               ]);
             }}
-            onFileSelect={() => {}}
+            onFileSelect={() => { }}
           />
           {latestSuggestion ? (
             <p className="mt-2 text-center text-xs text-emerald-400">
