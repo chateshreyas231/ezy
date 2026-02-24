@@ -63,17 +63,7 @@ function hasRecentWaitlistVerification(request: NextRequest) {
   return Math.floor(Date.now() / 1000) - verifiedAt <= WAITLIST_VERIFY_TTL_SECONDS;
 }
 
-function hasAuthSessionCookie(request: NextRequest) {
-  const cookies = request.cookies.getAll();
-  return cookies.some(({ name }) => name.startsWith("sb-") && name.includes("auth-token"));
-}
-
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
-  const isAuthProtectedPath = path.startsWith("/app") || path.startsWith("/dashboard");
-  if (isAuthProtectedPath && !hasAuthSessionCookie(request)) {
-    return redirectToHome(request, "auth");
-  }
 
   const hasAccessCookie = request.cookies.get(WAITLIST_ACCESS_COOKIE)?.value === "true";
   const email = decodeURIComponent(
