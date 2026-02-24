@@ -52,7 +52,7 @@ const AgentChatInterface: React.FC<AgentChatInterfaceProps> = ({
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setTimeout(() => setIsFocused(false), 200)}
                         placeholder="Ask for agent directory information..."
-                        className="border-0 bg-transparent py-4 md:py-6 text-base md:text-lg focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50"
+                        className="chat-bar-control border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 placeholder:text-muted-foreground/50"
                     />
 
                     <div className="pr-2">

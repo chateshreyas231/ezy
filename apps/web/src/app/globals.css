@@ -247,6 +247,14 @@
 }
 
 @layer components {
+  .chat-bar-control {
+    @apply h-9 text-[13px] sm:h-10 sm:text-sm md:h-11 md:text-base;
+  }
+
+  .chat-bar-text {
+    @apply text-[13px] sm:text-sm md:text-base;
+  }
+
   .font-okine {
     font-family: "Okine", var(--font-mulish), sans-serif;
   }

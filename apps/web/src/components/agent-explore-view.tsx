@@ -227,17 +227,17 @@ export default function AgentExploreView() {
                                     variant="outline"
                                     size="sm"
                                     onClick={toggleExploreGrid}
-                                    className="bg-white text-foreground border-neutral-200 hover:bg-white/90 backdrop-blur-md shadow-sm text-xs md:text-sm"
+                                    className="border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 backdrop-blur-md shadow-sm text-xs md:text-sm h-9 w-9 p-0 md:h-9 md:w-auto md:px-3 rounded-full"
                                 >
                                     {showExploreGrid ? (
                                         <>
-                                            <Globe className="w-4 h-4 mr-2" />
-                                            Globe View
+                                            <Globe className="w-4 h-4 md:mr-2 shrink-0" />
+                                            <span className="hidden md:inline">Globe View</span>
                                         </>
                                     ) : (
                                         <>
-                                            <LayoutGrid className="w-4 h-4 mr-2" />
-                                            Explore All Agents
+                                            <LayoutGrid className="w-4 h-4 md:mr-2 shrink-0" />
+                                            <span className="hidden md:inline">Explore All Agents</span>
                                         </>
                                     )}
                                 </Button>

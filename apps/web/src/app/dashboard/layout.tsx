@@ -36,7 +36,7 @@ export default function DashboardLayout({
     const pathname = usePathname();
     const [isCollapsed, setIsCollapsed] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const { conversationLogs } = useWorkspaceAiStore();
+    const { conversationSessions } = useWorkspaceAiStore();
 
     const pageTitle = useMemo(() => {
         const active = sidebarItems.find((item) => pathname === item.href || pathname.startsWith(`${item.href}/`));
@@ -44,7 +44,7 @@ export default function DashboardLayout({
     }, [pathname]);
 
     return (
-        <DottedSurface className="min-h-screen pt-20 pb-12 px-4 md:px-6">
+        <DottedSurface className="min-h-screen pt-20 pb-3 md:pb-12 px-4 md:px-6">
             <div className="max-w-7xl mx-auto grid gap-6 lg:grid-cols-[auto_1fr]">
                 <aside className={cn("hidden lg:block sticky top-24 h-[calc(100vh-7rem)]", isCollapsed ? "w-[76px]" : "w-[250px]")}>
                     <Card className="bg-sidebar border-sidebar-border h-full flex flex-col">
@@ -90,19 +90,22 @@ export default function DashboardLayout({
                                 <div className="pt-3 mt-3 border-t border-sidebar-border">
                                     <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Conversation History</p>
                                     <div className="space-y-1.5">
-                                        {conversationLogs.length === 0 ? (
+                                        {conversationSessions.length === 0 ? (
                                             <p className="text-xs text-muted-foreground">No logs yet. Start in AI Workspace Live.</p>
                                         ) : (
-                                            conversationLogs.slice(0, 8).map((log) => (
-                                                <Link
-                                                    key={log.id}
-                                                    href="/dashboard/overview"
-                                                    className="block rounded-md border border-sidebar-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
-                                                >
-                                                    <p className="text-[10px] uppercase text-muted-foreground">{log.role === "ai" ? "AI" : "You"}</p>
-                                                    <p className="text-xs leading-4 line-clamp-2">{log.content}</p>
-                                                </Link>
-                                            ))
+                                            conversationSessions.slice(0, 8).map((session) => {
+                                                const titleStr = session.title || (session.messages.length > 0 ? session.messages[0].content : "Empty Session");
+                                                return (
+                                                    <Link
+                                                        key={session.id}
+                                                        href={`/dashboard/overview?historyId=${session.id}`}
+                                                        className="block rounded-md border border-sidebar-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
+                                                    >
+                                                        <p className="text-[10px] uppercase text-muted-foreground">AI Session</p>
+                                                        <p className="text-xs leading-4 line-clamp-2">{titleStr}</p>
+                                                    </Link>
+                                                )
+                                            })
                                         )}
                                     </div>
                                 </div>
@@ -111,21 +114,26 @@ export default function DashboardLayout({
                     </Card>
                 </aside>
 
-                <div className="space-y-6">
-                    <div className="flex items-center justify-between gap-3 lg:hidden">
-                        <Button variant="outline" size="icon" onClick={() => setIsMobileOpen(true)}>
-                            <Menu className="h-4 w-4" />
+                <div className="flex flex-col lg:space-y-6 h-[calc(100dvh-5rem)] pb-3 lg:pb-0 lg:h-auto">
+                    <div className="fixed top-4 left-4 lg:hidden z-50 pointer-events-auto">
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className="bg-white/80 backdrop-blur-md shadow-sm border border-slate-200 rounded-full h-10 w-10 text-slate-700"
+                            onClick={() => setIsMobileOpen(true)}
+                        >
+                            <Menu className="h-5 w-5" />
                         </Button>
-                        <p className="font-medium">{pageTitle}</p>
-                        <div />
                     </div>
 
-                    <div>
+                    <div className="hidden lg:block shrink-0">
                         <p className="text-xs uppercase tracking-wide text-muted-foreground">Client Workspace</p>
                         <h1 className="text-2xl font-semibold tracking-tight">{pageTitle}</h1>
                     </div>
 
-                    {children}
+                    <div className="flex-1 min-h-0">
+                        {children}
+                    </div>
                 </div>
             </div>
 
@@ -172,20 +180,23 @@ export default function DashboardLayout({
                         <div className="pt-3 mt-3 border-t border-border">
                             <p className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Conversation History</p>
                             <div className="space-y-1.5">
-                                {conversationLogs.length === 0 ? (
+                                {conversationSessions.length === 0 ? (
                                     <p className="text-xs text-muted-foreground">No logs yet.</p>
                                 ) : (
-                                    conversationLogs.slice(0, 5).map((log) => (
-                                        <Link
-                                            key={log.id}
-                                            href="/dashboard/overview"
-                                            onClick={() => setIsMobileOpen(false)}
-                                            className="block rounded-md border border-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
-                                        >
-                                            <p className="text-[10px] uppercase text-muted-foreground">{log.role === "ai" ? "AI" : "You"}</p>
-                                            <p className="text-xs leading-4 line-clamp-2">{log.content}</p>
-                                        </Link>
-                                    ))
+                                    conversationSessions.slice(0, 5).map((session) => {
+                                        const titleStr = session.title || (session.messages.length > 0 ? session.messages[0].content : "Empty Session");
+                                        return (
+                                            <Link
+                                                key={session.id}
+                                                href={`/dashboard/overview?historyId=${session.id}`}
+                                                onClick={() => setIsMobileOpen(false)}
+                                                className="block rounded-md border border-border px-2 py-1.5 hover:bg-accent/40 transition-colors"
+                                            >
+                                                <p className="text-[10px] uppercase text-muted-foreground">AI Session</p>
+                                                <p className="text-xs leading-4 line-clamp-2">{titleStr}</p>
+                                            </Link>
+                                        )
+                                    })
                                 )}
                             </div>
                         </div>

@@ -31,41 +31,58 @@ export type SellerListingRecord = {
   createdAt: string;
 };
 
-export type ConversationLogRecord = {
-  id: string;
+export type ChatMessageRecord = {
   role: "user" | "ai";
   content: string;
+};
+
+export type ConversationSessionRecord = {
+  id: string;
+  messages: ChatMessageRecord[];
   createdAt: string;
+  updatedAt: string;
+  title?: string;
 };
 
 type WorkspaceAiStore = {
   buyingPlans: BuyingPlanRecord[];
   listings: SellerListingRecord[];
-  conversationLogs: ConversationLogRecord[];
+  conversationSessions: ConversationSessionRecord[];
 };
 
 const STORAGE_KEY = "ezriya.workspace.ai.store.v1";
 const UPDATE_EVENT = "ezriya:workspace-store-updated";
 
-const emptyStore: WorkspaceAiStore = { buyingPlans: [], listings: [], conversationLogs: [] };
+const emptyStore: WorkspaceAiStore = { buyingPlans: [], listings: [], conversationSessions: [] };
 
 function safeParse(value: string | null): WorkspaceAiStore {
   if (!value) return emptyStore;
   try {
-    const parsed = JSON.parse(value) as WorkspaceAiStore;
+    const parsed = JSON.parse(value) as any;
     return {
       buyingPlans: Array.isArray(parsed?.buyingPlans) ? parsed.buyingPlans : [],
       listings: Array.isArray(parsed?.listings) ? parsed.listings : [],
-      conversationLogs: Array.isArray(parsed?.conversationLogs) ? parsed.conversationLogs : [],
+      conversationSessions: Array.isArray(parsed?.conversationSessions) ? parsed.conversationSessions : [],
     };
   } catch {
     return emptyStore;
   }
 }
 
+let cachedStore: WorkspaceAiStore | null = null;
+let cachedString: string | null = null;
+
 export function readWorkspaceAiStore(): WorkspaceAiStore {
   if (typeof window === "undefined") return emptyStore;
-  return safeParse(window.localStorage.getItem(STORAGE_KEY));
+  const currentString = window.localStorage.getItem(STORAGE_KEY);
+
+  if (currentString === cachedString && cachedStore) {
+    return cachedStore;
+  }
+
+  cachedString = currentString;
+  cachedStore = safeParse(currentString);
+  return cachedStore;
 }
 
 function writeWorkspaceAiStore(nextStore: WorkspaceAiStore) {
@@ -75,7 +92,7 @@ function writeWorkspaceAiStore(nextStore: WorkspaceAiStore) {
 }
 
 export function subscribeWorkspaceAiStore(listener: () => void) {
-  if (typeof window === "undefined") return () => {};
+  if (typeof window === "undefined") return () => { };
   const handler = () => listener();
   window.addEventListener(UPDATE_EVENT, handler);
   return () => window.removeEventListener(UPDATE_EVENT, handler);
@@ -97,12 +114,20 @@ export function appendSellerListing(record: SellerListingRecord) {
   });
 }
 
-export function appendConversationLog(record: ConversationLogRecord) {
+export function saveConversationSession(record: ConversationSessionRecord) {
   const current = readWorkspaceAiStore();
-  const nextLogs = [record, ...current.conversationLogs].slice(0, 120);
+  const existingIdx = current.conversationSessions.findIndex(s => s.id === record.id);
+  let nextSessions = [...current.conversationSessions];
+
+  if (existingIdx >= 0) {
+    nextSessions[existingIdx] = record;
+  } else {
+    nextSessions = [record, ...nextSessions].slice(0, 120);
+  }
+
   writeWorkspaceAiStore({
     ...current,
-    conversationLogs: nextLogs,
+    conversationSessions: nextSessions,
   });
 }
 

@@ -223,14 +223,19 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                     <div className="flex-1 overflow-y-auto relative bg-background/60 scrollbar-none" ref={scrollRef}>
                         <div className="h-full px-6 py-6">
                             <div className="flex flex-col gap-6 pb-4">
-                                {messages.map((msg, i) => (
-                                    <ChatMessage
-                                        key={i}
-                                        role={msg.role}
-                                        content={msg.content}
-                                        timestamp={msg.timestamp}
-                                    />
-                                ))}
+                                {messages.map((msg, i) => {
+                                    const isLastAiMessage = msg.role === "ai" &&
+                                        i === messages.map(m => m.role).lastIndexOf("ai");
+                                    return (
+                                        <ChatMessage
+                                            key={i}
+                                            role={msg.role}
+                                            content={msg.content}
+                                            timestamp={msg.timestamp}
+                                            showActions={isLastAiMessage}
+                                        />
+                                    );
+                                })}
                                 {isLoading && (
                                     <motion.div
                                         initial={{ opacity: 0 }}
@@ -261,7 +266,7 @@ export function AIChatOverlay({ isOpen, onClose }: AIChatOverlayProps) {
                                 value={inputValue}
                                 onChange={(e) => setInputValue(e.target.value)}
                                 placeholder="Type a message..."
-                                className="bg-background/70 border-white/10 focus-visible:ring-white/50 pr-12 py-6"
+                                className="chat-bar-control bg-background/70 border-white/10 focus-visible:ring-white/50 pr-12"
                                 disabled={currentStep === "GREETING" || isLoading}
                             />
                             <Button

@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import {
     CalendarClock,
     Compass,
@@ -22,10 +23,14 @@ import {
     Sparkles,
     Volume2,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import {
-    appendConversationLog,
+    saveConversationSession,
     appendBuyingPlan,
     appendSellerListing,
+    readWorkspaceAiStore,
+    type ConversationSessionRecord,
+    type ChatMessageRecord
 } from "@/lib/workspace-ai-store";
 
 type WorkspaceMessage = {
@@ -192,13 +197,32 @@ export default function DashboardOverviewPage() {
     const [isListening, setIsListening] = useState(false);
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [assistantFlow, setAssistantFlow] = useState<AssistantFlow>(null);
+    const [sessionId, setSessionId] = useState(() => `session-${Date.now()}`);
+    const sessionIdRef = useRef(sessionId);
+    const messagesRef = useRef<WorkspaceMessage[]>(messages);
     const recognitionRef = useRef<BrowserSpeechRecognition | null>(null);
     const inputRef = useRef<HTMLInputElement | null>(null);
 
+    const searchParams = useSearchParams();
+    const historyId = searchParams.get("historyId");
+
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
         setMounted(true);
     }, []);
+
+    // Load history when clicked from sidebar
+    useEffect(() => {
+        if (historyId && mounted) {
+            const store = readWorkspaceAiStore();
+            const session = store.conversationSessions.find((s: ConversationSessionRecord) => s.id === historyId);
+            if (session) {
+                setSessionId(session.id);
+                sessionIdRef.current = session.id;
+                setMessages(session.messages);
+                messagesRef.current = session.messages;
+            }
+        }
+    }, [historyId, mounted]);
 
     const primaryJourney = snapshot.prioritizedJourneys[0];
     const activeJourneyCount = snapshot.prioritizedJourneys.length;
@@ -224,14 +248,19 @@ export default function DashboardOverviewPage() {
     );
 
     function addWorkspaceMessage(role: "user" | "ai", content: string, persist = true) {
-        setMessages((prev) => [...prev, { role, content }]);
-        if (!persist) return;
-        appendConversationLog({
-            id: `log-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-            role,
-            content,
-            createdAt: new Date().toISOString(),
-        });
+        const nextMessages = [...messagesRef.current, { role, content }];
+        messagesRef.current = nextMessages;
+        setMessages(nextMessages);
+
+        if (persist) {
+            saveConversationSession({
+                id: sessionIdRef.current,
+                messages: nextMessages,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                title: nextMessages.find(m => m.role === "user")?.content || nextMessages[0]?.content || "AI Session"
+            });
+        }
     }
 
     function handleExploreDetail(detail: ClientDetailSelection) {
@@ -240,27 +269,35 @@ export default function DashboardOverviewPage() {
     }
 
     function startBuyIntentFlow() {
-        setAssistantFlow({
-            kind: "buy",
-            step: 0,
-            answers: [],
-            awaitingConfirmation: false,
-            summary: "",
-        });
-        addWorkspaceMessage("ai", "Starting buyer intent creation.");
-        addWorkspaceMessage("ai", BUY_INTENT_QUESTIONS[0]);
+        addWorkspaceMessage("user", "Start Buy Intent");
+        setTimeout(() => {
+            addWorkspaceMessage("ai", `Starting buyer intent creation. Great. Which city/area are you targeting?`);
+            setAssistantFlow({
+                kind: "buy",
+                step: 0,
+                answers: [],
+                awaitingConfirmation: false,
+                summary: "",
+            });
+            // Assuming setIsLoading is defined elsewhere or removed if not needed
+            // setIsLoading(false);
+        }, 300);
     }
 
     function startSellIntentFlow() {
-        setAssistantFlow({
-            kind: "sell",
-            step: 0,
-            answers: [],
-            awaitingConfirmation: false,
-            summary: "",
-        });
-        addWorkspaceMessage("ai", "Starting seller listing creation.");
-        addWorkspaceMessage("ai", SELL_INTENT_QUESTIONS[0]);
+        addWorkspaceMessage("user", "Start Sell Listing");
+        setTimeout(() => {
+            addWorkspaceMessage("ai", `Starting seller listing creation. What is the address of the property?`);
+            setAssistantFlow({
+                kind: "sell",
+                step: 0,
+                answers: [],
+                awaitingConfirmation: false,
+                summary: "",
+            });
+            // Assuming setIsLoading is defined elsewhere or removed if not needed
+            // setIsLoading(false);
+        }, 300);
     }
 
     function parseSpecs(text: string) {
@@ -467,67 +504,289 @@ export default function DashboardOverviewPage() {
         recognition.start();
     }
 
+    const sidebarContent = (
+        <div className="space-y-4 pb-8 lg:pb-0">
+
+            <Card className="bg-white border-slate-200">
+                <CardHeader className="pb-3">
+                    <CardTitle className="text-base">Workspace Snapshot</CardTitle>
+                </CardHeader>
+                <CardContent className="grid grid-cols-2 gap-3">
+                    <button
+                        type="button"
+                        className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
+                        onClick={() => handleExploreDetail({
+                            key: "journey_tracker",
+                            title: "Open Journeys",
+                            summary: `${activeJourneyCount} active journey lanes.`,
+                            intentType: primaryJourney?.intentType,
+                            listingId: primaryJourney?.propertyId,
+                        })}
+                    >
+                        <p className="text-xs text-muted-foreground flex items-center gap-1"><Handshake className="h-3.5 w-3.5" /> Open Journeys</p>
+                        <p className="mt-1 text-xl font-semibold">{activeJourneyCount}</p>
+                    </button>
+                    <button
+                        type="button"
+                        className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
+                        onClick={() => handleExploreDetail({
+                            key: "search_criteria",
+                            title: "Intent Mix",
+                            summary: intentMix,
+                            intentType: primaryJourney?.intentType,
+                            listingId: primaryJourney?.propertyId,
+                        })}
+                    >
+                        <p className="text-xs text-muted-foreground flex items-center gap-1"><Compass className="h-3.5 w-3.5" /> Intent Mix</p>
+                        <p className="mt-1 text-sm font-medium">{intentMix}</p>
+                    </button>
+                    <button
+                        type="button"
+                        className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
+                        onClick={() => handleExploreDetail({
+                            key: "weekly_plan",
+                            title: "High Priority",
+                            summary: `${highPriorityCount} journeys have urgency >= 70.`,
+                            intentType: primaryJourney?.intentType,
+                            listingId: primaryJourney?.propertyId,
+                        })}
+                    >
+                        <p className="text-xs text-muted-foreground flex items-center gap-1"><CalendarClock className="h-3.5 w-3.5" /> High Priority</p>
+                        <p className="mt-1 text-xl font-semibold">{highPriorityCount}</p>
+                    </button>
+                </CardContent>
+            </Card>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+                <h3 className="text-sm font-semibold">Execution Queue</h3>
+                <div className="mt-3 space-y-2">
+                    {actionQueue.map((task) => (
+                        <div key={task.id} className="rounded-lg border border-slate-200 bg-white p-3 space-y-2">
+                            <div className="flex items-center justify-between gap-2">
+                                <p className="text-sm font-medium">{task.title}</p>
+                                <span className="text-[11px] text-blue-300">{task.due}</span>
+                            </div>
+                            <p className="text-xs text-muted-foreground mt-1">{task.reason}</p>
+                            <div className="flex items-center justify-between gap-2">
+                                <div className="flex flex-wrap gap-1">
+                                    <Badge variant="outline" className="text-[10px] border-white/15">
+                                        Urgency: {task.journey.urgencyScore}
+                                    </Badge>
+                                    <Badge variant="outline" className="text-[10px] border-white/15">
+                                        Stage: {task.journey.stage}
+                                    </Badge>
+                                    {task.journey.primaryMetrics.slice(0, 1).map((metric) => (
+                                        <Badge key={`${task.id}-${metric.label}`} variant="outline" className="text-[10px] border-white/15">
+                                            {metric.label}: {metric.value}
+                                        </Badge>
+                                    ))}
+                                </div>
+                                <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 px-2 text-xs shrink-0"
+                                    onClick={() =>
+                                        handleExploreDetail({
+                                            key: "weekly_plan",
+                                            title: task.title,
+                                            summary: task.reason,
+                                            intentType: task.journey.intentType,
+                                            listingId: task.journey.propertyId,
+                                        })
+                                    }
+                                >
+                                    Start
+                                </Button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+                <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-semibold">Journey & Deal Timeline</h3>
+                    <Badge variant="outline" className="border-white/20 text-[10px]">Live</Badge>
+                </div>
+                <div className="mt-3 space-y-3">
+                    {snapshot.prioritizedJourneys.slice(0, 4).map((journey, index) => (
+                        <div key={`timeline-${journey.id}`} className="w-full flex items-start gap-3 group">
+                            <button
+                                type="button"
+                                className="mt-0.5 flex flex-col items-center"
+                                onClick={() =>
+                                    handleExploreDetail({
+                                        key: "journey_tracker",
+                                        title: journey.label,
+                                        summary: `${INTENT_LABEL[journey.intentType]} lane in "${journey.stage}" stage.`,
+                                        intentType: journey.intentType,
+                                        listingId: journey.propertyId,
+                                    })
+                                }
+                            >
+                                <div className="h-2.5 w-2.5 rounded-full bg-blue-400 group-hover:scale-110 transition-transform" />
+                                {index < 3 ? <div className="h-12 w-px bg-white/20 mt-1" /> : null}
+                            </button>
+                            <div className="flex-1 rounded-lg border border-slate-200 bg-white p-3">
+                                <div className="flex items-center justify-between gap-2">
+                                    <p className="text-sm font-medium">{journey.label}</p>
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        className="h-7 px-2 text-xs"
+                                        onClick={() =>
+                                            handleExploreDetail({
+                                                key: "deal_room",
+                                                title: journey.label,
+                                                summary: "Review documents, deadlines, and collaboration history for this journey.",
+                                                intentType: journey.intentType,
+                                                listingId: journey.propertyId,
+                                            })
+                                        }
+                                    >
+                                        Open Deal
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-muted-foreground mt-1">
+                                    {INTENT_LABEL[journey.intentType]} • {journey.stage} • urgency {journey.urgencyScore}
+                                </p>
+                                <p className="text-xs text-blue-300 mt-1">
+                                    Next checkpoint: {journey.nextDueDate ? new Date(journey.nextDueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Today"}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </section>
+
+            <section className="rounded-xl border border-slate-200 bg-white p-4">
+                <h3 className="text-sm font-semibold">Financial Clarity</h3>
+                <div className="mt-3 space-y-2 text-sm">
+                    <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
+                        <span className="text-muted-foreground">Capital Surface (Buy + Sell)</span>
+                        <span className="font-semibold">{formatCompactCurrency(financialSurface)}</span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
+                        <span className="text-muted-foreground">Potential Purchase Volume</span>
+                        <span className="font-semibold">{formatCompactCurrency(snapshot.totals.potentialPurchaseVolume)}</span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
+                        <span className="text-muted-foreground">Potential Sale Proceeds</span>
+                        <span className="font-semibold">{formatCompactCurrency(snapshot.totals.potentialSaleProceeds)}</span>
+                    </div>
+                    <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
+                        <span className="text-muted-foreground">Net Monthly Rent</span>
+                        <span className="font-semibold">{formatCompactCurrency(snapshot.totals.monthlyRentIn - snapshot.totals.monthlyRentOut)}</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    );
+
     if (!mounted) {
         return (
             <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_420px] xl:h-[calc(100vh-12rem)]">
-                <div className="rounded-xl border border-slate-200 bg-white" />
-                <div className="rounded-xl border border-slate-200 bg-white" />
+                <div className="rounded-xl border border-slate-200 bg-white min-h-[600px]" />
+                <div className="rounded-xl border border-slate-200 bg-white min-h-[600px]" />
             </div>
         );
     }
 
     return (
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.5fr)_420px] xl:h-[calc(100vh-12rem)] xl:overflow-hidden">
-            <div className="xl:h-full">
-                <Card className="border-slate-200 bg-white xl:h-full xl:flex xl:flex-col">
-                    <CardHeader className="pb-3">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.5fr)_420px] h-full lg:h-[calc(100vh-12rem)] lg:overflow-hidden">
+            <div className="flex flex-col h-full overflow-hidden">
+                <Card className="border-slate-200 bg-white h-full flex flex-col overflow-hidden">
+                    <CardHeader className="pb-3 shrink-0">
                         <div className="flex items-center justify-between gap-3">
                             <CardTitle className="text-xl">AI Workspace Live</CardTitle>
-                            <Badge variant="outline" className="border-white/20">
-                                {isListening ? "Listening..." : isSpeaking ? "Speaking..." : "Ready"}
-                            </Badge>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4 xl:flex-1 xl:min-h-0 xl:flex xl:flex-col">
-                        <div className="flex flex-col md:flex-row items-center gap-6 rounded-xl border border-slate-200 bg-white p-4 md:p-5">
-                            <div className="relative">
-                                <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-2xl" />
-                                <div className="relative rounded-full border border-slate-200 bg-white p-2">
-                                    <SiriOrb size="140px" animationDuration={14} />
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="h-6 text-xs px-2"
+                                    onClick={() => {
+                                        const newSessionId = `session-${Date.now()}`;
+                                        setSessionId(newSessionId);
+                                        sessionIdRef.current = newSessionId;
+                                        const newMsgs: WorkspaceMessage[] = [{ role: "ai", content: "Chat cleared. I am live in your workspace. How can I help?" }];
+                                        setMessages(newMsgs);
+                                        messagesRef.current = newMsgs;
+                                    }}
+                                >
+                                    New Chat
+                                </Button>
+                                <Badge variant="outline" className="border-white/20 hidden sm:flex">
+                                    {isListening ? "Listening..." : isSpeaking ? "Speaking..." : "Ready"}
+                                </Badge>
+                                <div className="lg:hidden">
+                                    <Sheet>
+                                        <SheetTrigger asChild>
+                                            <Button variant="outline" size="sm" className="h-6 text-xs px-2">Overview</Button>
+                                        </SheetTrigger>
+                                        <SheetContent side="right" className="w-[85vw] sm:w-[400px] overflow-y-auto pt-10 pb-6 bg-slate-50/50 backdrop-blur-xl">
+                                            <SheetHeader className="mb-4 text-left">
+                                                <SheetTitle>Workspace Overview</SheetTitle>
+                                            </SheetHeader>
+                                            {sidebarContent}
+                                        </SheetContent>
+                                    </Sheet>
                                 </div>
                             </div>
-                            <div className="flex-1 text-center md:text-left">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs text-blue-300">
-                                    <Sparkles className="h-3.5 w-3.5" />
-                                    Conversation-First Client Workspace
+                        </div>
+                    </CardHeader>
+                    <CardContent className="gap-2 sm:gap-4 flex-1 min-h-[0] flex flex-col px-3 sm:px-6 pb-3 sm:pb-6 pt-0 overflow-hidden">
+                        <div className="flex flex-row items-center gap-3 sm:gap-4 md:gap-6 rounded-xl border border-slate-200 bg-white p-3 md:p-5 shrink-0">
+                            <div className="relative shrink-0 flex items-center justify-center w-[50px] h-[50px] sm:w-[90px] sm:h-[90px] md:w-[110px] md:h-[110px]">
+                                <div className="absolute inset-0 rounded-full bg-blue-500/20 blur-xl sm:blur-2xl" />
+                                <div className="relative rounded-full border border-slate-200 bg-white p-1 sm:p-2 flex items-center justify-center w-full h-full overflow-hidden">
+                                    <div className="scale-[0.4] sm:scale-[0.8] md:scale-100 flex items-center justify-center origin-center">
+                                        <SiriOrb size="110px" animationDuration={14} />
+                                    </div>
                                 </div>
-                                <p className="mt-3 text-sm text-muted-foreground max-w-2xl">
+                            </div>
+                            <div className="flex-1 text-left sm:text-center md:text-left mt-0">
+                                <div className="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-2 sm:px-3 py-0.5 sm:py-1 text-[10px] sm:text-xs text-blue-300">
+                                    <Sparkles className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                    <span className="hidden min-[400px]:inline">Conversation-First Client Workspace</span>
+                                    <span className="min-[400px]:hidden">Workspace Live</span>
+                                </div>
+                                <p className="mt-1 sm:mt-2 text-[11px] sm:text-sm text-muted-foreground leading-snug sm:leading-normal line-clamp-2 sm:line-clamp-none">
                                     This workspace helps organize buyer intents and seller listings, collect required media/questions, and save details for review.
                                 </p>
-                                <p className="mt-2 text-xs text-muted-foreground max-w-2xl">
-                                    User controls all decisions. AI does not provide legal, financial, or real estate advice.
+                                <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-muted-foreground hidden sm:block">
+                                    User controls all decisions.
                                 </p>
-                                <div className="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
-                                    <Button onClick={startBuyIntentFlow}>
+                                <div className="mt-2 sm:mt-3 flex flex-wrap gap-1.5 sm:gap-2 justify-start sm:justify-center md:justify-start">
+                                    <Button size="sm" onClick={startBuyIntentFlow} className="h-7 text-[10px] sm:h-9 sm:text-sm px-2.5 sm:px-4">
                                         Start Buy Intent
                                     </Button>
-                                    <Button variant="outline" onClick={startSellIntentFlow}>
+                                    <Button size="sm" variant="outline" onClick={startSellIntentFlow} className="h-7 text-[10px] sm:h-9 sm:text-sm px-2.5 sm:px-4">
                                         Start Sell Listing
                                     </Button>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="max-h-[380px] xl:max-h-none xl:flex-1 xl:min-h-0 overflow-y-auto rounded-xl border border-slate-200 bg-white p-4">
-                            <div className="flex flex-col gap-4">
-                                {messages.map((message, index) => (
-                                    <ChatMessage key={`${message.role}-${index}`} role={message.role} content={message.content} />
-                                ))}
+                        <div className="flex-1 overflow-y-auto rounded-xl border border-slate-200 bg-white p-3 sm:p-4 min-h-[100px] sm:min-h-[150px]">
+                            <div className="flex flex-col gap-2">
+                                {messages.map((message, index) => {
+                                    const isLastAiMessage = message.role === "ai" &&
+                                        index === messages.map(m => m.role).lastIndexOf("ai");
+                                    return (
+                                        <ChatMessage
+                                            key={`${message.role}-${index}`}
+                                            role={message.role}
+                                            content={message.content}
+                                            showActions={isLastAiMessage}
+                                        />
+                                    );
+                                })}
                             </div>
                         </div>
 
                         <form
-                            className="flex gap-2"
+                            className="flex gap-1.5 sm:gap-2 shrink-0"
                             onSubmit={(event) => {
                                 event.preventDefault();
                                 sendMessage();
@@ -537,212 +796,22 @@ export default function DashboardOverviewPage() {
                                 ref={inputRef}
                                 value={input}
                                 onChange={(event) => setInput(event.target.value)}
-                                placeholder="Type: start buy intent, start sell listing, or ask for information..."
+                                placeholder="Message AI Assistant..."
+                                className="chat-bar-control"
                             />
-                            <Button type="button" variant="outline" size="icon" onClick={startVoiceInput}>
-                                <Mic className={`h-4 w-4 ${isListening ? "text-blue-400" : ""}`} />
+                            <Button type="button" variant="outline" size="icon" onClick={startVoiceInput} className="shrink-0 h-9 w-9 sm:h-10 sm:w-10">
+                                <Mic className={`h-4 w-4 sm:h-4 sm:w-4 ${isListening ? "text-blue-400" : ""}`} />
                             </Button>
-                            <Button type="submit" size="icon">
-                                <Send className="h-4 w-4" />
+                            <Button type="submit" size="icon" className="shrink-0 h-9 w-9 sm:h-10 sm:w-10">
+                                <Send className="h-4 w-4 sm:h-4 sm:w-4" />
                             </Button>
                         </form>
-
-                        <div className="flex flex-wrap gap-2">
-                            <Button variant="outline" size="sm" onClick={startBuyIntentFlow}>
-                                Create Buying Plan
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={startSellIntentFlow}>
-                                Create Selling Listing
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => sendMessage("What are my highest priority tasks this week?")}>
-                                Priority Tasks
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => sendMessage("Summarize my buy and sell lanes")}>
-                                Lane Summary
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => speak(messages[messages.length - 1]?.content ?? "")}>
-                                <Volume2 className="h-4 w-4 mr-2" />
-                                Speak Last Reply
-                            </Button>
-                        </div>
                     </CardContent>
                 </Card>
             </div>
 
-            <div className="space-y-4 xl:h-full xl:overflow-y-auto xl:pr-1">
-                <Card className="bg-white border-slate-200">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="text-base">Workspace Snapshot</CardTitle>
-                    </CardHeader>
-                    <CardContent className="grid grid-cols-2 gap-3">
-                        <button
-                            type="button"
-                            className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
-                            onClick={() => handleExploreDetail({
-                                key: "journey_tracker",
-                                title: "Open Journeys",
-                                summary: `${activeJourneyCount} active journey lanes.`,
-                                intentType: primaryJourney?.intentType,
-                                listingId: primaryJourney?.propertyId,
-                            })}
-                        >
-                            <p className="text-xs text-muted-foreground flex items-center gap-1"><Handshake className="h-3.5 w-3.5" /> Open Journeys</p>
-                            <p className="mt-1 text-xl font-semibold">{activeJourneyCount}</p>
-                        </button>
-                        <button
-                            type="button"
-                            className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
-                            onClick={() => handleExploreDetail({
-                                key: "search_criteria",
-                                title: "Intent Mix",
-                                summary: intentMix,
-                                intentType: primaryJourney?.intentType,
-                                listingId: primaryJourney?.propertyId,
-                            })}
-                        >
-                            <p className="text-xs text-muted-foreground flex items-center gap-1"><Compass className="h-3.5 w-3.5" /> Intent Mix</p>
-                            <p className="mt-1 text-sm font-medium">{intentMix}</p>
-                        </button>
-                        <button
-                            type="button"
-                            className="rounded-lg border border-slate-200 bg-white p-3 text-left hover:border-primary/30 transition-colors"
-                            onClick={() => handleExploreDetail({
-                                key: "weekly_plan",
-                                title: "High Priority",
-                                summary: `${highPriorityCount} journeys have urgency >= 70.`,
-                                intentType: primaryJourney?.intentType,
-                                listingId: primaryJourney?.propertyId,
-                            })}
-                        >
-                            <p className="text-xs text-muted-foreground flex items-center gap-1"><CalendarClock className="h-3.5 w-3.5" /> High Priority</p>
-                            <p className="mt-1 text-xl font-semibold">{highPriorityCount}</p>
-                        </button>
-                    </CardContent>
-                </Card>
-
-                <section className="rounded-xl border border-slate-200 bg-white p-4">
-                    <h3 className="text-sm font-semibold">Execution Queue</h3>
-                    <div className="mt-3 space-y-2">
-                        {actionQueue.map((task) => (
-                            <div key={task.id} className="rounded-lg border border-slate-200 bg-white p-3 space-y-2">
-                                <div className="flex items-center justify-between gap-2">
-                                    <p className="text-sm font-medium">{task.title}</p>
-                                    <span className="text-[11px] text-blue-300">{task.due}</span>
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-1">{task.reason}</p>
-                                <div className="flex items-center justify-between gap-2">
-                                    <div className="flex flex-wrap gap-1">
-                                        <Badge variant="outline" className="text-[10px] border-white/15">
-                                            Urgency: {task.journey.urgencyScore}
-                                        </Badge>
-                                        <Badge variant="outline" className="text-[10px] border-white/15">
-                                            Stage: {task.journey.stage}
-                                        </Badge>
-                                        {task.journey.primaryMetrics.slice(0, 1).map((metric) => (
-                                            <Badge key={`${task.id}-${metric.label}`} variant="outline" className="text-[10px] border-white/15">
-                                                {metric.label}: {metric.value}
-                                            </Badge>
-                                        ))}
-                                    </div>
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        className="h-7 px-2 text-xs shrink-0"
-                                        onClick={() =>
-                                            handleExploreDetail({
-                                                key: "weekly_plan",
-                                                title: task.title,
-                                                summary: task.reason,
-                                                intentType: task.journey.intentType,
-                                                listingId: task.journey.propertyId,
-                                            })
-                                        }
-                                    >
-                                        Start
-                                    </Button>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section className="rounded-xl border border-slate-200 bg-white p-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-sm font-semibold">Journey & Deal Timeline</h3>
-                        <Badge variant="outline" className="border-white/20 text-[10px]">Live</Badge>
-                    </div>
-                    <div className="mt-3 space-y-3">
-                        {snapshot.prioritizedJourneys.slice(0, 4).map((journey, index) => (
-                            <div key={`timeline-${journey.id}`} className="w-full flex items-start gap-3 group">
-                                <button
-                                    type="button"
-                                    className="mt-0.5 flex flex-col items-center"
-                                    onClick={() =>
-                                        handleExploreDetail({
-                                            key: "journey_tracker",
-                                            title: journey.label,
-                                            summary: `${INTENT_LABEL[journey.intentType]} lane in "${journey.stage}" stage.`,
-                                            intentType: journey.intentType,
-                                            listingId: journey.propertyId,
-                                        })
-                                    }
-                                >
-                                    <div className="h-2.5 w-2.5 rounded-full bg-blue-400 group-hover:scale-110 transition-transform" />
-                                    {index < 3 ? <div className="h-12 w-px bg-white/20 mt-1" /> : null}
-                                </button>
-                                <div className="flex-1 rounded-lg border border-slate-200 bg-white p-3">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <p className="text-sm font-medium">{journey.label}</p>
-                                        <Button
-                                            size="sm"
-                                            variant="ghost"
-                                            className="h-7 px-2 text-xs"
-                                            onClick={() =>
-                                                handleExploreDetail({
-                                                    key: "deal_room",
-                                                    title: journey.label,
-                                                    summary: "Review documents, deadlines, and collaboration history for this journey.",
-                                                    intentType: journey.intentType,
-                                                    listingId: journey.propertyId,
-                                                })
-                                            }
-                                        >
-                                            Open Deal
-                                        </Button>
-                                    </div>
-                                    <p className="text-xs text-muted-foreground mt-1">
-                                        {INTENT_LABEL[journey.intentType]} • {journey.stage} • urgency {journey.urgencyScore}
-                                    </p>
-                                    <p className="text-xs text-blue-300 mt-1">
-                                        Next checkpoint: {journey.nextDueDate ? new Date(journey.nextDueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Today"}
-                                    </p>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </section>
-
-                <section className="rounded-xl border border-slate-200 bg-white p-4">
-                    <h3 className="text-sm font-semibold">Financial Clarity</h3>
-                    <div className="mt-3 space-y-2 text-sm">
-                        <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
-                            <span className="text-muted-foreground">Capital Surface (Buy + Sell)</span>
-                            <span className="font-semibold">{formatCompactCurrency(financialSurface)}</span>
-                        </div>
-                        <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
-                            <span className="text-muted-foreground">Potential Purchase Volume</span>
-                            <span className="font-semibold">{formatCompactCurrency(snapshot.totals.potentialPurchaseVolume)}</span>
-                        </div>
-                        <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
-                            <span className="text-muted-foreground">Potential Sale Proceeds</span>
-                            <span className="font-semibold">{formatCompactCurrency(snapshot.totals.potentialSaleProceeds)}</span>
-                        </div>
-                        <div className="flex items-center justify-between rounded-lg bg-white border border-slate-200 px-3 py-2">
-                            <span className="text-muted-foreground">Net Monthly Rent</span>
-                            <span className="font-semibold">{formatCompactCurrency(snapshot.totals.monthlyRentIn - snapshot.totals.monthlyRentOut)}</span>
-                        </div>
-                    </div>
-                </section>
+            <div className="hidden lg:block lg:h-full lg:overflow-y-auto lg:pr-1">
+                {sidebarContent}
             </div>
         </div>
     );

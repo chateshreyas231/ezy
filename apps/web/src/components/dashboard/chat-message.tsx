@@ -5,13 +5,16 @@ import { Sparkles, CopyIcon, RefreshCcwIcon, ShareIcon, ThumbsDownIcon, ThumbsUp
 import { motion } from "framer-motion";
 import { Action, Actions } from "@/components/ui/actions";
 
+import { TextEffect } from "@/components/ui/text-effect";
+
 interface ChatMessageProps {
     role: "user" | "ai";
     content: React.ReactNode;
     timestamp?: string;
+    showActions?: boolean;
 }
 
-export function ChatMessage({ role, content, timestamp }: ChatMessageProps) {
+export function ChatMessage({ role, content, timestamp, showActions }: ChatMessageProps) {
     const isAI = role === "ai";
     const messageActions = [
         { icon: RefreshCcwIcon, label: "Retry" },
@@ -26,34 +29,35 @@ export function ChatMessage({ role, content, timestamp }: ChatMessageProps) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             className={cn(
-                "flex gap-3 max-w-[85%]",
-                isAI ? "self-start" : "self-end flex-row-reverse"
+                "flex max-w-[100%] sm:max-w-[90%] outline-none focus:outline-none",
+                isAI ? "self-start -ml-3 sm:-ml-4" : "self-end flex-row-reverse gap-2 sm:gap-3"
             )}
         >
-            <div className={cn(
-                "h-8 w-8 rounded-full flex items-center justify-center shrink-0 border",
-                isAI
-                    ? "bg-white/10 border-white/20 text-white"
-                    : "bg-blue-500/10 border-blue-500/20 text-blue-400"
-            )}>
-                {isAI ? <Sparkles className="h-4 w-4" /> : <User className="h-4 w-4" />}
-            </div>
-
-            <div className={cn(
-                "rounded-2xl p-4 text-sm leading-relaxed",
-                isAI
-                    ? "bg-white/5 border border-white/10 rounded-tl-none"
-                    : "bg-primary border border-primary/30 text-primary-foreground rounded-tr-none"
-            )}>
-                {content}
-                {isAI && (
-                    <Actions className="mt-2">
-                        {messageActions.map((action) => (
-                            <Action key={action.label} label={action.label}>
-                                <action.icon className="size-4" />
-                            </Action>
-                        ))}
-                    </Actions>
+            <div
+                tabIndex={isAI ? 0 : undefined}
+                className={cn(
+                    "group rounded-2xl p-3 sm:p-4 text-sm leading-snug whitespace-pre-wrap outline-none focus:outline-none",
+                    isAI
+                        ? "bg-white/5 border border-white/10 border-l-0 text-foreground rounded-l-none"
+                        : "bg-primary border border-primary/30 text-primary-foreground rounded-tr-none"
+                )}>
+                {isAI && typeof content === "string" ? (
+                    <TextEffect per="word" preset="fade">
+                        {content}
+                    </TextEffect>
+                ) : (
+                    content
+                )}
+                {showActions && isAI && (
+                    <div className="opacity-0 pointer-events-none transition-opacity duration-200 group-hover:opacity-100 group-focus:opacity-100 focus-within:opacity-100 group-hover:pointer-events-auto group-focus:pointer-events-auto focus-within:pointer-events-auto">
+                        <Actions className="mt-2">
+                            {messageActions.map((action) => (
+                                <Action key={action.label} label={action.label}>
+                                    <action.icon className="size-4" />
+                                </Action>
+                            ))}
+                        </Actions>
+                    </div>
                 )}
                 {timestamp && (
                     <div className="text-[10px] opacity-50 mt-1 text-right">

@@ -202,7 +202,7 @@ export default function PromptInputDynamicGrow({
               placeholder={placeholder}
               rows={1}
               disabled={disabled}
-              className="w-full min-h-8 max-h-24 resize-none bg-transparent border-0 outline-none text-sm placeholder:text-muted-foreground px-2"
+              className="chat-bar-text w-full min-h-8 max-h-24 resize-none bg-transparent border-0 outline-none placeholder:text-muted-foreground px-2"
             />
             <SendButton disabled={submitDisabled} />
           </div>
